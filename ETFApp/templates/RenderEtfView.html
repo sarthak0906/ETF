@@ -1,0 +1,48 @@
+<!-- Div for ETF -->
+<div class="col-md-6 col-lg-6">
+	<div id="table-height" style="max-height:600px;overflow: auto">
+	    <table class="table table-bordered" style="font-size: 15px;">
+	      <thead>
+	        <tr>
+	          {% for value in navDF.columns %}
+	          <th>{{value}}</th>
+	          {% endfor %}  
+	        </tr>
+	      </thead>
+	      <tbody>
+	        {% for key,value in navDF.iterrows() %}
+	          <tr>
+	            {% for v in value %}
+	              <td>{{v}}</td>
+	            {% endfor %}   
+	          </tr>
+	        {% endfor %}  
+	      </tbody>
+	    </table>
+  	</div>
+</div>
+<!-- Div for ETF -->
+
+<!-- Div for ETF Constituents-->
+<div class="col-md-6 col-lg-6">
+	<div id="table-height" style="max-height:600px;overflow: auto">
+	    <table class="table table-bordered" style="font-size: 15px;">
+	      <thead>
+	        <tr>
+	          {% for value in constituentsdata.columns %}
+	          <th>{{value}}</th>
+	          {% endfor %}  
+	        </tr>
+	      </thead>
+	      <tbody>
+	        {% for key,value in constituentsdata.iterrows() %}
+	          <tr>
+	            {% for v in value %}
+	              <td>{{v}}</td>
+	            {% endfor %}   
+	          </tr>
+	        {% endfor %}  
+	      </tbody>
+	    </table>
+  	</div>
+</div>

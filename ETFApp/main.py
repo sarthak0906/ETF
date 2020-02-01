@@ -12,7 +12,8 @@ from flask import Flask
 
 import pickle
 
-from StandardDeviationAnalysis import *
+from DataGatheringCleaning import *
+from ArbitrageAnalysis import *
 
 app = Flask(__name__,
 		static_url_path='', 
@@ -26,66 +27,60 @@ def index():
 
 
 @app.route('/getETF',methods= ['POST'])
-def getETF():
+def handle():
 	try:
 		tickeretf = request.form['ticker']
 	except:
 		tickeretf="XLK"
 
-	print("Ticker is ="+tickeretf)
+	print("Ticker is = "+tickeretf)
 	
-	
+
 	filename='../ETFDailyData'+'/'+dt.datetime.now().strftime("%Y%m%d")+'/'+tickeretf+'.xls'
 	startdate=dt.datetime(2019,1,1)
 	enddate=dt.datetime.today()
 
-	ob=ConstituentsData(fileName=filename,startdate=startdate,enddate=enddate)
-	ob.getconstituentdata()
-	
-	print("Ticker is ="+tickeretf)
-	print("***************")
-	print("Tickers with NA Values")
+	###$$$ Getting ticker prices, cleaning them and finding NET Asset Valu
+	# Create an object of Constituents Data of ETF - ConstituentsData
+	ob=ConstituentsData()
+	# Load ETF Weights
+	etfWeights=ob.loadETFWeights(filename)
+	# Get Stock Prices from the weights
+	ob.getStockPrices(startdate=startdate,enddate=enddate)
+	# ShowNa Values - Method Inherited from ETFDataCleanup
+	print("If ETF constituents has any NA Values")
 	ob.showNaColumns(ob.constituentcloseDF)
+	# Drop Na Values from above - Method Inherited from ETFDataCleanup
 	ob.constituentcloseDF=ob.dropNAColumns(ob.constituentcloseDF)
-	print("***************")
-	print("Check for NA Values again")
-	ob.showNaColumns(ob.constituentcloseDF)
+	# Computre Daily Returs - Method Inherited from ETFDataCleanup
 	ob.changeDF=ob.computeDailyReturns(ob.constituentcloseDF)
-	print("***************")
-	print("Daily Change of Constituents")
-	print(ob.changeDF.tail(10))
-
-
+	# Weights in weights file have weights in % Clean that up
 	ob.stringWeightsToFloat()
+	# Find Net Asset Values
 	ob.findNetAssetValue()
 
-	print("***************")
-	print("Data for Constituents")
-	print(ob.waDF.head(5))
-
-	etfob=ETFStockPrices(etfticker=tickeretf,startdate=startdate,enddate=enddate)
-	etfob.getETFTickerData()
-	print("***************")
-	print("Show Any Empty Values for ETF")
+	###$$$ Getting data for ETF starts here
+	# Object to Get ETF Data
+	etfob=ETFStockPrices(etfticker=tickeretf)
+	# Get ETF Data Stock Prices
+	etfob.getETFTickerData(startdate=startdate,enddate=enddate)
+	# Show Any Na Values
+	print("If ETF prices has any NA Values")
 	etfob.showNaColumns(etfob.etfdata)
+	# Calculate daily returns of ETF
 	etfob.etfchangeDF=etfob.computeDailyReturns(etfob.etfdata['Close'])
 
-	arbob=ETFArbitrage(etfob.etfchangeDF,ob.waDF)
-	print("***************")
-	print("Show NAV DF")
-	print(arbob.navDF)
+	###$$$ Calculation for Arbitrage Starts Here
+	# Do Calculations of ETFArbitrage
+	arbob=ETFArbitrage(etfob.etfchangeDF,ob.weightedStockReturns)
 
-	# Format the NAVDf Dataframe for Printing
-	navDF=round(arbob.navDF.copy(),3)
-	navDF['Date']=navDF.index
-	navDF=navDF[['Date','Close','NAV','Mispricing','Z-Score']]
-	navDF=navDF.reset_index(drop=True)
 
-	# Format the Constituents Dataframe for printing
-	constituentsdata=ob.tickerdf.copy()
-	constituentsdata['Ticker']=constituentsdata.index
-	constituentsdata=constituentsdata[['Ticker','Company Name','Weights','Last','%Change','Volume']]
-	constituentsdata=constituentsdata.reset_index(drop=True)
+	###$$$ Maniputaion of data for Jinga Template Starts Here	
+	# Round Off NavDf and Clean up for printing
+	navDF=CleanDataForJinga(round(arbob.navDF.copy(),3),['Date','Close','NAV','Mispricing'],'Date').CleanForEndUser()
+	# Round Off constituentsdata and Clean up for printing
+	constituentsdata=CleanDataForJinga(ob.etfWeights.copy(),['Ticker','Company Name','Weights','Last','%Change','Volume'],'Ticker').CleanForEndUser()
+
 	return render_template('RenderEtfView.html',navDF=navDF,constituentsdata=constituentsdata)
 
 

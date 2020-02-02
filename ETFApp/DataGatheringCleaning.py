@@ -65,55 +65,6 @@ class ETFStockPrices(ETFDataCleanup):
         self.etfdata =  web.DataReader(self.etfticker,'yahoo',startdate,enddate)
 
 
-###### Do the Arbitrage analysis work
-class ETFArbitrage(object):
-
-    def __init__(self,etfob,weightedStockReturns):
-        self.navDF=pd.merge(etfob,weightedStockReturns['NAV'],left_index=True,right_index=True)
-        self.navDF['Date']=self.navDF.index
-        self.navDF['Close']=self.navDF['Close']*100
-        self.navDF['NAV']=self.navDF['NAV']*100
-        del self.navDF['Date']
-        self.navDF['Mispricing']=(self.navDF['Close']-self.navDF['NAV'])
-        
-
-class CleanDataForJinga(object):
-
-    def __init__(self,data,columnRearrange,indexColumnName):
-        self.data=data
-        self.columnRearrange=columnRearrange
-        self.indexColumnName=indexColumnName
-
-    def CleanForEndUser(self):
-        self.data[self.indexColumnName]=self.data.index
-        self.data=self.data[self.columnRearrange]
-        self.data=self.data.reset_index(drop=True)
-
-        # Normalize Dates from '2020-01-01 00:00:00' to '2020-01-01' in pandas
-        if indexColumnName=='Date':
-            self.data.index = self.data.index.normalize()
-
-        return self.data
-
-class ZscoreAnanlysisByAttribute():
-
-    def __init__(self,data,zthresh,colname):
-        self.data=data
-        self.data.name=self.data.name+' '+colname
-        self.zthresh=zthresh
-        
-    def getMispricedData(self):
-        self.df=self.data.to_frame()
-        self.df['Z-Score']=np.abs(stats.zscore(self.df.values.tolist()))
-        self.requiredDF=self.df[self.df['Z-Score']>self.zthresh]
-        return self.requiredDF
 
 
 
-
-
-
-
-
-
-    

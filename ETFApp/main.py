@@ -6,13 +6,13 @@ import json
 import numpy
 import pandas as pd
 
-# Import flask modules
+# import flask modules
 from flask import render_template, request, send_from_directory, jsonify
 from flask import Flask
 
-import pickle
-
+# import custom python packages
 from DataGatheringCleaning import *
+from JingaDataCleanUp import CleanDataForJinga
 from ArbitrageAnalysis import *
 
 app = Flask(__name__,
@@ -33,6 +33,7 @@ def handle():
 	except:
 		tickeretf="XLK"
 
+	stdthresold=2.7
 	print("Ticker is = "+tickeretf)
 	
 
@@ -73,6 +74,7 @@ def handle():
 	###$$$ Calculation for Arbitrage Starts Here
 	# Do Calculations of ETFArbitrage
 	arbob=ETFArbitrage(etfob.etfchangeDF,ob.weightedStockReturns)
+	arbitrageDataFrame=ArbitrageAnalysis().GetArbDataFrame(tickers=ob.constituentcloseDF.columns,changeDF=ob.changeDF,constituentdata=ob.constituentdata,daysofarbitrage=round(arbob.navDF.copy(),3),stdthresold=stdthresold)
 
 
 	###$$$ Maniputaion of data for Jinga Template Starts Here	
@@ -80,8 +82,10 @@ def handle():
 	navDF=CleanDataForJinga(round(arbob.navDF.copy(),3),['Date','Close','NAV','Mispricing'],'Date').CleanForEndUser()
 	# Round Off constituentsdata and Clean up for printing
 	constituentsdata=CleanDataForJinga(ob.etfWeights.copy(),['Ticker','Company Name','Weights','Last','%Change','Volume'],'Ticker').CleanForEndUser()
+	# Round Off arbitrageDataFrame and Clean up for printing
+	arbitrageDataFrame=CleanDataForJinga(arbitrageDataFrame,['Date','Close NAV','Z-Score','Stocks Responsible Mispricing'],'Date').CleanForEndUser()
 
-	return render_template('RenderEtfView.html',navDF=navDF,constituentsdata=constituentsdata)
+	return render_template('RenderEtfView.html',arbitrageDataFrame=arbitrageDataFrame,navDF=navDF,constituentsdata=constituentsdata)
 
 
 if __name__ == '__main__':

@@ -83,7 +83,7 @@ def handle():
 	# Round Off constituentsdata and Clean up for printing
 	constituentsdata=CleanDataForJinga(ob.etfWeights.copy(),['Ticker','Company Name','Weights','Last','%Change','Volume'],'Ticker').CleanForEndUser()
 	# Round Off arbitrageDataFrame and Clean up for printing
-	arbitrageDataFrame=CleanDataForJinga(arbitrageDataFrame,['Date','Close NAV','Z-Score','Stocks Responsible Mispricing'],'Date').CleanForEndUser()
+	arbitrageDataFrame=CleanDataForJinga(arbitrageDataFrame,['Date','Close','NAV','Z-Score','Stocks Responsible Mispricing'],'Date').CleanForEndUser()
 
 	return render_template('RenderEtfView.html',arbitrageDataFrame=arbitrageDataFrame,navDF=navDF,constituentsdata=constituentsdata)
 

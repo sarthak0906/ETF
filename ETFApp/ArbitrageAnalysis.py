@@ -25,7 +25,7 @@ class StatisticalCalculations():
 		if isinstance(df,pd.Series):
 			df=df.to_frame()
 			df.columns=[colname]
-		df['Z-Score']=np.abs(stats.zscore(df[colname].tolist()))
+		df['Z-Score']=np.abs(stats.zscore(df[colname].tolist())).round(2)
 		requiredDF=df[df['Z-Score']>zthresh]
 		return requiredDF
 
@@ -74,7 +74,7 @@ class ArbitrageAnalysis(object):
 
 	def NavDfwithKvPairs(self,kvpairs,daysofarbitrage):
 		stockscausingmispricing=StatisticalCalculations().invertDict(kvpairs)
-		daysofarbitrage['Stocks Responsible Mispricing'] = daysofarbitrage.index.to_series().map(stockscausingmispricing)
+		daysofarbitrage['Stocks Caused Mispricing'] = daysofarbitrage.index.to_series().map(stockscausingmispricing)
 		return daysofarbitrage
 
 

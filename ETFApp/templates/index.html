@@ -27,16 +27,28 @@
       $(document).ready(function() {
         $('form').on('submit', function(event) {
           event.preventDefault();
-          var pathname = window.location.pathname; 
+          ticker=$('#ticker').val();
+          if(!ticker){
+              ticker='XLK';
+          }
+
+          stdthresold=$('#stdthresold').val();
+          if(!stdthresold){
+              stdthresold='3';
+          }
+
+          var pathname = '/AnalyseEtf/etfticker='+ticker; 
           console.log(pathname);
            $.ajax({
               data : {
-                 ticker : $('#ticker').val(),
+                 ticker : ticker,
+                 stdthresold:stdthresold,
                      },
                  type : 'POST',
-                 url : '/getETF',
+                 url : pathname,
                  success: function(response){
                 $("#UpdateResults").html(response);
+                  window.history.pushState("Ticker Data Received Successfully", "Success", pathname);
               }
             });
           });
@@ -64,21 +76,32 @@
     <!-- Divider -->
       <hr class="sidebar-divider">
 
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
-        <i class="fas fa-fw fa-tachometer-alt"></i>
-          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-          <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" id="ticker" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-              <button class="btn btn-primary" type="submit">
-                <i class="fa fa-search fa-sm"></i>
-              </button>
+      <form>
+        <li class="nav-item active">
+            <div class="nav-link Zipcode">
+                <span>
+                  <label for="name" class="control-label">Search ETF</label>
+                  <input type="text" name="name" id="ticker" class="form-control" id="name" placeholder="ETF Ticker">
+              </span>
             </div>
+        </li>
+
+        <li class="nav-item active">
+            <div class="nav-link Zipcode">
+                <span>
+                  <label for="name" class="control-label">Tracking Error</label>
+                  <input type="text" name="name" id="stdthresold" class="form-control" id="name" placeholder="Default : 3 SD">
+              </span>
+            </div>
+        </li>
+
+        <li class="nav-item active">
+          <div class="nav-link Add Button">
+              <center><button class="btn btn-info btn-md" type="submit" style="cursor: pointer">Submit</button></center>
           </div>
-        </form>
-      </li>
-      <hr class="sidebar-divider">
+        </li>
+      </form>
+
       <!-- Divider -->
     </ul>
     <!-- End of Sidebar -->

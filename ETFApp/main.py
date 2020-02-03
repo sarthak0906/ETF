@@ -21,21 +21,18 @@ app = Flask(__name__,
         template_folder='templates')
 
 
-@app.route('/')
+@app.route('/AnalyseEtf')
 def index():
 	return render_template('index.html',)
 
 
-@app.route('/getETF',methods= ['POST'])
-def handle():
-	try:
-		tickeretf = request.form['ticker']
-	except:
-		tickeretf="XLK"
+@app.route('/AnalyseEtf/<etfticker>',methods= ['POST'])
+def handle(**kwargs):
+	tickeretf = request.form['ticker']
+	stdthresold = float(request.form['stdthresold'])
 
-	stdthresold=2.7
 	print("Ticker is = "+tickeretf)
-	
+	print("Tracking Error is = "+str(stdthresold))
 
 	filename='../ETFDailyData'+'/'+dt.datetime.now().strftime("%Y%m%d")+'/'+tickeretf+'.xls'
 	startdate=dt.datetime(2019,1,1)
@@ -79,13 +76,13 @@ def handle():
 
 	###$$$ Maniputaion of data for Jinga Template Starts Here	
 	# Round Off NavDf and Clean up for printing
-	navDF=CleanDataForJinga(round(arbob.navDF.copy(),3),['Date','Close','NAV','Mispricing'],'Date').CleanForEndUser()
+	navDF=CleanDataForJinga(round(arbob.navDF.copy(),3),['Date','Close','NAV','Mispricing'],'Date',reverse=True).CleanForEndUser()
 	# Round Off constituentsdata and Clean up for printing
-	constituentsdata=CleanDataForJinga(ob.etfWeights.copy(),['Ticker','Company Name','Weights','Last','%Change','Volume'],'Ticker').CleanForEndUser()
+	constituentsdata=CleanDataForJinga(ob.etfWeights.copy(),['Ticker','Company Name','Weights','Last','%Change','Volume'],'Ticker',reverse=False).CleanForEndUser()
 	# Round Off arbitrageDataFrame and Clean up for printing
-	arbitrageDataFrame=CleanDataForJinga(arbitrageDataFrame,['Date','Close','NAV','Z-Score','Stocks Responsible Mispricing'],'Date').CleanForEndUser()
+	arbitrageDataFrame=CleanDataForJinga(arbitrageDataFrame,['Date','Close','NAV','Z-Score','Stocks Caused Mispricing'],'Date',reverse=True).CleanForEndUser()
 
-	return render_template('RenderEtfView.html',arbitrageDataFrame=arbitrageDataFrame,navDF=navDF,constituentsdata=constituentsdata)
+	return render_template('RenderEtfView.html',tickeretf=tickeretf,stdthresold=stdthresold,arbitrageDataFrame=arbitrageDataFrame,navDF=navDF,constituentsdata=constituentsdata)
 
 
 if __name__ == '__main__':

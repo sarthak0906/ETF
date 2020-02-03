@@ -2,7 +2,7 @@
 <!-- Heading -->
 <div class="inline d-sm-flex align-items-center justify-content-between mb-4">
 	<ul class="list-inline">
-	  <li class="list-inline-item"><h3>ETF: XLK</h3></li>
+	  <li class="list-inline-item"><h3>ETF: {{tickeretf}}</h3></li>
 	  <li class="list-inline-item">Market Price: $98.60</li> 
 	  <li class="list-inline-item">NAV: $98.75</li>
 	  <li class="list-inline-item">Tracking Difference: -$0.15</li>
@@ -30,20 +30,40 @@
 <div class="row">
 	<!-- Div for ETF -->
 	<div class="col-md-6 col-lg-6">
+		<h5>Past Mispricings with Tracking Error Equal/Above {{stdthresold}} SD</h5>
+		<hr>
 		<div id="table-height" style="max-height:600px;overflow: auto">
 		    <table class="table table-bordered" style="font-size: 15px;">
 		      <thead>
 		        <tr>
-		          {% for value in arbitrageDataFrame.columns %}
-		          <th>{{value}}</th>
+		          {% for columnames in arbitrageDataFrame.columns %}
+		          <th>{{columnames}}</th>
 		          {% endfor %}  
 		        </tr>
 		      </thead>
 		      <tbody>
-		        {% for key,value in arbitrageDataFrame.iterrows() %}
+		        {% for key,arbitragecolumns in arbitrageDataFrame.iterrows() %}
 		          <tr>
-		            {% for v in value %}
-		              <td>{{v}}</td>
+		            {% for columnvalue in arbitragecolumns %}
+		                <!-- This is condition is for displaying Constituents -->
+			            {% if columnvalue is iterable and columnvalue is not string %}
+			              	<td style="width:41%">
+				              {% for constituent in columnvalue %}
+				              	<a href="{{constituent}}">{{constituent}}</a>
+				              {% endfor %}
+			          		</td>
+			          	<!-- This is condition is for displaying Constituents -->
+			          	<!-- This Condition is for Checking Date -->
+			            {% elif loop.index == 1 %} 
+			            	<td style="width:17%">
+			            		<a href="{{columnvalue}}">{{columnvalue}}</a>
+			            	</td>
+		            	<!-- This Condition is for Checking Date -->
+			            <!-- Display Normal Data Otherwise -->
+			            {% else %}
+			              <td style="width:14%">{{columnvalue}}</td>
+			            {% endif %}
+			            <!-- Display Normal Format Otherwise -->
 		            {% endfor %}   
 		          </tr>
 		        {% endfor %}  
@@ -60,7 +80,7 @@
 </div>
 
 
-
+<!-- Modal Window Displaying Past Mispricing -->
 <div class="modal fade" id="MisspricingTimeSeries" tabindex="-1" role="dialog" aria-labelledby="MisspricingTimeSeries" aria-hidden="true">
     <div class="modal-dialog" role="document" style="max-width:50%">
       <div class="modal-content">
@@ -97,10 +117,10 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
+<!-- Modal Window Displaying Past Mispricing -->
 
-
-
+<!-- Modal Widow for ETF Constituents -->
 <div class="modal fade" id="ETFConstituents" tabindex="-1" role="dialog" aria-labelledby="ETFConstituents" aria-hidden="true">
     <div class="modal-dialog" style="max-width:50%">
       <div class="modal-content">
@@ -138,5 +158,5 @@
       </div>
     </div>
 </div>
+<!-- Modal Window Displaying Past Mispricing -->
 
-<!-- Modal Windows-->

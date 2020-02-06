@@ -1,6 +1,35 @@
 import datetime
 import mongoengine
 from ETFAnalysis.datafiles_mongo.holdings_mongo import Holdings
+import logging
+from pymongo import monitoring
+
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
+
+
+class CommandLogger(monitoring.CommandListener):
+
+    def started(self, event):
+        log.debug("Command {0.command_name} with request id "
+                  "{0.request_id} started on server "
+                  "{0.connection_id}".format(event))
+
+    def succeeded(self, event):
+        log.debug("Command {0.command_name} with request id "
+                  "{0.request_id} on server {0.connection_id} "
+                  "succeeded in {0.duration_micros} "
+                  "microseconds".format(event))
+
+    def failed(self, event):
+        log.debug("Command {0.command_name} with request id "
+                  "{0.request_id} on server {0.connection_id} "
+                  "failed in {0.duration_micros} "
+                  "microseconds".format(event))
+
+
+monitoring.register(CommandLogger())
 
 
 class ETF(mongoengine.Document):
@@ -19,6 +48,14 @@ class ETF(mongoengine.Document):
     holdings = mongoengine.EmbeddedDocumentListField(Holdings)
 
     meta = {
+        'indexes': [
+            {
+                'fields': ['title', 'FundHoldings_date'],
+                'unique': True
+            }
+        ],
         'db_alias': 'ETF_db',
-        'Collection': 'ETFHoldings'
+        'collection': 'ETFHoldings'
     }
+
+# ETF.create_index({ETF.title: 1, ETF.FundHoldings_date: -1},{unique: True})

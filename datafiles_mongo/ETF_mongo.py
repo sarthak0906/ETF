@@ -1,14 +1,14 @@
 import datetime
 import mongoengine
-from holdings_mongo import Holdings
+from ETFAnalysis.datafiles_mongo.holdings_mongo import Holdings
 
 
 class ETF(mongoengine.Document):
     title = mongoengine.StringField()
     inception_date = mongoengine.DateTimeField()
     FundHoldings_date = mongoengine.DateTimeField()
-    TotalAssetsUnderMgmt = mongoengine.IntField()
-    SharesOutstanding = mongoengine.IntField()
+    TotalAssetsUnderMgmt = mongoengine.FloatField()
+    SharesOutstanding = mongoengine.FloatField()
     ExpenseRatio = mongoengine.FloatField()
     IndexTracker = mongoengine.StringField()
     ETFdbCategory = mongoengine.StringField()

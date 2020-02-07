@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from scipy import stats
+from functools import reduce
 
 
 ###### Do the Arbitrage analysis work
@@ -20,15 +21,17 @@ class StatisticalCalculations():
 	def __init__(self):
 		pass
 
-	def findZScore(self,df=None,zthresh=None,colname=None):
+	def findZScore(self,df=None,colname=None):
 		# Check if the object is not a pandas dataframe, if not convert it
 		if isinstance(df,pd.Series):
 			df=df.to_frame()
 			df.columns=[colname]
-		df['Z-Score']=np.abs(stats.zscore(df[colname].tolist())).round(2)
-		requiredDF=df[df['Z-Score']>zthresh]
-		return requiredDF
+		df[colname+' Z-Score']=stats.zscore(df[colname].tolist()).round(2)
+		return df
 
+	def getDataAboveThresold(self,df,zthresh=None):
+		df=df[df[colname+' Z-Score']>zthresh]
+		return df
 
 	def invertDict(self,d):
 		newdict = {}
@@ -44,41 +47,34 @@ class ArbitrageAnalysis(object):
 		
 	def GetArbDataFrame(self,tickers=None,constituentdata=None,changeDF=None,daysofarbitrage=None,stdthresold=None):
 		# Making Sure that Both ChangeDF and constituentdata has same Number of Dates, Since we dropped NA in change -KTZ
-		kvpairs={}
-
-		tempOb=StatisticalCalculations()
-		daysofarbitrage=tempOb.findZScore(df=daysofarbitrage,zthresh=stdthresold,colname='Mispricing')
+		tickersSTDdata={}
+		statOb=StatisticalCalculations()
+		daysofarbitrage=statOb.findZScore(df=daysofarbitrage,colname='Mispricing')
 		
 		for ticker in tickers:
-			weightedMovement=changeDF[ticker]*constituentdata['Volume'][ticker]
-			weightedMovement=weightedMovement.dropna()
+			tickersSTDdata[ticker]=self.getConstituentsStdData(ticker,changeDF,constituentdata,statOb)
+		
+		print(tickersSTDdata)
+		print(daysofarbitrage)
+		return daysofarbitrage, tickersSTDdata
 
-			tempOb=StatisticalCalculations()
-			stockVolumeStd=tempOb.findZScore(df=constituentdata['Volume'][ticker],zthresh=stdthresold,colname='Volume')
-			stockReturnStd=tempOb.findZScore(df=changeDF[ticker]*100,zthresh=stdthresold,colname='Return')
-			stockweightedmovement=tempOb.findZScore(df=weightedMovement,zthresh=stdthresold,colname='Volume Weighted Return')
-			
-			d=[list(daysofarbitrage.index),list(stockweightedmovement.index)]
+	def getConstituentsStdData(self,ticker,changeDF,constituentdata,statOb):
+		weightedMovement=changeDF[ticker]*constituentdata['Volume'][ticker]
+		weightedMovement=weightedMovement.dropna()
 
-			# Get list of intersection dates betweeen daysofarbitrage & stockweightedmovement
-			lst=(list(set.intersection(*map(set,d))))
-			
-			# Check if intersection didn't give 0
-			if len(lst)>0:
-				kvpairs[ticker]=lst
-
-		MispriceDF=pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in kvpairs.items() ]))
-		print(MispriceDF.T)
-
-		return self.NavDfwithKvPairs(kvpairs,daysofarbitrage)
-
-	def NavDfwithKvPairs(self,kvpairs,daysofarbitrage):
-		stockscausingmispricing=StatisticalCalculations().invertDict(kvpairs)
-		daysofarbitrage['Stocks Caused Mispricing'] = daysofarbitrage.index.to_series().map(stockscausingmispricing)
-		return daysofarbitrage
+		stockVolumeStd=statOb.findZScore(df=constituentdata['Volume'][ticker],colname='Vol.')
+		stockReturnStd=statOb.findZScore(df=changeDF[ticker]*100,colname='Return')
+		stockweightedmovement=statOb.findZScore(df=weightedMovement,colname='Vol. Wgt Return')
+		df=[stockVolumeStd,stockReturnStd,stockweightedmovement]
+		df_merged = reduce(lambda  left,right: pd.merge(left,right,left_index=True,right_index=True,how='outer'), df)
+		return df_merged[['Vol. Z-Score','Return Z-Score','Vol. Wgt Return Z-Score']].dropna()
 
 
-
+	def getZScoresOnDate(self,date,tickersSTDdata):
+		ZScoresOnDate={}
+		for key,value in tickersSTDdata.items():
+			ZScoresOnDate[key]=dict(value.loc[date])
+		return pd.DataFrame.from_dict(ZScoresOnDate).T
 
 
 

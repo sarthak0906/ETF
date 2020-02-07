@@ -10998,3 +10998,11 @@ body.sidebar-toggled footer.sticky-footer {
 }
 
 
+thead input {
+        width: 100%;
+    }
+
+table.fixedHeader-floating {
+     visibility: collapse;
+    height: 0px !important;
+}

@@ -7,6 +7,9 @@ class CleanDataForJinga(object):
         self.reverse=reverse
 
     def CleanForEndUser(self):
+        print(self.data)
+        print(self.indexColumnName)
+        print(self.data.index)
         # Give index as one of the column name and deleted index
         self.data[self.indexColumnName]=self.data.index
         

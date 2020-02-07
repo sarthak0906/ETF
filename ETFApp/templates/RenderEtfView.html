@@ -32,29 +32,21 @@
 	<div class="col-md-6 col-lg-6">
 		<h5>Past Mispricings with Tracking Error Equal/Above {{stdthresold}} SD</h5>
 		<hr>
-		<div id="table-height" style="max-height:600px;overflow: auto">
-		    <table class="table table-bordered" style="font-size: 15px;">
+		<div id="table-height" style="overflow: auto">
+		    <table id="TableJs1" class="table table-bordered" style="font-size: 15px;">
 		      <thead>
 		        <tr>
-		          {% for columnames in arbitrageDataFrame.columns %}
+		          {% for columnames in daysofarbitrage.columns %}
 		          <th>{{columnames}}</th>
 		          {% endfor %}  
 		        </tr>
 		      </thead>
 		      <tbody>
-		        {% for key,arbitragecolumns in arbitrageDataFrame.iterrows() %}
+		        {% for key,arbitragecolumns in daysofarbitrage.iterrows() %}
 		          <tr>
 		            {% for columnvalue in arbitragecolumns %}
-		                <!-- This is condition is for displaying Constituents -->
-			            {% if columnvalue is iterable and columnvalue is not string %}
-			              	<td style="width:41%">
-				              {% for constituent in columnvalue %}
-				              	<a href="{{constituent}}">{{constituent}}</a>
-				              {% endfor %}
-			          		</td>
-			          	<!-- This is condition is for displaying Constituents -->
-			          	<!-- This Condition is for Checking Date -->
-			            {% elif loop.index == 1 %} 
+		                <!-- This Condition is for Checking Date -->
+			            {% if loop.index == 1 %} 
 			            	<td style="width:17%">
 			            		<a href="{{columnvalue}}">{{columnvalue}}</a>
 			            	</td>
@@ -75,88 +67,73 @@
 
 	<!-- Div for ETF Constituents-->
 	<div class="col-md-6 col-lg-6">
-		
+		<h5>ZScore of Constituents on {{dateForZScore}}</h5>
+		<hr>
+		<div id="table-height" style="overflow: auto">
+		    <table id="TableJs2" class="table table-bordered" style="font-size: 15px;">
+		      <thead>
+		        <tr>
+		          {% for columnames in zscoresOfConstituents.columns %}
+		          	<th>{{columnames}}</th>
+		          {% endfor %}  
+		        </tr>
+		      </thead>
+		      <tbody>
+			        {% for key,value in zscoresOfConstituents.iterrows() %}
+			          <tr>
+			            {% for columnvalue in value %}
+			              {% if loop.index == 1 %} 
+			            	<td style="width:17%">
+			            		<a href="{{columnvalue}}">{{columnvalue}}</a>
+			            	</td>
+		            		{% else %}
+			              		<td style="width:14%">{{columnvalue}}</td>
+			            	{% endif %}
+						{% endfor %}   
+			          </tr>
+			        {% endfor %}  
+			      </tbody>
+		    </table>
+	  	</div>
+	</div>
 	</div>
 </div>
 
 
-<!-- Modal Window Displaying Past Mispricing -->
-<div class="modal fade" id="MisspricingTimeSeries" tabindex="-1" role="dialog" aria-labelledby="MisspricingTimeSeries" aria-hidden="true">
-    <div class="modal-dialog" role="document" style="max-width:50%">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="#">ETF Mispricing Time Series</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">
-        	<div id="table-height">
-			    <table class="table table-bordered">
-			      <thead>
-			        <tr>
-			          {% for value in navDF.columns %}
-			          <th>{{value}}</th>
-			          {% endfor %}  
-			        </tr>
-			      </thead>
-			      <tbody>
-			        {% for key,value in navDF.iterrows() %}
-			          <tr>
-			            {% for v in value %}
-			              <td>{{v}}</td>
-			            {% endfor %}   
-			          </tr>
-			        {% endfor %}  
-			      </tbody>
-			    </table>
-		  	</div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-</div>
-<!-- Modal Window Displaying Past Mispricing -->
 
-<!-- Modal Widow for ETF Constituents -->
-<div class="modal fade" id="ETFConstituents" tabindex="-1" role="dialog" aria-labelledby="ETFConstituents" aria-hidden="true">
-    <div class="modal-dialog" style="max-width:50%">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="#">ETF Constituents</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">
-        	<div id="table-height">
-			    <table class="table table-bordered">
-			      <thead>
-			        <tr>
-			          {% for value in constituentsdata.columns %}
-			          <th>{{value}}</th>
-			          {% endfor %}  
-			        </tr>
-			      </thead>
-			      <tbody>
-			        {% for key,value in constituentsdata.iterrows() %}
-			          <tr>
-			            {% for v in value %}
-			              <td>{{v}}</td>
-			            {% endfor %}   
-			          </tr>
-			        {% endfor %}  
-			      </tbody>
-			    </table>
-		  	</div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-</div>
-<!-- Modal Window Displaying Past Mispricing -->
 
+<script type="text/javascript">
+
+  $(document).ready(function() {
+  		for (i = 1; i < 3; i++) { 
+	        // Setup - add a text input to each footer cell
+	        var a='#TableJs'+i+' thead tr';
+	        var b='#TableJs'+i+' thead';
+	        var c='#TableJs'+i+' thead tr:eq(1) th';
+	        var d='#TableJs'+i;
+	        $(a).clone(true).appendTo(b);
+	        $(c).each( function (i) {
+	            var title = $(this).text();
+	            $(this).html( '<input type="text" style="width:100%" placeholder="Search" />' );
+	     
+	            $( 'input', this ).on( 'keyup change', function () {
+	                if ( table.column(i).search() !== this.value ) {
+	                    table
+	                        .column(i)
+	                        .search( this.value )
+	                        .draw();
+	                }
+	            } );
+	        } );
+	     
+	        var table = $(d).DataTable( {
+	        	pageLength: 25,
+	            orderCellsTop: true,
+	            fixedHeader: true,
+	            "initComplete": function(settings, json) {
+			        $('.dataTables_scrollBody thead tr').css({visibility:'collapse'});
+			    }
+	        } );
+		}
+	});
+</script>

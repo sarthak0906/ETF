@@ -71,18 +71,23 @@ def handle(**kwargs):
 	###$$$ Calculation for Arbitrage Starts Here
 	# Do Calculations of ETFArbitrage
 	arbob=ETFArbitrage(etfob.etfchangeDF,ob.weightedStockReturns)
-	arbitrageDataFrame=ArbitrageAnalysis().GetArbDataFrame(tickers=ob.constituentcloseDF.columns,changeDF=ob.changeDF,constituentdata=ob.constituentdata,daysofarbitrage=round(arbob.navDF.copy(),3),stdthresold=stdthresold)
+	daysofarbitrage, tickersSTDdata=ArbitrageAnalysis().GetArbDataFrame(tickers=ob.constituentcloseDF.columns,changeDF=ob.changeDF,constituentdata=ob.constituentdata,daysofarbitrage=round(arbob.navDF.copy(),3),stdthresold=stdthresold)
 
+	# Get ZScores for Constituents On Day of Arbitrage
+	dateForZScore=daysofarbitrage.index[0]
+	zscoresOfConstituents=ArbitrageAnalysis().getZScoresOnDate(dateForZScore,tickersSTDdata)
 
 	###$$$ Maniputaion of data for Jinga Template Starts Here	
 	# Round Off NavDf and Clean up for printing
 	navDF=CleanDataForJinga(round(arbob.navDF.copy(),3),['Date','Close','NAV','Mispricing'],'Date',reverse=True).CleanForEndUser()
 	# Round Off constituentsdata and Clean up for printing
 	constituentsdata=CleanDataForJinga(ob.etfWeights.copy(),['Ticker','Company Name','Weights','Last','%Change','Volume'],'Ticker',reverse=False).CleanForEndUser()
-	# Round Off arbitrageDataFrame and Clean up for printing
-	arbitrageDataFrame=CleanDataForJinga(arbitrageDataFrame,['Date','Close','NAV','Z-Score','Stocks Caused Mispricing'],'Date',reverse=True).CleanForEndUser()
+	# Round Off daysofarbitrage and Clean up for printing
+	daysofarbitrage=CleanDataForJinga(daysofarbitrage,['Date','Close','NAV','Mispricing Z-Score','Mispricing'],'Date',reverse=True).CleanForEndUser()
+	# Cleaning df of Zscores of constituents
+	zscoresOfConstituents=CleanDataForJinga(zscoresOfConstituents,['Ticker','Return Z-Score','Vol. Wgt Return Z-Score','Vol. Z-Score'],'Ticker',reverse=True).CleanForEndUser()
 
-	return render_template('RenderEtfView.html',tickeretf=tickeretf,stdthresold=stdthresold,arbitrageDataFrame=arbitrageDataFrame,navDF=navDF,constituentsdata=constituentsdata)
+	return render_template('RenderEtfView.html',tickeretf=tickeretf,stdthresold=stdthresold,daysofarbitrage=daysofarbitrage,navDF=navDF,constituentsdata=constituentsdata,zscoresOfConstituents=zscoresOfConstituents,dateForZScore=dateForZScore)
 
 
 if __name__ == '__main__':

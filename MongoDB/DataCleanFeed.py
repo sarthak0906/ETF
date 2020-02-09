@@ -21,20 +21,26 @@ class PullandCleanData():
     def readfilesandclean(self):
         # details = Details()
         for filename in os.listdir(self.savingpath):
-          if filename != '.DS_Store':
+          if filename not in ['.DS_Store','IXG-holdings.csv']:
+            print("***************")
+            print(filename)
+            
             self.detailsdata = pd.read_csv(self.savingpath + '/' + filename, sep='\:\s', nrows=11, index_col=False,
                                            names=['Key', 'Value'])
             self.detailsdata.iloc[5]['Value'] = float(self.detailsdata.iloc[5]['Value'][:-1])
             
-            print("***************")
-            print(filename)
-            print(self.detailsdata)
-            print("***************")
+            # Check for NaN Values in IndexTracker, if it exsists replace with None
             
-            self.holdingsdata = pd.read_csv(self.savingpath + '/' + filename, header=12,
-                                            names=['Holdings', 'Symbol', 'Weights'])
+            if str(self.detailsdata.iloc[6]['Value'])=='nan':
+              self.detailsdata.iloc[6]['Value']='None'
+
+            self.holdingsdata = pd.read_csv(self.savingpath + '/' + filename, header=12,names=['Holdings', 'Symbol', 'Weights'])
             self.holdingsdata['Weights'] = list(map(lambda x: x[:-1], self.holdingsdata['Weights'].values))
             self.holdingsdata['Weights'] = [float(x) for x in self.holdingsdata['Weights'].values]
+
+            print(self.detailsdata)
+            print(self.holdingsdata)
+            print("***************")
 
             details = ETF(title=self.detailsdata.iloc[0]['Key'],
                           inception_date=datetime.strptime(self.detailsdata.iloc[1]['Value'], '%Y-%m-%d'),

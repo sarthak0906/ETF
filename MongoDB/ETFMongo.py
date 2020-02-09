@@ -45,6 +45,28 @@ class ETF(mongoengine.Document):
     Issuer = mongoengine.StringField()
     Structure = mongoengine.StringField()
     ETFhomepage = mongoengine.StringField()
+    
+    # New Ticker Values Added
+    AverageVolume = mongoengine.StringField()
+    Leveraged = mongoengine.StringField()
+    Inversed = mongoengine.StringField()
+    CommissionFree = mongoengine.StringField()
+    AnnualDividendRate = mongoengine.StringField()
+    DividendDate = mongoengine.StringField()
+    Dividend = mongoengine.StringField()
+    AnnualDividendYield = mongoengine.StringField()
+    PERatio = mongoengine.StringField()
+    Beta = mongoengine.StringField()
+    NumberOfHolding = mongoengine.FloatField()
+    OverAllRating = mongoengine.StringField()
+    LiquidityRating = mongoengine.StringField()
+    ExpensesRating = mongoengine.StringField()
+    ReturnsRating = mongoengine.StringField()
+    VolatilityRating = mongoengine.StringField()
+    DividendRating = mongoengine.StringField()
+    ConcentrationRating = mongoengine.StringField()
+    ESGScore = mongoengine.FloatField()
+
 
     holdings = mongoengine.EmbeddedDocumentListField(Holdings)
 

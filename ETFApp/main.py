@@ -5,6 +5,7 @@ sys.path.insert(0, 'lib')
 import json
 import numpy
 import pandas as pd
+from datetime import datetime
 
 # import flask modules
 from flask import render_template, request, send_from_directory, jsonify
@@ -12,8 +13,10 @@ from flask import Flask
 
 # import custom python packages
 from DataGatheringCleaning import *
-from JingaDataCleanUp import CleanDataForJinga
+from JingaDataCleanUp import CleanDataForJinga,CleanETFDailyData
 from ArbitrageAnalysis import *
+
+from MongoReadETFData import RetrieveData
 
 app = Flask(__name__,
 		static_url_path='', 
@@ -25,8 +28,20 @@ app = Flask(__name__,
 def index():
 	return render_template('index.html',)
 
+@app.route('/ETFHistoricalDaily',methods= ['POST','GET'])
+def analyseDailyMispricing():
+	ob=RetrieveData()
+	date=datetime(2020,2,7)
+	query={'FundHoldingsDate':date}
+	data=ob.queryData(query)
+	
 
-@app.route('/AnalyseEtf/<etfticker>',methods= ['POST'])
+	data=CleanETFDailyData(data).execute()
+	print(data)
+	return render_template('DailyMispricing.html',DailyMispricingData=data,date=date)
+
+
+@app.route('/AnalyseEtf/<etfticker>',methods= ['POST','GET'])
 def handle(**kwargs):
 	tickeretf = request.form['ticker']
 	stdthresold = float(request.form['stdthresold'])
@@ -34,7 +49,7 @@ def handle(**kwargs):
 	print("Ticker is = "+tickeretf)
 	print("Tracking Error is = "+str(stdthresold))
 
-	filename='../ETFDailyData'+'/'+dt.datetime.now().strftime("%Y%m%d")+'/'+tickeretf+'.xls'
+	filename='../ETFDailyData'+'/'+'20200207'+'/'+tickeretf+'.xls'
 	startdate=dt.datetime(2019,1,1)
 	enddate=dt.datetime.today()
 

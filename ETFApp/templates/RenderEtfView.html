@@ -38,7 +38,7 @@
 		      <thead>
 		        <tr>
 		          {% for columnames in daysofarbitrage.columns %}
-		          <th>{{columnames}}</th>
+		          	<th>{{columnames}}</th>
 		          {% endfor %}  
 		        </tr>
 		      </thead>
@@ -48,18 +48,20 @@
 		            {% for columnvalue in arbitragecolumns %}
 		                <!-- This Condition is for Checking Date -->
 			            {% if loop.index == 1 %} 
-			            	<td style="width:17%">
+			            	<td>
 			            		<a href="{{columnvalue}}">{{columnvalue}}</a>
 			            	</td>
 		            	<!-- This Condition is for Checking Date -->
 			            <!-- Display Normal Data Otherwise -->
 			            {% else %}
-			              <td style="width:14%">{{columnvalue}}</td>
+			              	<td>
+			              		{{columnvalue}}
+			          		</td>
 			            {% endif %}
 			            <!-- Display Normal Format Otherwise -->
 		            {% endfor %}   
 		          </tr>
-		        {% endfor %}  
+		        {% endfor %}
 		      </tbody>
 		    </table>
 	  	</div>

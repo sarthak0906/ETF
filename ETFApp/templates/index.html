@@ -26,32 +26,49 @@
     <script type=text/javascript>
       $(document).ready(function() {
         $('form').on('submit', function(event) {
-          event.preventDefault();
-          ticker=$('#ticker').val();
-          if(!ticker){
-              ticker='XLK';
-          }
+            event.preventDefault();
+            ticker=$('#ticker').val();
+            if(!ticker){
+                ticker='XLK';
+            }
 
-          stdthresold=$('#stdthresold').val();
-          if(!stdthresold){
-              stdthresold='3';
-          }
+            stdthresold=$('#stdthresold').val();
+            if(!stdthresold){
+                stdthresold='3';
+            }
 
-          var pathname = '/AnalyseEtf/etfticker='+ticker; 
-          console.log(pathname);
-           $.ajax({
-              data : {
-                 ticker : ticker,
-                 stdthresold:stdthresold,
-                     },
-                 type : 'POST',
-                 url : pathname,
-                 success: function(response){
-                $("#UpdateResults").html(response);
-                  window.history.pushState("Ticker Data Received Successfully", "Success", pathname);
-              }
-            });
+            var pathname = '/AnalyseEtf/etfticker='+ticker; 
+             $.ajax({
+                data : {
+                   ticker : ticker,
+                   stdthresold:stdthresold,
+                       },
+                   type : 'POST',
+                   url : pathname,
+                   success: function(response){
+                  $("#UpdateResults").html(response);
+                    window.history.pushState("Ticker Data Received Successfully", "Success", pathname);
+                }
+              });
           });
+
+        $('#ETFHistoricalDaily').on('click', function(event) {
+            event.preventDefault();
+            var pathname='/ETFHistoricalDaily';
+            console.log("Kshitiz Sharma Millionaire");
+            console.log(pathname);
+            $.ajax({
+                data : {
+                   date : "2020-02-09",
+                    },
+                   type : 'POST',
+                   url : pathname,
+                   success: function(response){
+                  $("#UpdateResults").html(response);
+                    window.history.pushState("Ticker Data Received Successfully", "Success", pathname);
+                }
+              });
+            });
         });
     </script>    
   
@@ -119,17 +136,18 @@
             <i class="fa fa-bars"></i>
           </button>
 
-          <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" href="/" data-toggle="modal" data-target="#MisspricingTimeSeries">
+          <button  onclick="ETFLiveTick()" type="submit" href="ETFLiveTick" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" href="/" id="">
               Etf Live Tick
-            </a>
+          </button>
 
-            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" href="#" data-toggle="modal" data-target="#MisspricingTimeSeries">
+          <button id="ETFHistoricalDaily" type="submit" href="ETFHistoricalDaily" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" href="/" id="">
               Etf Historical Daily
-            </a>
+          </button>
 
-            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" href="#" data-toggle="modal" data-target="#MisspricingTimeSeries">
-              ETF Error Difference Time Series    
-            </a>
+          <button onclick="ETFAnalyzer()" type="submit" href="ETFAnalyzer" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2" href="/" id="">
+              Etf Analyzer    
+          </button>
+
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
           <div class="topbar-divider d-none d-sm-block"></div>

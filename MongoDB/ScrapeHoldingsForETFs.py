@@ -38,7 +38,7 @@ class DownloadsEtfHoldingsData(object):
         # Fetch Data
         url='https://etfdb.com/etf/%s/#holdings'% (ticker)
         self.driver.get(url)
-        time.sleep(2)
+        time.sleep(4)
         e = self.driver.find_element_by_xpath('//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
         e.click()
     
@@ -48,7 +48,7 @@ class DownloadsEtfHoldingsData(object):
 
 if __name__ == "__main__":
 
-    ETFTickerList=pd.read_csv("../ETFDailyData/ETFTickerListToScrape.csv",index_col='Symbol')
+    ETFTickerList=pd.read_csv("../ETFDailyData/ETFTickersDecription/"+datetime.now().strftime("%Y%m%d")+"/etfs_details_type_fund_flow.csv",index_col='Symbol')
     tickers=ETFTickerList.index.tolist()
 
     savingpath='../ETFDailyData'+'/'+datetime.now().strftime("%Y%m%d")
@@ -58,7 +58,6 @@ if __name__ == "__main__":
         try:
             print("Downloading Holdings Data For = " + i)
             ob.fetchDataForEtfTicker(i)
-            time.sleep(5)
         except Exception as e:
             print("!!!!!!!!!!Warning!!!!!!!!!!!!!")
             print("Downloading Data for following ticker Failed = " + i)

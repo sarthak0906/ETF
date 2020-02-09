@@ -34,11 +34,11 @@ monitoring.register(CommandLogger())
 
 
 class ETF(mongoengine.Document):
-    title = mongoengine.StringField()
-    inception_date = mongoengine.DateTimeField()
-    FundHoldings_date = mongoengine.DateTimeField()
-    TotalAssetsUnderMgmt = mongoengine.FloatField()
-    SharesOutstanding = mongoengine.FloatField()
+    ETFTicker = mongoengine.StringField()
+    InceptionDate = mongoengine.DateTimeField()
+    FundHoldingsDate = mongoengine.DateTimeField()
+    TotalAssetsUnderMgmt = mongoengine.StringField()
+    SharesOutstanding = mongoengine.StringField()
     ExpenseRatio = mongoengine.FloatField()
     IndexTracker = mongoengine.StringField()
     ETFdbCategory = mongoengine.StringField()
@@ -47,6 +47,7 @@ class ETF(mongoengine.Document):
     ETFhomepage = mongoengine.StringField()
     
     # New Ticker Values Added
+    ETFName = mongoengine.StringField()
     AverageVolume = mongoengine.StringField()
     Leveraged = mongoengine.StringField()
     Inversed = mongoengine.StringField()
@@ -73,7 +74,7 @@ class ETF(mongoengine.Document):
     meta = {
         'indexes': [
             {
-                'fields': ['title', 'FundHoldings_date'],
+                'fields': ['ETFTicker', 'FundHoldingsDate'],
                 'unique': True
             }
         ],
@@ -81,4 +82,4 @@ class ETF(mongoengine.Document):
         'collection': 'ETFHoldings'
     }
 
-# ETF.create_index({ETF.title: 1, ETF.FundHoldings_date: -1},{unique: True})
+# ETF.create_index({ETF.ETFTicker: 1, ETF.FundHoldings_date: -1},{unique: True})

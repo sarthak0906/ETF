@@ -67,4 +67,3 @@ class ETFStockPrices(ETFDataCleanup):
 
 
 
-

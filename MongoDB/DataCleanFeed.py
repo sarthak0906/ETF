@@ -47,18 +47,19 @@ class PullandCleanData():
             self.holdingsdata['Weights'] = [float(x) for x in self.holdingsdata['Weights'].values]
 
             
-            details = ETF(title=self.detailsdata.iloc[0]['Key'],
-                          inception_date=datetime.strptime(self.detailsdata.iloc[1]['Value'], '%Y-%m-%d'),
-                          FundHoldings_date=datetime.strptime(self.detailsdata.iloc[2]['Value'], '%Y-%m-%d'),
-                          TotalAssetsUnderMgmt=float(self.detailsdata.iloc[3]['Value']) * 1000,
-                          SharesOutstanding=float(self.detailsdata.iloc[4]['Value']),
-                          ExpenseRatio=float(self.detailsdata.iloc[5]['Value']),
+            details = ETF(ETFTicker=self.detailsdata.iloc[0]['Key'],
+                          InceptionDate=datetime.strptime(self.detailsdata.iloc[1]['Value'], '%Y-%m-%d'),
+                          FundHoldingsDate=datetime.strptime(self.detailsdata.iloc[2]['Value'], '%Y-%m-%d'),
+                          TotalAssetsUnderMgmt=str(self.detailsdata.iloc[3]['Value']),
+                          SharesOutstanding=str(self.detailsdata.iloc[4]['Value']),
+                          ExpenseRatio=str(self.detailsdata.iloc[5]['Value']),
                           IndexTracker=str(self.detailsdata.iloc[6]['Value']),
                           ETFdbCategory=self.detailsdata.iloc[7]['Value'],
                           Issuer=self.detailsdata.iloc[8]['Value'],
                           Structure=self.detailsdata.iloc[9]['Value'],
                           
                           # New Data For DB
+                          ETFName=str(self.etfDesc[etfticker]['ETF Name']),
                           AverageVolume=str(self.etfDesc[etfticker]['Avg Volume']),
                           Leveraged=str(self.etfDesc[etfticker]['Leveraged']),
                           Inversed=str(self.etfDesc[etfticker]['Inverse']),

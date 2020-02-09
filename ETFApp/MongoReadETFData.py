@@ -1,23 +1,16 @@
 from pymongo import MongoClient
-# client = MongoClient('host', port_number)
-client = MongoClient('localhost', 27017)
-db = client.ETF_db
-collection = db['ETFHoldings']
-cursor = collection.find({})
+from datetime import datetime
+import pandas as pd
 
-for document in list(cursor):
-	print(document)
+class RetrieveData(object):
 
+	def __init__(self):
+		self.client=MongoClient('localhost', 27017)
+		self.db=self.client.ETF_db
+		self.collection = self.db['ETFHoldings']
 
-
-'''
-from pymongo import MongoClient
-
-if __name__ == '__main__':
-    client = MongoClient("localhost", 27017, maxPoolSize=50)
-    db = client.localhost
-    collection = db['chain']
-    cursor = collection.find({})
-    for document in cursor:
-          print(document)
-'''
+	def buildQuery(self):
+		query={'FundHoldings_date':datetime(2020,2,7)}
+	
+	def queryData(self,query):
+		return pd.DataFrame.from_dict(self.collection.find(query))

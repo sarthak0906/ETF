@@ -1,7 +1,7 @@
 import datetime
 import mongoengine
-#from ETFAnalysis.datafiles_mongo.holdings_mongo import Holdings
-from HoldingsMongo import Holdings
+
+from MongoDB.HoldingsMongo import Holdings
 import logging
 from pymongo import monitoring
 
@@ -45,8 +45,6 @@ class ETF(mongoengine.Document):
     Issuer = mongoengine.StringField()
     Structure = mongoengine.StringField()
     ETFhomepage = mongoengine.StringField()
-    
-    # New Ticker Values Added
     ETFName = mongoengine.StringField()
     AverageVolume = mongoengine.StringField()
     Leveraged = mongoengine.StringField()
@@ -67,7 +65,6 @@ class ETF(mongoengine.Document):
     DividendRating = mongoengine.StringField()
     ConcentrationRating = mongoengine.StringField()
     ESGScore = mongoengine.FloatField()
-
 
     holdings = mongoengine.EmbeddedDocumentListField(Holdings)
 

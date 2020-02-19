@@ -6,9 +6,6 @@ import os
 from datetime import datetime
 from mongoengine import *
 
-from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
-from ETFsList_Scripts.ETFListCollection import ETFListData
-
 from ETFMongo import ETF
 from HoldingsMongo import Holdings
 

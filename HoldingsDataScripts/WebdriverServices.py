@@ -33,16 +33,3 @@ class masterclass:
         time.sleep(3)
         e.click()
 
-
-    # def save523tickerslisttodb(self):
-    #
-    #     try:
-    #         etflistsaverobject = ETFListSaver()
-    #         etflistsaverobject.readandclean()
-    #
-    #         etflistsaverobject.pushtodb()
-    #
-    #     except Exception as e:
-    #         print("Not stored in DB")
-    #         print(e)
-    #         SendEmail("ETFList Download Error", "Couldn't download ETFList on {}".format(datetime.now))

@@ -11,17 +11,21 @@ from ETFsList_Scripts.ETFListCollection import ETFListData
 class DownloadsEtfHoldingsData(masterclass):
 
     def fetchHoldingsofETF(self, etfname):
-        # initialise driver and login to ETFdb
-        super().initialisewebdriver(
-            savingpath="ETFDailyData/" + datetime.now().strftime(
-                "%Y%m%d"))
-        super().logintoetfdb()
+        try:
+            # initialise driver and login to ETFdb
+            super().initialisewebdriver(
+                savingpath="ETFDailyData/" + datetime.now().strftime(
+                    "%Y%m%d"))
+            super().logintoetfdb()
 
-        url = 'https://etfdb.com/etf/%s/#holdings' % etfname
-        # url = 'https://etfdb.com/etf/XLK/#holdings'
-        self.driver.get(url)
-        time.sleep(3)
-        e = self.driver.find_element_by_xpath(
-            '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
-        e.click()
-        self.driver.close()
+            url = 'https://etfdb.com/etf/%s/#holdings' % etfname
+            # url = 'https://etfdb.com/etf/XLK/#holdings'
+            self.driver.get(url)
+            time.sleep(3)
+            e = self.driver.find_element_by_xpath(
+                '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
+            e.click()
+            self.driver.close()
+        except Exception as e:
+            print(e)
+            pass

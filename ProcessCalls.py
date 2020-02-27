@@ -11,7 +11,7 @@ from HoldingsDataScripts.DataCleanFeed import PullandCleanData
 
 
 Download523TickersList().fetchTickerDataDescription()
-serv.masterclass().save523tickerslisttodb()
+serv.masterclass().savelisttodb()
 
 # Pull ETF list into a dataframe
 ETFListDF = PullHoldingsListClass().ReturnetflistDF()

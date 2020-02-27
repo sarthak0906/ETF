@@ -1,6 +1,6 @@
-from PullHoldingsList import PullHoldingsListClass
-from DownloadHoldings import DownloadsEtfHoldingsData
-from DataCleanFeed import PullandCleanData
+from HoldingsDataScripts.PullHoldingsList import PullHoldingsListClass
+from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData
+from HoldingsDataScripts.DataCleanFeed import PullandCleanData
 
 # Pull ETF list into a dataframe
 ETFListDF = PullHoldingsListClass().ReturnetflistDF()

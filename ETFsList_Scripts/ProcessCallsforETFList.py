@@ -1,5 +1,5 @@
-import WebdriverServices as serv
-from Download523TickersList import Download523TickersList
+import ETFsList_Scripts.WebdriverServices as serv
+from ETFsList_Scripts.Download523TickersList import Download523TickersList
 
 Download523TickersList().fetchTickerDataDescription()
-serv.masterclass().save523tickerslisttodb()
+serv.masterclass().savelisttodb()

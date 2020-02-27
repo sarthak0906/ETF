@@ -6,8 +6,8 @@ import os
 from datetime import datetime
 from mongoengine import *
 
-from ETFMongo import ETF
-from HoldingsMongo import Holdings
+from HoldingsDataScripts.ETFMongo import ETF
+from HoldingsDataScripts.HoldingsMongo import Holdings
 
 
 

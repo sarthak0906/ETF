@@ -1,6 +1,6 @@
 import datetime
 import mongoengine
-from HoldingsMongo import Holdings
+from HoldingsDataScripts.HoldingsMongo import Holdings
 import logging
 from pymongo import monitoring
 

@@ -6,8 +6,8 @@ import os
 from datetime import datetime
 from mongoengine import *
 
-from ETFListCollection import ETFListData
-from List523ETFsMongo import ETFListDocument
+from ETFsList_Scripts.ETFListCollection import ETFListData
+from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
 
 connect('ETF_db', alias='ETF_db')
 

@@ -7,7 +7,7 @@ from selenium import webdriver
 
 
 import time
-from WebdriverServices import masterclass
+from ETFsList_Scripts.WebdriverServices import masterclass
 
 class Download523TickersList(masterclass):
 

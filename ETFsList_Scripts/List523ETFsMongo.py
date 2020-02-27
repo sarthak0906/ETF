@@ -1,6 +1,6 @@
 import datetime
 import mongoengine
-from ETFListCollection import ETFListData
+from ETFsList_Scripts.ETFListCollection import ETFListData
 import logging
 from pymongo import monitoring
 

@@ -8,8 +8,8 @@ import pandas as pd
 import itertools
 import time
 
-from Save523TickersListtoDB import ETFListSaver
-from EmailNotifier import SendEmail
+from ETFsList_Scripts.Save523TickersListtoDB import ETFListSaver
+from ETFsList_Scripts.EmailNotifier import SendEmail
 
 class masterclass:
 
@@ -35,7 +35,7 @@ class masterclass:
         e.click()
 
 
-    def save523tickerslisttodb(self):
+    def savelisttodb(self):
 
         try:
             etflistsaverobject = ETFListSaver()

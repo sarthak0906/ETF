@@ -21,7 +21,7 @@ class masterclass:
         self.prefs = {'download.default_directory': self.savingpath}
         self.chrome_options.add_argument("--headless")
         self.chrome_options.add_experimental_option('prefs', self.prefs)
-        self.driver = webdriver.Chrome(executable_path='../chromextension/chromedriverWin/chromedriver', chrome_options=self.chrome_options)
+        self.driver = webdriver.Chrome(executable_path='./chromextension/chromedriverWin/chromedriver', chrome_options=self.chrome_options)
 
     def logintoetfdb(self):
         self.driver.get("https://etfdb.com/members/login/")

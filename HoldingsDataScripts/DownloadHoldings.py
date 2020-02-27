@@ -3,7 +3,7 @@ import pandas as pd
 import itertools
 import time
 import mongoengine
-from WebdriverServices import masterclass
+from HoldingsDataScripts.WebdriverServices import masterclass
 from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
 from ETFsList_Scripts.ETFListCollection import ETFListData
 

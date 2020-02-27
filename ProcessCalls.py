@@ -1,3 +1,7 @@
+import sys
+sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/etf/ETFAnalysis/ETFsList_Scripts', '/home/piyush/Desktop/etf/ETFAnalysis/HoldingsDataScripts'])
+
+
 import ETFsList_Scripts.WebdriverServices as serv
 from ETFsList_Scripts.Download523TickersList import Download523TickersList
 

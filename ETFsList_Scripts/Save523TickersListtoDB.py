@@ -19,7 +19,7 @@ class ETFListSaver:
         self.etflistdf = pd.DataFrame()
 
     def readandclean(self):
-        self.readingpath = '../ETFDailyData/ETFTickersDescription/' + datetime.now().strftime(
+        self.readingpath = './ETFDailyData/ETFTickersDescription/' + datetime.now().strftime(
             "%Y%m%d") + '/etfs_details_type_fund_flow.csv'
         self.etflistdf = pd.read_csv(self.readingpath)
         print(self.etflistdf)

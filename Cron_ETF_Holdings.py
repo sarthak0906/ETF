@@ -1,0 +1,37 @@
+import sys
+sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/etf/ETFAnalysis/ETFsList_Scripts', '/home/piyush/Desktop/etf/ETFAnalysis/HoldingsDataScripts'])
+
+import ETFsList_Scripts.WebdriverServices as serv
+from ETFsList_Scripts.Download523TickersList import Download523TickersList
+from HoldingsDataScripts.PullHoldingsList import PullHoldingsListClass
+from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData
+from HoldingsDataScripts.DataCleanFeed import PullandCleanData
+
+# Libraries for Cron Job
+import schedule
+import time
+
+def startCronJobForETFHoldings():
+	Download523TickersList().fetchTickerDataDescription()
+	serv.masterclass().savelisttodb()
+
+	# Pull ETF list into a dataframe
+	ETFListDF = PullHoldingsListClass().ReturnetflistDF()
+
+	# For each ETF download all holdings and save to DB
+	for etf in ETFListDF['Symbol'].tolist():
+	# for etf in ['XLK']:
+	    # Download Holdings for given ETF
+	    DownloadsEtfHoldingsData().fetchHoldingsofETF(etf)
+
+	    # Save Holdings for given ETF to DB
+	    PullandCleanData().readfilesandclean(etf, ETFListDF)
+
+
+# Job is scheduled to Run at 2 AM US time.
+# Job functiionality to be tested by @Piyush
+schedule.every().day.at("02:00:00").do(startCronJobForETFHoldings)
+while 1:
+    schedule.run_pending()
+    time.sleep(1)
+

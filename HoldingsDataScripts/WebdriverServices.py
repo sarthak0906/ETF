@@ -15,7 +15,8 @@ class masterclass:
 
     def initialisewebdriver(self, savingpath='ETFDailyData/ETFTickersDescription/'+datetime.now().strftime("%Y%m%d")):
         # initialise driver with headless options
-        self.savingpath = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), savingpath)
+        # self.savingpath = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir)), savingpath)
+        self.savingpath = os.path.join(os.getcwd(), savingpath)
         #print(self.savingpath)
         self.chrome_options = webdriver.ChromeOptions()
         self.prefs = {'download.default_directory': self.savingpath}

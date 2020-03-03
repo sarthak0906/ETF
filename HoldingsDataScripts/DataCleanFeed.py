@@ -15,7 +15,7 @@ from HoldingsDataScripts.HoldingsMongo import Holdings
 class PullandCleanData:
     
     def __init__(self):
-        self.savingpath = '../ETFDailyData' + '/' + datetime.now().strftime("%Y%m%d")
+        self.savingpath = './ETFDailyData' + '/' + datetime.now().strftime("%Y%m%d")
         self.detailsdata = pd.DataFrame()
         self.holdingsdata = pd.DataFrame()
         connect('ETF_db', alias='ETF_db')

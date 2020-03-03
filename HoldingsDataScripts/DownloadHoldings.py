@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 import pandas as pd
 import itertools
@@ -10,7 +11,7 @@ from ETFsList_Scripts.ETFListCollection import ETFListData
 
 class DownloadsEtfHoldingsData(masterclass):
 
-    def fetchHoldingsofETF(self, etfname):
+    async def fetchHoldingsofETF(self, etfname):
         try:
             # initialise driver and login to ETFdb
             super().initialisewebdriver(
@@ -21,7 +22,7 @@ class DownloadsEtfHoldingsData(masterclass):
             url = 'https://etfdb.com/etf/%s/#holdings' % etfname
             # url = 'https://etfdb.com/etf/XLK/#holdings'
             self.driver.get(url)
-            time.sleep(3)
+            await asyncio.sleep(3)
             e = self.driver.find_element_by_xpath(
                 '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
             e.click()

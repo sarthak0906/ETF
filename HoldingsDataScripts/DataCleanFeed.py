@@ -1,4 +1,5 @@
 import pandas as pd
+import asyncio
 import itertools
 import time
 import csv
@@ -19,7 +20,7 @@ class PullandCleanData:
         self.holdingsdata = pd.DataFrame()
         connect('ETF_db', alias='ETF_db')
 
-    def readfilesandclean(self, etfname, etfdescdf):
+    async def readfilesandclean(self, etfname, etfdescdf):
         # details = Details()
         for file in os.listdir(self.savingpath):
             filename = file.split('-')[0]

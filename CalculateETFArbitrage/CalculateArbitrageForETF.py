@@ -141,8 +141,8 @@ class RunArbitrage(object):
                     dfTemp = Polygonobj.PolygonDailyOpenClose(date=date, symbol=symbol)
                     priceforNAVfilling[symbol] = dfTemp['open']
             semaphore = asyncio.BoundedSemaphore(3)
-            # co_routines = [one_iter(semaphore, symbol) for symbol in self.etfholdingsdata['symbols']]
-            co_routines = [one_iter(semaphore, symbol) for symbol in ['AAPL','MSFT','XLK']]
+            co_routines = [one_iter(semaphore, symbol) for symbol in self.etfholdingsdata['symbols']]
+            # co_routines = [one_iter(semaphore, symbol) for symbol in ['AAPL','MSFT','XLK']]
             await asyncio.gather(*co_routines)
         loop = asyncio.get_event_loop()
         loop.run_until_complete(main_())

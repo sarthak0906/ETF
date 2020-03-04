@@ -36,7 +36,7 @@ def startCronJobForETFHoldings():
                 await DownloadsEtfHoldingsData().fetchHoldingsofETF(etf)
                 await PullandCleanData().readfilesandclean(etf, ETFListDF)
 
-        semaphore = asyncio.BoundedSemaphore(4)
+        semaphore = asyncio.BoundedSemaphore(2)
         co_routines = [one_iteration(semaphore, etf) for etf in ETFListDF['Symbol'].tolist()]
         # co_routines = [one_iteration(semaphore, etf) for etf in ['XLK','XLV','QQQ','VGT','IYW','IGV','FTEC','IXN']]
         await asyncio.gather(*co_routines)
@@ -46,7 +46,7 @@ def startCronJobForETFHoldings():
 # Job is scheduled to Run at 2 AM US time.
 # Job functiionality to be tested by @Piyush
 
-schedule.every().day.at("17:45:00").do(startCronJobForETFHoldings)
+schedule.every().day.at("09:00:00").do(startCronJobForETFHoldings)
 while True:
     schedule.run_pending()
     time.sleep(1)

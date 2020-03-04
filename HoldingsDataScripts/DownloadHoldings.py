@@ -29,4 +29,5 @@ class DownloadsEtfHoldingsData(masterclass):
             self.driver.close()
         except Exception as e:
             print(e)
+            self.driver.close()
             pass

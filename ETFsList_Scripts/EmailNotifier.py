@@ -9,7 +9,7 @@ class SendEmail(object):
 
     def sendemail(self):
         gmail_user = 'ticketsoftware2020@gmail.com'
-        gmail_password = 'TimonPumba'
+        gmail_password = '9bg8!a41ph'
 
         sent_from = gmail_user
         to = ['kshitizsharmav@gmail.com', 'piyush888@gmail.com']
@@ -24,5 +24,8 @@ class SendEmail(object):
             server.close()
 
             print('Email sent!')
-        except:
+        except Exception as e:
+            print(e)
             print('Something went wrong...')
+
+# SendEmail('subject','message').sendemail()

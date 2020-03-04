@@ -1,5 +1,11 @@
 import requests
 from datetime import datetime
+import requests
+from datetime import datetime
+import json
+import time
+import pandas as pd
+from time import mktime
 
 
 class PolgonData(object):
@@ -13,12 +19,42 @@ class PolgonData(object):
 		response = requests.get(requesturl, params=self.params)
 		return response
 
-	def PolygonHistoricTrades(self, symbol=None,date=datetime.today().date().strftime('%Y-%m-%d'), limit=10):
-		# Make use of Tickers, Date and Limit
-		requesturl='https://api.polygon.io/v2/ticks/stocks/trades/AAPL/2018-02-02?limit=10'
-		response = requests.get('', params=self.params)
-		return response
+	def PolygonHistoricQuotes(self, date=None, symbol=None,startTS=None,endTS=None,limitresult=10):
+		if startTS:
+			# For Getting Paginated Request
+			requesturl='https://api.polygon.io/v2/ticks/stocks/nbbo/'+symbol+'/'+date+'?timestamp='+startTS+'&timestampLimit='+endTS+'&limit='+limitresult
+			print("Paginated Request For = " + symbol)
+		else:
+			requesturl='https://api.polygon.io/v2/ticks/stocks/nbbo/'+symbol+'/'+date+'?timestampLimit='+endTS+'&limit='+limitresult
+			print("First Request For = " + symbol)
+		print(requesturl)
+		response = requests.get(requesturl, params=self.params)
+		return json.loads(response.text)
+
+	def PolygonHistoricTrades(self, date=None, symbol=None,startTS=None,endTS=None,limitresult=10):
+		if startTS:
+			# For Getting Paginated Request
+			requesturl='https://api.polygon.io/v2/ticks/stocks/trades/'+symbol+'/'+date+'?timestamp='+startTS+'&timestampLimit='+endTS+'&limit='+limitresult
+			print("Paginated Request For = " + symbol)
+		else:
+			requesturl='https://api.polygon.io/v2/ticks/stocks/trades/'+symbol+'/'+date+'?timestampLimit='+endTS+'&limit='+limitresult
+			print("First Request For = " + symbol)
+		print(requesturl)
+		response = requests.get(requesturl, params=self.params)
+		return json.loads(response.text)
+
+	def PolygonDailyOpenClose(self,date=None, symbol=None):
+		requesturl='https://api.polygon.io/v1/open-close/'+symbol+'/'+date
+		response = requests.get(requesturl, params=self.params)
+		return json.loads(response.text)
 	
+
+	def PolygonAggregdateData(self):
+		# Make use of Tickers, Date and Limit
+		requesturl='https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/minute/2020-02-14/2020-02-15'
+		response = requests.get(requesturl, params=self.params)
+		return json.loads(response.text)
+
 	def PolygonTickTrades(self,symbolList=None):
 		requesturl="wss://api.polygon.io/v1/last/stocks/"
 		def on_message(ws, message):
@@ -43,5 +79,20 @@ class PolgonData(object):
 									  on_close = on_close)
 			ws.on_open = on_open
 			ws.run_forever()    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

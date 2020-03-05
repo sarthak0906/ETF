@@ -46,7 +46,7 @@ def startCronJobForETFHoldings():
 # Job is scheduled to Run at 2 AM US time.
 # Job functiionality to be tested by @Piyush
 
-schedule.every().day.at("09:00:00").do(startCronJobForETFHoldings)
+schedule.every().day.at("09:15:00").do(startCronJobForETFHoldings)
 while True:
     schedule.run_pending()
     time.sleep(1)

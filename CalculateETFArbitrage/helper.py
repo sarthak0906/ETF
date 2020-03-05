@@ -59,6 +59,7 @@ class Helper(object):
             print(ts)
             print(s)
             print(ms)
+
     def getHoldingsDatafromDB(self, etfname, fundholdingsdate):
         try:
             connect('ETF_db', alias='ETF_db')

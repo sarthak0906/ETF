@@ -94,8 +94,11 @@ class RunArbitrage(object):
     # Calles First
     def runHistoricalArbitrageCalculations(self):
         # Get Weights Holdings
+        # tickers_for = ['XLK', 'VGT', 'FTEC', 'IYW']
+        # date_for = datetime.now().date()
         self.etfholdingsdata = LoadWeightsFromMongoDB().getWeightsFromMongoDB()
-
+        print(self.etfholdingsdata)
+        print(sys.getsizeof(self.etfholdingsdata))
         tickHistDataQuotes = {}
         tickHistDataTrade = {}
         priceforNAVfilling = {}

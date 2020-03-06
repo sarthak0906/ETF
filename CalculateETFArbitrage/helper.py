@@ -3,6 +3,7 @@ import numpy as np
 from datetime import datetime
 import time
 from mongoengine import *
+import functools
 
 from PolygonTickData.PolygonDataAPIConnection import PolgonData
 from HoldingsDataScripts.ETFMongo import ETF
@@ -28,16 +29,20 @@ class Helper(object):
     def unix_time_millis(self, dt):
         epoch = datetime.utcfromtimestamp(0)
         tsDate = (dt - epoch).total_seconds() * 1000.0
-        tsDate = str(int(tsDate)) + '000000'
+        # tsDate = str(int(tsDate)) + '000000'
+        tsDate = "".join([str(int(tsDate)), '000000'])
         return tsDate
 
     def stringTimeToDatetime(self, date=None, time=None):
-        marketOpenTSStr = date + ' ' + time
+        # marketOpenTSStr = date + ' ' + time
+        marketOpenTSStr = " ".join([date, time])
         return datetime.strptime(marketOpenTSStr, '%Y-%m-%d %H:%M:%S')
 
     def convertStringDateToTS(self, date=None, starttime='9:30:00', endtime='17:00:00'):
-        marketOpenTSStr = date + ' ' + starttime
-        marketCloseTSStr = date + ' ' + endtime
+        # marketOpenTSStr = date + ' ' + starttime
+        marketOpenTSStr = " ".join([date, starttime])
+        # marketCloseTSStr = date + ' ' + endtime
+        marketCloseTSStr = " ".join([date, endtime])
 
         marketTimeStamps = {}
         marketTimeStamps['marketOpenTS'] = self.unix_time_millis(
@@ -60,10 +65,21 @@ class Helper(object):
             print(s)
             print(ms)
 
+    @functools.lru_cache(maxsize=1024)
+    def getHumanTimeNew(self, ts):
+        try:
+            datestring = datetime.utcfromtimestamp(ts)
+            return datestring
+        except Exception as e:
+            print(e)
+
     def getHoldingsDatafromDB(self, etfname, fundholdingsdate):
         try:
             connect('ETF_db', alias='ETF_db')
-            fundholdingsdate = datetime.strptime(fundholdingsdate, "%Y%m%d").date()
+            if type(fundholdingsdate) is not datetime:
+                fundholdingsdate = datetime.strptime(fundholdingsdate, "%Y%m%d").date()
+            else:
+                fundholdingsdate = fundholdingsdate.date()
             etfdata = ETF.objects(ETFTicker=etfname, FundHoldingsDate__lte=fundholdingsdate).order_by('-FundHoldingsDate').first()
             holdingsdatadf = pd.DataFrame(etfdata.to_mongo().to_dict()['holdings'])
             print(str(etfdata.FundHoldingsDate))

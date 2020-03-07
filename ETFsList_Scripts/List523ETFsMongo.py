@@ -6,7 +6,7 @@ from pymongo import monitoring
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG, filename="ETFListLogs.log", format='%(asctime)s %(message)s')
 
 
 class CommandLogger(monitoring.CommandListener):

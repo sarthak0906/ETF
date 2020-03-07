@@ -62,7 +62,8 @@ class RunArbitrage(object):
                                                                endtime=self.endtime)
         self.etfticker = etfticker
         self.etfholdingsdata = []
-
+        self.lastUnixTimeStamp = ''
+        self.lastHumanTimeStamp = ''
     # Fetches data from Polygon using conditions if data is achieved till 5 pm or not
     # Called 2nd from runHistoricalArbitrageCalculations
     async def getDataFromPolygon(self, symbol, methodPassed):
@@ -70,31 +71,46 @@ class RunArbitrage(object):
         # First Request
         data = methodPassed(date=self.date, symbol=symbol, endTS=self.marketTimeStamps['marketCloseTS'],
                             limitresult=str(50000))
-        # Last timestamp from data received
         lastUnixTimeStamp = data['results'][-1]['t']
-        # Covert UNIX timestamp to human timestamp
         lastHumanTimeStamp = Helper().getHumanTime(lastUnixTimeStamp)
-        # Get timestamp for date +  '18:00:00' hrs - Make use of pagination
-        # Paginated Request if the data from above doesn't reach 5 pm time
         await asyncio.sleep(0.2)
+
         while lastHumanTimeStamp < self.extractDataTillTime:
             print(Helper().getHumanTime(data['results'][-1]['t']))
             data2 = methodPassed(date=self.date, symbol=symbol, startTS=str(lastUnixTimeStamp),
                                  endTS=self.marketTimeStamps['marketCloseTS'], limitresult=str(50000))
-            # Last timestamp from data received
             lastUnixTimeStamp = data2['results'][-1]['t']
-            # Covert UNIX timestamp to human timestamp
             lastHumanTimeStamp = Helper().getHumanTime(lastUnixTimeStamp)
-            # Get timestamp for date +  '18:00:00' hrs - Make use of pagination
             data['results'] = data['results'] + data2['results']
             # await asyncio.sleep(0.2)
         tickHistData[symbol] = data
-        # print(tickHistData.keys())
-        # print(tickHistData.values())
-        # print(sys.getsizeof(tickHistData))
         objtickhistdata = objectview(tickHistData)
         del tickHistData
-        # print(sys.getsizeof(obj))
+        return objtickhistdata
+
+    def genFuncForPageReq(self, symbol, methodPassed):
+        # print(Helper().getHumanTime(data['results'][-1]['t']))
+        data2 = methodPassed(date=self.date, symbol=symbol, startTS=str(self.lastUnixTimeStamp),
+                             endTS=self.marketTimeStamps['marketCloseTS'], limitresult=str(50000))
+        self.lastUnixTimeStamp = data2['results'][-1]['t']
+        self.lastHumanTimeStamp = Helper().getHumanTime(self.lastUnixTimeStamp)
+        yield data2
+
+    async def getDataFromPolygonNew(self, symbol, methodPassed):
+        tickHistData = {}
+        # First Request
+        data = methodPassed(date=self.date, symbol=symbol, endTS=self.marketTimeStamps['marketCloseTS'],
+                            limitresult=str(50000))
+        self.lastUnixTimeStamp = data['results'][-1]['t']
+        self.lastHumanTimeStamp = Helper().getHumanTime(self.lastUnixTimeStamp)
+        await asyncio.sleep(0.2)
+        while self.lastHumanTimeStamp < self.extractDataTillTime:
+            data2 = self.genFuncForPageReq()
+            data['results'] = data['results'] + data2['results']
+
+        tickHistData[symbol] = data
+        objtickhistdata = objectview(tickHistData)
+        del tickHistData
         return objtickhistdata
 
     # call this to run the data extractor
@@ -115,14 +131,12 @@ class RunArbitrage(object):
 
         Polygonobj = PolgonData()
 
-        # shorted symbols for testing - remove for production
-        # self.etfholdingsdata['symbols']=['TXN','V','XLK']
 ###################### ASYNCIO OVER HERE #####################################
         async def main_():
             async def one_iter(semaphore_, symbol):
                 async with semaphore_:
                     # tickHistDataQuotes[symbol] = await self.getDataFromPolygon(symbol, Polygonobj.PolygonHistoricQuotes)
-                    tickHistDataQuotes.append(await self.getDataFromPolygon(symbol, Polygonobj.PolygonHistoricQuotes))
+                    tickHistDataQuotes.append(await self.getDataFromPolygonNew(symbol, Polygonobj.PolygonHistoricQuotes))
                     print(tickHistDataQuotes)
                     # print(tickHistDataQuotes[symbol].CTSH)
                     # tickHistDataTrade[symbol] = await self.getDataFromPolygon(symbol, Polygonobj.PolygonHistoricTrades)

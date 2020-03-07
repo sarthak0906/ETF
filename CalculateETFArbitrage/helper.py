@@ -65,13 +65,13 @@ class Helper(object):
             print(s)
             print(ms)
 
-    @functools.lru_cache(maxsize=1024)
-    def getHumanTimeNew(self, ts):
-        try:
-            datestring = datetime.utcfromtimestamp(ts)
-            return datestring
-        except Exception as e:
-            print(e)
+    # @functools.lru_cache(maxsize=1024)
+    # def getHumanTimeNew(self, ts):
+    #     try:
+    #         datestring = datetime.utcfromtimestamp(ts)
+    #         return datestring
+    #     except Exception as e:
+    #         print(e)
 
     def getHoldingsDatafromDB(self, etfname, fundholdingsdate):
         try:

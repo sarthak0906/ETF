@@ -5,45 +5,58 @@ Description:
 Test:
 '''
 
-import sys # Remove in production - KTZ
-sys.path.append("..") # Remove in production - KTZ
+import sys  # Remove in production - KTZ
 
+sys.path.append("..")  # Remove in production - KTZ
+sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/etf/ETFAnalysis/ETFsList_Scripts',
+                 '/home/piyush/Desktop/etf/ETFAnalysis/HoldingsDataScripts',
+                 '/home/piyush/Desktop/etf/ETFAnalysis/CalculateETFArbitrage',
+                 '/home/piyush/Desktop/etf/ETFAnalysis/PolygonTickData'])
+import pandas as pd
 import logging
 import asyncio
 from PolygonTickData.PolygonDataAPIConnection import PolgonData
 from CalculateETFArbitrage.helper import Helper
 
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
+logging.basicConfig(filename="Test2Logs.log", format='%(asctime)s %(message)s')
+
+
 class EtfData(object):
     __slots__ = ('symbol', 'data')
+
     def __init__(self, sybl, dt):
         self.symbol = sybl
         self.data = dt
 
 
 class LoadHoldingsdata(object):
-    
-    def __init__(self,ticker='XLK', date='20200226'):
+
+    def __init__(self, ticker='XLK', date='20200226'):
+        self.cashvalueweight, self.weights, self.symbols = '', '', ''
         try:
-            holdings = Helper().getHoldingsDatafromDB(ticker,date)
+            holdings = Helper().getHoldingsDatafromDB(ticker, date)
             holdings['TickerWeight'] = holdings['TickerWeight'] / 100
-            
             # Assign cashvalueweight 
             self.cashvalueweight = holdings[holdings['TickerSymbol'] == 'CASH'].get('TickerWeight').item()
-            
+
             # Assign Weight %
-            self.weights=dict(zip(holdings.TickerSymbol, holdings.TickerWeight))
-            
+            self.weights = dict(zip(holdings.TickerSymbol, holdings.TickerWeight))
+
             # Assign symbols
-            symbols = list(holdings['TickerSymbol'].values).append(ticker)
+            symbols = holdings['TickerSymbol'].tolist()
+            symbols.append(ticker)
             symbols.remove('CASH')
-            self.symbols=symbols
-            
+            self.symbols = symbols
+
             log.info("Data Successfully Loaded")
-        
+
         except Exception as e:
-            log.error("Data Successfully Loaded")
+            log.error("Data NOT Loaded")
             logging.critical(e, exc_info=True)
-        
+
+    '''    
     @classmethod
     def getETFWeights(cls):
         return self.weights
@@ -55,52 +68,72 @@ class LoadHoldingsdata(object):
     @classmethod
     def getSymbols(cls):
         return self.symbols
-        
+    '''
+
+    @property
+    def getETFWeights(self):
+        return self.weights
+
+    @property
+    def getCashValue(self):
+        return self.cashvalueweight
+
+    @property
+    def getSymbols(self):
+        return self.symbols
+
 
 class RunArbitrage(object):
 
-    def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00',etfticker=None):
-        self.helperObj=Helper()
+    def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00',
+                 etfticker=None):
+        self.helperObj = Helper()
         self.date = date
-        self.starttime = starttime # 9 AM
-        self.endtime = endtime # 5 PM
-        self.endtimeLoop = endtimeLoop # 4 PM
+        self.starttime = starttime  # 9 AM
+        self.endtime = endtime  # 5 PM
+        self.endtimeLoop = endtimeLoop  # 4 PM
         self.extractDataTillTime = self.helperObj.stringTimeToDatetime(date=self.date, time=self.endtimeLoop)
-        self.marketTimeStamps = self.helperObj.convertStringDateToTS(date=self.date, starttime=self.starttime,endtime=self.endtime)
+        self.marketTimeStamps = self.helperObj.convertStringDateToTS(date=self.date, starttime=self.starttime,
+                                                                     endtime=self.endtime)
         self.etfticker = etfticker
         self.etfholdingsdata = []
 
-    async def getDataFromPolygon(self, symbol=None getMethodForPolygon=None):
-        data = getMethodForPolygon(date=self.date, symbol=symbol, endTS=self.marketTimeStamps['marketCloseTS'], limitresult=str(50000))
+    async def getDataFromPolygon(self, symbol=None, getMethodForPolygon=None):
+        data = getMethodForPolygon(date=self.date, symbol=symbol, endTS=self.marketTimeStamps['marketCloseTS'],
+                                   limitresult=str(50000))
         lastUnixTimeStamp = self.getLastTimeStamp(data)
         await asyncio.sleep(0.2)
-        
+
         # Check for Pagination
         while self.checkTimeStampForPagination(lastUnixTimeStamp):
-            paginatedData = getMethodForPolygon(date=self.date, symbol=symbol, startTS=str(lastUnixTimeStamp), endTS=self.marketTimeStamps['marketCloseTS'], limitresult=str(50000))
+            paginatedData = getMethodForPolygon(date=self.date, symbol=symbol, startTS=str(lastUnixTimeStamp),
+                                                endTS=self.marketTimeStamps['marketCloseTS'], limitresult=str(50000))
             lastUnixTimeStamp = self.getLastTimeStamp(paginatedData)
-            data['results'] = data['results'] + paginateddata['results']
-        
+            data['results'].extend(paginatedData['results'])
+            # print(data)
+        dataobject = EtfData(symbol, data)
+        del data
         # Creating a slot object
-        return EtfData(symbol,data)
+        return dataobject
 
-    def getLastTimeStamp(self,data):
+    def getLastTimeStamp(self, data):
         return data['results'][-1]['t']
 
-    def checkTimeStampForPagination(self,checkTime):
+    def checkTimeStampForPagination(self, checkTime):
         return True if self.helperObj.getHumanTime(checkTime) < self.extractDataTillTime else False
-    
+
     def runHistoricalArbitrageCalculations(self):
         etfData = LoadHoldingsdata()
-        print(etfData.getSymbols())
-        print(etfData.getETFWeights())
-        print(etfData.getCashValue())
-        
+        print(etfData.getSymbols)
+        print(etfData.getETFWeights)
+        print(etfData.getCashValue)
+
         tickHistDataQuotes = []
         tickHistDataTrade = []
         priceforNAVfilling = {}
 
         Polygonobj = PolgonData()
+
         # Async to get data from Polygon Starts here
         async def main_():
             async def one_iter(semaphore_, symbol):
@@ -109,10 +142,12 @@ class RunArbitrage(object):
                     tickHistDataTrade.append(await self.getDataFromPolygon(symbol, Polygonobj.PolygonHistoricTrades))
                     opencloseDf = Polygonobj.PolygonDailyOpenClose(date=date, symbol=symbol)
                     priceforNAVfilling[symbol] = opencloseDf['open']
+
             semaphore = asyncio.BoundedSemaphore(4)
-            co_routines = [one_iter(semaphore, symbol) for symbol in etfData.getSymbols()]
+            co_routines = [one_iter(semaphore, symbol) for symbol in etfData.getSymbols]
             # co_routines = [one_iter(semaphore, symbol) for symbol in ['AAPL','MSFT','XLK']]
             await asyncio.gather(*co_routines)
+
         loop = asyncio.get_event_loop()
         loop.run_until_complete(main_())
         '''
@@ -154,11 +189,12 @@ class RunArbitrage(object):
         # quotesSpreadDF = quotesSpreads.unstack(level=2)
         # quotesSpreadDF = quotesSpreadDF.fillna(0)
 
+        
+        '''
         tradePricesDF = pd.DataFrame()
         quotesSpreadDF = pd.DataFrame()
         return tradePricesDF, quotesSpreadDF
-        '''
-        
+
     def getMeHourdata(self, getmeHourDataFor=None, tradePricesDF=None, quotesSpreadDF=None):
 
         etfspread = quotesSpreadDF[self.etfticker]
@@ -202,12 +238,12 @@ if __name__ == "__main__":
     RunarbitrageObject = RunArbitrage(date=date, etfticker=etfticker)
     tradePricesDF, quotesSpreadDF = RunarbitrageObject.runHistoricalArbitrageCalculations()
 
-    for i in range(9, 16):
-        print("Hour at=" + str(i))
-        res = RunarbitrageObject.getMeHourdata(getmeHourDataFor=i, tradePricesDF=tradePricesDF,
-                                               quotesSpreadDF=quotesSpreadDF)
-        res['Arbitrage in $'] = abs(res['Arbitrage in $'])
-        res['Flag'] = 0
-        res.loc[(res['Arbitrage in $'] > res['ETF Trading Spread in $']) & res[
-            'ETF Trading Spread in $'] != 0, 'Flag'] = 111
-        print(res)
+    # for i in range(9, 16):
+    #     print("Hour at=" + str(i))
+    #     res = RunarbitrageObject.getMeHourdata(getmeHourDataFor=i, tradePricesDF=tradePricesDF,
+    #                                            quotesSpreadDF=quotesSpreadDF)
+    #     res['Arbitrage in $'] = abs(res['Arbitrage in $'])
+    #     res['Flag'] = 0
+    #     res.loc[(res['Arbitrage in $'] > res['ETF Trading Spread in $']) & res[
+    #         'ETF Trading Spread in $'] != 0, 'Flag'] = 111
+    #     print(res)

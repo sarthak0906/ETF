@@ -6,6 +6,11 @@ import json
 from CalculateETFArbitrage.helper import Helper
 from datetime import datetime
 
+import sys  # Remove in production - KTZ
+
+sys.path.append("..")  # Remove in production - KTZ
+
+
 limit = 10
 
 

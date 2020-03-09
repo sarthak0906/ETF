@@ -50,6 +50,11 @@ class Helper(object):
             datetime.strptime(marketCloseTSStr, '%Y-%m-%d %H:%M:%S'))
         return marketTimeStamps
 
+    def convertHumanTimeToUnixTimeStamp(self, date=None, time='9:30:00'):
+        # marketOpenTSStr = date + ' ' + time
+        datetimeobject = " ".join([date, time])
+        return self.unix_time_millis(datetime.strptime(datetimeobject, '%Y-%m-%d %H:%M:%S'))
+
     def getHumanTime(self, ts, getMilliSecondsAlso=False):
         try:
             s, ms = divmod(ts, 1000000000)

@@ -22,14 +22,17 @@ class PolgonData(object):
 	def PolygonHistoricQuotes(self, date=None, symbol=None,startTS=None,endTS=None,limitresult=10):
 		if startTS:
 			# For Getting Paginated Request
-			requesturl='https://api.polygon.io/v2/ticks/stocks/nbbo/'+symbol+'/'+date+'?timestamp='+startTS+'&timestampLimit='+endTS+'&limit='+limitresult
+			requesturl='https://api.polygon.io/v2/ticks/stocks/nbbo/'+symbol+'/'+date+'?timestamp='+startTS+'&timestampLimit='+endTS+'&limit='+limitresult+'&apiKey=M_PKVL_rqHZI7VM9ZYO_hwPiConz5rIklx893F'
 			print("Paginated Request For = " + symbol)
 		else:
-			requesturl='https://api.polygon.io/v2/ticks/stocks/nbbo/'+symbol+'/'+date+'?timestampLimit='+endTS+'&limit='+limitresult
+			requesturl='https://api.polygon.io/v2/ticks/stocks/nbbo/'+symbol+'/'+date+'?timestampLimit='+endTS+'&limit='+limitresult+'&apiKey=M_PKVL_rqHZI7VM9ZYO_hwPiConz5rIklx893F'
 			print("First Request For = " + symbol)
 		print(requesturl)
+		'''
 		response = requests.get(requesturl, params=self.params)
 		return json.loads(response.text)
+		'''
+		return requesturl
 
 	def PolygonHistoricTrades(self, date=None, symbol=None,startTS=None,endTS=None,limitresult=10):
 		if startTS:

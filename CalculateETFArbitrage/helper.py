@@ -2,11 +2,10 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import time
-from mongoengine import *
+
 import functools
 
 from PolygonTickData.PolygonDataAPIConnection import PolgonData
-from HoldingsDataScripts.ETFMongo import ETF
 from HoldingsDataScripts.HoldingsMongo import Holdings
 ###################################################################
 ### Use this class for performing actions and keep code clean  ####
@@ -65,66 +64,10 @@ class Helper(object):
             print(s)
             print(ms)
 
-    # @functools.lru_cache(maxsize=1024)
-    # def getHumanTimeNew(self, ts):
-    #     try:
-    #         datestring = datetime.utcfromtimestamp(ts)
-    #         return datestring
-    #     except Exception as e:
-    #         print(e)
+    def getLastTimeStamp(self,data):
+        return data['results'][-1]['t']
 
-    def getHoldingsDatafromDB(self, etfname, fundholdingsdate):
-        try:
-            connect('ETF_db', alias='ETF_db')
-            if type(fundholdingsdate) is not datetime:
-                fundholdingsdate = datetime.strptime(fundholdingsdate, "%Y%m%d").date()
-            else:
-                fundholdingsdate = fundholdingsdate.date()
-            etfdata = ETF.objects(ETFTicker=etfname, FundHoldingsDate__lte=fundholdingsdate).order_by('-FundHoldingsDate').first()
-            holdingsdatadf = pd.DataFrame(etfdata.to_mongo().to_dict()['holdings'])
-            print(str(etfdata.FundHoldingsDate))
-            return holdingsdatadf
-        except Exception as e:
-            print(e)
+    def checkTimeStampForPagination(self,checkTime,extractDataTillTime):
+        return True if self.getHumanTime(checkTime) < extractDataTillTime else False
 
-#############
-### Threading - not beig used rigt now
-#############
-
-import aiohttp
-import asyncio
-
-
-class ThreadingGetRequests(object):
-
-    def __init__(self, urls):
-        # Pass Your Thread request here
-        self.urls = [
-            'http://python.org',
-            'https://google.com',
-            'http://yifei.me'
-        ]
-
-    def startThreading(self):
-        async def fetch(session, url):
-            async with session.get(url) as response:
-                return await response.text()
-
-        async def main():
-            tasks = []
-            async with aiohttp.ClientSession() as session:
-                for url in self.urls:
-                    print(url)
-                    tasks.append(fetch(session, url))
-                htmls = await asyncio.gather(*tasks)
-
-                for html in htmls:
-                    print("******")
-                    print(html[:100])
-
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
-
-# ob=ThreadingGetRequests(urls=['Kshitiz','Sharma'])
-# ob.startThreading()
 

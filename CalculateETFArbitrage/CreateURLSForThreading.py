@@ -24,6 +24,15 @@ class CallPolygonApi(object):
 		self.tickHistDataTrade = None
 		self.priceforNAVfilling = None
 
+	'''
+	# 1) Paginated Request - If it doesn't need pagination, save it in a dictionary 
+	if pagination not required:
+		tradesData['AAPL']=data
+	else:
+		# Pagiation required
+		# Create a new set of urls and call getDataFromPolygon
+		# 
+	'''
 
 	def getDataFromPolygon(self,getUrls):
 		responses=main(getUrls)
@@ -48,6 +57,8 @@ class CallPolygonApi(object):
 
 		print("Trades Data")
 		self.getDataFromPolygon(trade_routines)
+		self.getDataFromPolygon(quotes_routines)
+		#self.getDataFromPolygon(openclose_routines)
 		'''
 		print("Quotes Data")
 		self.getDataFromPolygon(quotes_routines)

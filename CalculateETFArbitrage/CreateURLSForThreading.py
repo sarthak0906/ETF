@@ -1,74 +1,114 @@
 import sys  # Remove in production - KTZ
 
 sys.path.append("..")  # Remove in production - KTZ
-sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/etf/ETFAnalysis/ETFsList_Scripts',
-                 '/home/piyush/Desktop/etf/ETFAnalysis/HoldingsDataScripts',
-                 '/home/piyush/Desktop/etfnew/ETFAnalysis/CalculateETFArbitrage'])
+
 from PolygonTickData.PolygonDataAPIConnection2 import PolgonData
-from CalculateETFArbitrage.helper import Helper
+from helper import Helper
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
-from CalculateETFArbitrage.ThreadingRequests import main
+from ThreadingRequests import main
 
 import logging
 import asyncio
 import datetime
-
+import pandas as pd
+import sys
+import time
 
 class CallPolygonApi(object):
+	
+	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00'):
+		self.helperObj = Helper()
+		self.date = date
+		self.starttime = starttime  # 9 AM
+		self.endtime = endtime  # 5 PM
+		self.endtimeLoop = endtimeLoop  # 4 PM
+		self.extractDataTillTime = self.helperObj.stringTimeToDatetime(date=self.date, time=self.endtimeLoop)
+		self.endTs=self.helperObj.convertHumanTimeToUnixTimeStamp(date=self.date,time=self.endtime)
+		self.tickHistDataQuotes = None
+		self.tickHistDataTrade = None
+		self.priceforNAVfilling = None
 
-    def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00'):
-        self.helperObj = Helper()
-        self.date = date
-        self.starttime = starttime  # 9 AM
-        self.endtime = endtime  # 5 PM
-        self.endtimeLoop = endtimeLoop  # 4 PM
+	def getDataFromPolygon(self,getUrls=None,columnsNeeded=None,finalDf=None,PolygonMethod=None):
+		responses=main(getUrls)
+		paginatedURLS=[]
 
-        self.tickHistDataQuotes = None
-        self.tickHistDataTrade = None
-        self.priceforNAVfilling = None
+		for response in responses:
+			
+			start_time=time.time()
+			symbol=response['ticker']
+			print("Time to get Symbol--- %s seconds ---" % (time.time() - start_time))
 
-    def getDataFromPolygon(self, getUrls):
-        responses = main(getUrls)
-        c = 0
-        for response in responses:
-            print(self.helperObj.getLastTimeStamp(response))
-            c += 1
-            print(c)
-            print(response['results'][0])
+			start_time=time.time()
+			tempdf=pd.DataFrame.from_dict(response['results'])[columnsNeeded]
+			print("Time to build tempdf--- %s seconds ---" % (time.time() - start_time))
 
-    # Pass here etfdata object
-    def assemblePolygonData(self, symbols):
-        # Objects for polygon requests
-        Polygonobj = PolgonData()
-        # Get all tickers for the ETF
-        endTs = self.helperObj.convertHumanTimeToUnixTimeStamp(date=self.date, time=self.endtime)
+			tempdf['Symbol']=symbol
 
-        trade_routines = [Polygonobj.PolygonHistoricTrades(date=self.date, symbol=symbol, startTS=None, endTS=endTs,
-                                                           limitresult=str(5000)) for symbol in symbols]
-        quotes_routines = [Polygonobj.PolygonHistoricQuotes(date=self.date, symbol=symbol, startTS=None, endTS=endTs,
-                                                            limitresult=str(5000)) for symbol in symbols]
-        openclose_routines = [Polygonobj.PolygonDailyOpenClose(date=self.date, symbol=symbol) for symbol in symbols]
+			start_time=time.time()
+			finalDf=finalDf.append(tempdf)
+			print("Time to append to finaldf--- %s seconds ---" % (time.time() - start_time))
 
-        print("Trades Data")
-        self.getDataFromPolygon(trade_routines)
-        '''
-        print("Quotes Data")
-        self.getDataFromPolygon(quotes_routines)
-        print("Open Close Data")
-        self.getDataFromPolygon(openclose_routines)
-        '''
+			start_time=time.time()
+			lastUnixTimeStamp=self.helperObj.getLastTimeStamp(response)
+			print("Time to get lastUnixTimeStamp--- %s seconds ---" % (time.time() - start_time))
+
+			if self.helperObj.checkTimeStampForPagination(lastUnixTimeStamp,self.extractDataTillTime):
+				paginatedURLS.append(PolygonMethod(date=self.date, symbol=symbol,startTS=str(lastUnixTimeStamp),endTS=self.endTs,limitresult=str(50000)))
+				
+		if len(paginatedURLS)>0:
+			finalDf=self.getDataFromPolygon(getUrls=paginatedURLS,columnsNeeded=columnsNeeded,finalDf=finalDf,PolygonMethod=PolygonMethod)
+		return finalDf
+			
+	def getOpenCloseData(self,openCloseURLs=None):
+		responses=main(openCloseURLs)
+		priceforNAVfilling={}
+		for response in responses:
+			priceforNAVfilling[response['symbol']] = response['open']
+		return priceforNAVfilling
+
+	# Pass here etfdata object
+	def assemblePolygonData(self,symbols):
+	# Objects for polygon requests
+		Polygonobj = PolgonData()
+		# Get all tickers for the ETF
+		trade_routines = [Polygonobj.PolygonHistoricTrades(date=self.date, symbol=symbol,startTS=None,endTS=self.endTs,limitresult=str(50000)) for symbol in symbols]
+		quotes_routines = [Polygonobj.PolygonHistoricQuotes(date=self.date, symbol=symbol,startTS=None,endTS=self.endTs,limitresult=str(50000)) for symbol in ['XLK']]
+		openCloseURLs =[Polygonobj.PolygonDailyOpenClose(date=self.date, symbol=symbol) for symbol in symbols]
+
+		tradesDataDf=pd.DataFrame(columns = ['p','s','t','x','Symbol'])
+		tradesDataDf=self.getDataFromPolygon(getUrls=trade_routines,columnsNeeded=['p','s','t','x'],finalDf=tradesDataDf,PolygonMethod=Polygonobj.PolygonHistoricTrades)
+		print(tradesDataDf)
+		print(tradesDataDf['Symbol'].unique())
+		
+		quotesDataDf=pd.DataFrame(columns = ['P','S','p','s','t','X','x','Symbol'])
+		quotesDataDf=self.getDataFromPolygon(getUrls=quotes_routines,columnsNeeded=['P','S','p','s','t','X','x'],finalDf=quotesDataDf,PolygonMethod=Polygonobj.PolygonHistoricQuotes)
+		print(quotesDataDf)
+		print(quotesDataDf['Symbol'].unique())
+		
+		priceforNAVfilling=self.getOpenCloseData(openCloseURLs=openCloseURLs)
+		print(priceforNAVfilling)
+
+		return tradesDataDf, quotesDataDf, priceforNAVfilling
 
 
+''''
 if __name__ == "__main__":
-    # Create an object of date when we need and time between which we need data
-    previousdate = '2020-02-25'
-    date = '2020-02-26'
-    starttime = '9:30:00'
-    endtime = '17:00:00'
-    endtimeLoop = '16:00:00'
-    etfname = 'XLK'
+	# Create an object of date when we need and time between which we need data
+	previousdate = '2020-03-08'
+	date = '2020-03-09'
+	starttime = '9:30:00'
+	endtime = '17:00:00'
+	endtimeLoop = '16:00:00'
+	etfname = 'XLK'
 
-    etfData = LoadHoldingsdata(etfname=etfname, fundholdingsdate='20200226')
+	etfData = LoadHoldingsdata(etfname=etfname, fundholdingsdate='20200226')
 
-    polygonApi = CallPolygonApi(date=date)
-    polygonApi.assemblePolygonData(etfData.getSymbols())
+	polygonApi=CallPolygonApi(date=date)
+	polygonApi.assemblePolygonData(etfData.getSymbols())
+'''
+
+
+
+
+
+

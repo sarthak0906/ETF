@@ -3,6 +3,7 @@ import random
 import asyncio
 from aiohttp import ClientSession
 import logging
+import json
 
 #Create and configure logger 
 logging.basicConfig(filename="newfile.log", format='%(asctime)s %(message)s', filemode='w') 
@@ -14,7 +15,7 @@ async def fetch(url, session):
         delay = response.headers.get("DELAY")
         date = response.headers.get("DATE")
         print("{}:{} with delay {}".format(date, response.url, delay))
-        return await response.text()
+        return json.loads(await response.text())
 
 async def bound_fetch(sem, url, session):
     # Getter function with semaphore.
@@ -33,17 +34,13 @@ async def run(getUrls):
             # pass Semaphore and session to every GET request
             task = asyncio.ensure_future(bound_fetch(sem, url, session))
             tasks.append(task)
+        return await asyncio.gather(*tasks)
 
-        responses = await asyncio.gather(*tasks)
-        
-        for response in responses:
-            print(response)
-        
 def main(getUrls):
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(run(getUrls))
-    loop.run_until_complete(future)
-
-
+    responses=loop.run_until_complete(future)
+    return responses
+    
 
 

@@ -1,14 +1,16 @@
 import pandas as pd
-import asyncio
-import itertools
-import time
-import csv
 import os
 from datetime import datetime
 from mongoengine import *
 
 from HoldingsDataScripts.ETFMongo import ETF
 from HoldingsDataScripts.HoldingsMongo import Holdings
+
+import logging
+
+logging.basicConfig(filename="HoldingsDataLogs.log", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 
@@ -28,6 +30,7 @@ class PullandCleanData:
                 if filename == etfname and file not in ['.DS_Store']:
                     
                     print("Data loaded to Db=" + filename)
+                    logger.debug("Data loaded to save into Db = {}".format(filename) )
                     self.detailsdata = pd.read_csv(self.savingpath + '/' + file, sep='\:\s', nrows=11,
                                                    index_col=False,
                                                    names=['Key', 'Value'])
@@ -89,8 +92,10 @@ class PullandCleanData:
                         holding.TickerWeight = row.Weights
                         details.holdings.append(holding)
                     details.save()
+                    logger.debug("Data for {} saved".format(filename))
             except Exception as e:
-                print(e)
+                logger.debug(e)
+                logger.exception("Exception occurred in DataCleanFeed.py")
                 continue
 if __name__== "__main__":
 

@@ -33,6 +33,7 @@ monitoring.register(CommandLogger())
 
 
 class ETF(mongoengine.Document):
+    DateOfScraping = mongoengine.DateTimeField()
     ETFTicker = mongoengine.StringField()
     InceptionDate = mongoengine.DateTimeField()
     FundHoldingsDate = mongoengine.DateTimeField()

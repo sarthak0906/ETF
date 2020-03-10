@@ -1,8 +1,4 @@
 import pandas as pd
-import itertools
-import time
-import csv
-import os
 from datetime import datetime
 from mongoengine import *
 

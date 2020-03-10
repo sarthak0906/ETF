@@ -5,14 +5,18 @@ sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/e
 
 import ETFsList_Scripts.WebdriverServices as serv
 from ETFsList_Scripts.Download523TickersList import Download523TickersList
-from HoldingsDataScripts.PullHoldingsList import PullHoldingsListClass
 from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData
+from HoldingsDataScripts.DownloadHoldings import PullHoldingsListClass
 from HoldingsDataScripts.DataCleanFeed import PullandCleanData
 import asyncio
 # Libraries for Cron Job
 import schedule
 import time
+import logging
 
+logging.basicConfig(filename="HoldingsDataLogs.log", format='%(asctime)s %(message)s')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def startCronJobForETFHoldings():
     Download523TickersList().fetchTickerDataDescription()
@@ -48,5 +52,10 @@ def startCronJobForETFHoldings():
 
 schedule.every().day.at("09:28:00").do(startCronJobForETFHoldings)
 while True:
-    schedule.run_pending()
-    time.sleep(1)
+    try:
+        schedule.run_pending()
+        time.sleep(1)
+    except Exception as e:
+        logger.exception("Exception thrown from Cron_ETF_Holdings")
+        pass
+

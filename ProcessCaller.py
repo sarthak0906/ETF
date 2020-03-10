@@ -7,23 +7,24 @@ sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_
 
 import ETFsList_Scripts.WebdriverServices as serv
 from ETFsList_Scripts.Download523TickersList import Download523TickersList
-from HoldingsDataScripts.PullHoldingsList import PullHoldingsListClass
-from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData
+from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData, PullHoldingsListClass
 from HoldingsDataScripts.DataCleanFeed import PullandCleanData
 import asyncio
-# Libraries for Cron Job
-import schedule
-import time
+
+import logging
+
+logging.basicConfig(filename="HoldingsDataLogs.log", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def startCronJobForETFHoldings():
     Download523TickersList().fetchTickerDataDescription()
     serv.masterclass().savelisttodb()
-
     # Pull ETF list into a dataframe
     ETFListDF = PullHoldingsListClass().ReturnetflistDF()
 
-    # # For each ETF download all holdings and save to DB
+    # For each ETF download all holdings and save to DB
     # for etf in ETFListDF['Symbol'].tolist():
     #     # for etf in ['XLK']:
     #     # Download Holdings for given ETF
@@ -31,7 +32,6 @@ def startCronJobForETFHoldings():
     #
     #     # Save Holdings for given ETF to DB
     #     PullandCleanData().readfilesandclean(etf, ETFListDF)
-
     async def main():
         async def one_iteration(semaphore_, etf):
             async with semaphore_:
@@ -45,11 +45,8 @@ def startCronJobForETFHoldings():
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
-# Job is scheduled to Run at 2 AM US time.
-# Job functiionality to be tested by @Piyush
-
-# schedule.every().day.at("09:28:00").do(startCronJobForETFHoldings)
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
-startCronJobForETFHoldings()
+try:
+    startCronJobForETFHoldings()
+except Exception as e:
+    print(e)
+    logger.exception("Exception in ProcessCaller")

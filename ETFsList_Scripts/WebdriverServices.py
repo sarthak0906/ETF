@@ -1,11 +1,6 @@
-import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
-import pandas as pd
-import itertools
 import time
 
 from ETFsList_Scripts.Save523TickersListtoDB import ETFListSaver
@@ -31,8 +26,8 @@ class masterclass:
         e = self.driver.find_element(By.ID, "password")
         e.send_keys("etfapp2020")
         e = self.driver.find_element(By.ID, "login-button")
-        time.sleep(3)
         e.click()
+        time.sleep(3)
 
 
     def savelisttodb(self):
@@ -46,4 +41,4 @@ class masterclass:
         except Exception as e:
             print("Not stored in DB")
             print(e)
-            SendEmail("ETFList Download Error", "Couldn't download ETFList on {}".format(datetime.now))
+            # SendEmail("ETFList Download Error", "Couldn't download ETFList on {}".format(datetime.now))

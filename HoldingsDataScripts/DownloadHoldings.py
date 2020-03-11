@@ -1,9 +1,9 @@
-import asyncio
 from HoldingsDataScripts.WebdriverServices import masterclass
 from mongoengine import *
 import pandas as pd
 from datetime import datetime
 import logging
+import time
 
 logging.basicConfig(filename="HoldingsDataLogs.log", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -23,9 +23,9 @@ class PullHoldingsListClass(object):
 
 class DownloadsEtfHoldingsData(masterclass):
 
-    async def fetchHoldingsofETF(self, etfname):
+    def fetchHoldingsofETF(self, etfname):
         retries = 1
-        while retries > 0:
+        while retries >= 0:
             try:
                 # initialise driver and login to ETFdb
                 super().initialisewebdriver(
@@ -35,14 +35,16 @@ class DownloadsEtfHoldingsData(masterclass):
 
                 url = 'https://etfdb.com/etf/%s/#holdings' % etfname
                 self.driver.get(url)
-                await asyncio.sleep(3)
+                time.sleep(2)
                 e = self.driver.find_element_by_xpath(
                     '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
                 e.click()
                 self.driver.close()
+                retries = -1
             except Exception as e:
+                print("Exception in DownloadHolding.py for {}".format(etfname))
                 print(e)
                 logger.exception("Exception in DownloadHolding.py")
-                logger.debug("Retrying once more")
+                logger.info("Retrying once more")
                 retries -= 1
                 pass

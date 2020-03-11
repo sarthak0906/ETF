@@ -22,14 +22,14 @@ class PullandCleanData:
         self.holdingsdata = pd.DataFrame()
         connect('ETF_db', alias='ETF_db')
 
-    async def readfilesandclean(self, etfname, etfdescdf):
+    def readfilesandclean(self, etfname, etfdescdf):
         # details = Details()
         for file in os.listdir(self.savingpath):
             filename = file.split('-')[0]
             try:
                 if filename == etfname and file not in ['.DS_Store']:
                     
-                    print("Data loaded to Db=" + filename)
+                    print("Data loaded to save into Db = " + filename)
                     logger.debug("Data loaded to save into Db = {}".format(filename) )
                     self.detailsdata = pd.read_csv(self.savingpath + '/' + file, sep='\:\s', nrows=11,
                                                    index_col=False,
@@ -44,6 +44,7 @@ class PullandCleanData:
                     self.holdingsdata['Weights'] = [float(x) for x in self.holdingsdata['Weights'].values]
 
                     details = ETF(
+                        DateOfScraping = datetime.now().date(),
                         ETFTicker=self.detailsdata.iloc[0]['Key'],
                         InceptionDate=datetime.strptime(self.detailsdata.iloc[1]['Value'], '%Y-%m-%d'),
                         FundHoldingsDate=datetime.strptime(self.detailsdata.iloc[2]['Value'], '%Y-%m-%d'),
@@ -92,9 +93,10 @@ class PullandCleanData:
                         holding.TickerWeight = row.Weights
                         details.holdings.append(holding)
                     details.save()
-                    logger.debug("Data for {} saved".format(filename))
+                    print("Data for {} saved".format(filename))
+                    logger.info("Data for {} saved".format(filename))
             except Exception as e:
-                logger.debug(e)
+                logger.critical(e)
                 logger.exception("Exception occurred in DataCleanFeed.py")
                 continue
 if __name__== "__main__":

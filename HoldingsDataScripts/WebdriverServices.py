@@ -3,7 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from datetime import datetime
 import time
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 # from EmailNotifier import SendEmail
 
@@ -22,11 +23,12 @@ class masterclass:
 
     def logintoetfdb(self):
         self.driver.get("https://etfdb.com/members/login/")
+        element = WebDriverWait(self.driver, 60).until(
+            EC.presence_of_element_located((By.ID, "login-button")))
         e = self.driver.find_element(By.ID, "user_login")
         e.send_keys("ticketsoft")
         e = self.driver.find_element(By.ID, "password")
         e.send_keys("etfapp2020")
         e = self.driver.find_element(By.ID, "login-button")
-        time.sleep(3)
         e.click()
 

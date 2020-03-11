@@ -1,9 +1,7 @@
 from selenium import webdriver
-
-# I THINK NONE OF THE FOLLOWING IMPORTS ARE NEEDED
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 import time
@@ -19,11 +17,11 @@ class Download523TickersList(masterclass):
             # Fetch Data
             url = 'https://etfdb.com/etfs/sector/'
             self.driver.get(url)
-            time.sleep(5)
+            element = WebDriverWait(self.driver, 180).until(
+                EC.presence_of_element_located((By.LINK_TEXT, "Export this data to a CSV file")))
             e = self.driver.find_element_by_link_text('Export this data to a CSV file')
-            time.sleep(10)
             e.click()
-            time.sleep(5)
+            time.sleep(3)
             self.driver.quit()
         except:
             pass

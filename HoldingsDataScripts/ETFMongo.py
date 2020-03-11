@@ -76,7 +76,7 @@ class ETF(mongoengine.Document):
             }
         ],
         'db_alias': 'ETF_db',
-        'collection': 'ETFHoldingsNew'
+        'collection': 'ETFHoldings'
     }
 
 # ETF.create_index({ETF.ETFTicker: 1, ETF.FundHoldings_date: -1},{unique: True})

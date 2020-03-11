@@ -33,37 +33,6 @@ def startCronJobForETFHoldings():
         # Save Holdings for given ETF to DB
         PullandCleanData().readfilesandclean(etf, ETFListDF)
 
-
-    #######################################################################################################################
-
-    # async def main():
-    #     async def one_iteration(semaphore_, etf):
-    #         async with semaphore_:
-    #             await DownloadsEtfHoldingsData().fetchHoldingsofETF(etf)
-    #             await PullandCleanData().readfilesandclean(etf, ETFListDF)
-    #
-    #     semaphore = asyncio.BoundedSemaphore(2)
-    #     co_routines = [one_iteration(semaphore, etf) for etf in ETFListDF['Symbol'].tolist()]
-    #     # co_routines = [one_iteration(semaphore, etf) for etf in ['XLK','XLV','QQQ','VGT','IYW','IGV','FTEC','IXN']]
-    #     await asyncio.gather(*co_routines)
-
-    #######################################################################################################################
-
-    # async def main_():
-    #     async def one_iter(semaphore_, etf):
-    #         async with semaphore_:
-    #             await DownloadsEtfHoldingsData().fetchHoldingsofETF(etf)
-    #             PullandCleanData().readfilesandclean(etf, ETFListDF)
-    #
-    #     semaphore = asyncio.BoundedSemaphore(2)
-    #     # co_routines = [one_iter(semaphore, etf) for etf in ETFListDF['Symbol'].tolist()]
-    #     co_routines = [one_iter(semaphore, etf) for etf in ['SGDM','XLK','BDCS','IYW']]
-    #     await asyncio.gather(*co_routines)
-    #
-    # loop = asyncio.get_event_loop()
-    # loop.run_until_complete(main_())
-
-
 try:
     startCronJobForETFHoldings()
 except Exception as e:

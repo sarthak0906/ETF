@@ -14,6 +14,12 @@ import pandas as pd
 import sys
 import time
 
+class EtfData(object):
+    __slots__ = ('symbol', 'data')
+    def __init__(self, sybl, dt):
+        self.symbol = sybl
+        self.data = dt
+
 class CallPolygonApi(object):
 	
 	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00'):
@@ -28,25 +34,22 @@ class CallPolygonApi(object):
 		self.tickHistDataTrade = None
 		self.priceforNAVfilling = None
 
-	def getDataFromPolygon(self,getUrls=None,columnsNeeded=None,finalDf=None,PolygonMethod=None):
+	def getDataFromPolygon(self,getUrls=None,finalResultDict=None,PolygonMethod=None):
 		responses=main(getUrls)
 		paginatedURLS=[]
-
 		for response in responses:
 			
 			start_time=time.time()
 			symbol=response['ticker']
 			print("Time to get Symbol--- %s seconds ---" % (time.time() - start_time))
+			
+			start_time=time.time()
+			result = [dict(item, **{'Symbol':symbol}) for item in response['results']]
+			print("Time to append symbol to dict elements --- %s seconds ---" % (time.time() - start_time))
 
 			start_time=time.time()
-			tempdf=pd.DataFrame.from_dict(response['results'])[columnsNeeded]
-			print("Time to build tempdf--- %s seconds ---" % (time.time() - start_time))
-
-			tempdf['Symbol']=symbol
-
-			start_time=time.time()
-			finalDf=finalDf.append(tempdf)
-			print("Time to append to finaldf--- %s seconds ---" % (time.time() - start_time))
+			finalResultDict=finalResultDict+result
+			print("Time to append to list finalResultDict--- %s seconds ---" % (time.time() - start_time))
 
 			start_time=time.time()
 			lastUnixTimeStamp=self.helperObj.getLastTimeStamp(response)
@@ -54,10 +57,11 @@ class CallPolygonApi(object):
 
 			if self.helperObj.checkTimeStampForPagination(lastUnixTimeStamp,self.extractDataTillTime):
 				paginatedURLS.append(PolygonMethod(date=self.date, symbol=symbol,startTS=str(lastUnixTimeStamp),endTS=self.endTs,limitresult=str(50000)))
-				
+		
 		if len(paginatedURLS)>0:
-			finalDf=self.getDataFromPolygon(getUrls=paginatedURLS,columnsNeeded=columnsNeeded,finalDf=finalDf,PolygonMethod=PolygonMethod)
-		return finalDf
+			finalResultDict=self.getDataFromPolygon(getUrls=paginatedURLS,finalResultDict=finalResultDict,PolygonMethod=PolygonMethod)
+		
+		return finalResultDict
 			
 	def getOpenCloseData(self,openCloseURLs=None):
 		responses=main(openCloseURLs)
@@ -75,13 +79,15 @@ class CallPolygonApi(object):
 		quotes_routines = [Polygonobj.PolygonHistoricQuotes(date=self.date, symbol=symbol,startTS=None,endTS=self.endTs,limitresult=str(50000)) for symbol in ['XLK']]
 		openCloseURLs =[Polygonobj.PolygonDailyOpenClose(date=self.date, symbol=symbol) for symbol in symbols]
 
-		tradesDataDf=pd.DataFrame(columns = ['p','s','t','x','Symbol'])
-		tradesDataDf=self.getDataFromPolygon(getUrls=trade_routines,columnsNeeded=['p','s','t','x'],finalDf=tradesDataDf,PolygonMethod=Polygonobj.PolygonHistoricTrades)
+		#tradesDataDf=pd.DataFrame(columns = ['p','s','t','x','Symbol'])
+		tradesDataDf=self.getDataFromPolygon(getUrls=trade_routines,finalResultDict=[],PolygonMethod=Polygonobj.PolygonHistoricTrades)
+		tradesDataDf=pd.DataFrame(tradesDataDf)[['Symbol','p','s','t','x']]
 		print(tradesDataDf)
 		print(tradesDataDf['Symbol'].unique())
 		
-		quotesDataDf=pd.DataFrame(columns = ['P','S','p','s','t','X','x','Symbol'])
-		quotesDataDf=self.getDataFromPolygon(getUrls=quotes_routines,columnsNeeded=['P','S','p','s','t','X','x'],finalDf=quotesDataDf,PolygonMethod=Polygonobj.PolygonHistoricQuotes)
+		#quotesDataDf=pd.DataFrame(columns = ['P','S','p','s','t','X','x','Symbol'])
+		quotesDataDf=self.getDataFromPolygon(getUrls=quotes_routines,finalResultDict=[],PolygonMethod=Polygonobj.PolygonHistoricQuotes)
+		quotesDataDf=pd.DataFrame(quotesDataDf)[['Symbol','P','S','p','s','t','X','x']]
 		print(quotesDataDf)
 		print(quotesDataDf['Symbol'].unique())
 		

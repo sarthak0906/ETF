@@ -16,7 +16,6 @@ import pandas as pd
 import logging
 import asyncio
 from CalculateETFArbitrage.helper import Helper
-from CalculateETFArbitrage.GetPolygonData import CallPolygonApi
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 from CreateURLSForThreading import CallPolygonApi
 

@@ -13,7 +13,8 @@ from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData, PullH
 from HoldingsDataScripts.DataCleanFeed import PullandCleanData
 from datetime import datetime
 from CommonServices.EmailService import EmailSender
-
+from CommonServices.DirectoryRemover import Directory_Remover
+import getpass
 import logging
 
 filename = datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
@@ -40,6 +41,13 @@ def startCronJobForETFHoldings():
 
 try:
     startCronJobForETFHoldings()
+    # Check for system via username of the system
+    username = getpass.getuser()
+    # Delete both 523 ETF List CSV file and Downloaded Ticker CSV files
+    if username is 'piyush':
+        Directory_Remover('/home/piyush/Desktop/etfnew/ETFAnalysis/ETFDailyData').remdir()
+    else:
+        Directory_Remover('/home/ubuntu/ETFAnalysis/ETFDailyData').remdir()
 except Exception as e:
     print(e)
     logger.exception("Exception in ProcessCaller")

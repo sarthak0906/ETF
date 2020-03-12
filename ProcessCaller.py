@@ -11,12 +11,13 @@ import ETFsList_Scripts.WebdriverServices as serv
 from ETFsList_Scripts.Download523TickersList import Download523TickersList
 from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData, PullHoldingsListClass
 from HoldingsDataScripts.DataCleanFeed import PullandCleanData
-
+from datetime import datetime
 from CommonServices.EmailService import EmailSender
 
 import logging
 
-logging.basicConfig(filename="HoldingsDataLogs.log", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+filename = datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 

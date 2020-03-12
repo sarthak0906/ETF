@@ -6,7 +6,8 @@ import logging
 import time
 from CommonServices.EmailService import EmailSender
 
-logging.basicConfig(filename="HoldingsDataLogs.log", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+filename = datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 

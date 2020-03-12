@@ -11,11 +11,11 @@ my_cron = CronTab(user=username)
 
 # Specify command to be executed by the cronjob
 job = my_cron.new(
-    command='cd /home/ubuntu/ && /home/ubuntu/etfenv/bin/python /home/' + username + '/ETFAnalysis/ProcessCaller.py',
+    command='cd /home/ubuntu/ETFAnalysis/ && /home/ubuntu/etfenv/bin/python3 /home/' + username + '/ETFAnalysis/ProcessCaller.py',
     comment='HoldingsCron')
 
 # specify time parameter = job to run 'on' every '9'th 'hour'
-job.hour.on(12)
+job.hour.on(4)
 
 # write to system crontab
 my_cron.write()

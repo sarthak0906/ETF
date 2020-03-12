@@ -1,15 +1,17 @@
 import sys
 
 sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/etf/ETFAnalysis/ETFsList_Scripts',
-                 '/home/piyush/Desktop/etf/ETFAnalysis/HoldingsDataScripts'])
+                 '/home/piyush/Desktop/etf/ETFAnalysis/HoldingsDataScripts',
+                 '/home/piyush/Desktop/etf/ETFAnalysis/CommonServices'])
 sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_Scripts',
-                 '/home/ubuntu/ETFAnalysis/HoldingsDataScripts'])
+                 '/home/ubuntu/ETFAnalysis/HoldingsDataScripts', '/home/ubuntu/ETFAnalysis/CommonServices'])
 
 import ETFsList_Scripts.WebdriverServices as serv
 from ETFsList_Scripts.Download523TickersList import Download523TickersList
 from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData, PullHoldingsListClass
 from HoldingsDataScripts.DataCleanFeed import PullandCleanData
-import asyncio
+
+from CommonServices.EmailService import EmailSender
 
 import logging
 
@@ -33,8 +35,12 @@ def startCronJobForETFHoldings():
         # Save Holdings for given ETF to DB
         PullandCleanData().readfilesandclean(etf, ETFListDF)
 
+
 try:
     startCronJobForETFHoldings()
 except Exception as e:
     print(e)
     logger.exception("Exception in ProcessCaller")
+    # receiver's address, subject, body - exception message
+    EmailSender('piyush888@gmail.com', 'Exception Occurred', e).sendemail()
+    pass

@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import datetime
 import logging
 import time
+from CommonServices.EmailService import EmailSender
 
 logging.basicConfig(filename="HoldingsDataLogs.log", format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -47,4 +48,5 @@ class DownloadsEtfHoldingsData(masterclass):
                 logger.exception("Exception in DownloadHolding.py")
                 logger.info("Retrying once more")
                 retries -= 1
+                EmailSender('piyush888@gmail.com', 'Exception in DownloadHoldings.py', e).sendemail()
                 pass

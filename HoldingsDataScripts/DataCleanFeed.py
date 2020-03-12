@@ -5,6 +5,7 @@ from mongoengine import *
 
 from HoldingsDataScripts.ETFMongo import ETF
 from HoldingsDataScripts.HoldingsMongo import Holdings
+from CommonServices.EmailService import EmailSender
 
 import logging
 
@@ -98,6 +99,7 @@ class PullandCleanData:
             except Exception as e:
                 logger.critical(e)
                 logger.exception("Exception occurred in DataCleanFeed.py")
+                EmailSender('piyush888@gmail.com', 'Exception in DataCleanFeed.py', e).sendemail()
                 continue
 if __name__== "__main__":
 

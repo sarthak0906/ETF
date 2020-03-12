@@ -1,3 +1,4 @@
+# Add paths to System PATH for the packages to be locatable by python
 import sys
 
 sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/etf/ETFAnalysis/ETFsList_Scripts',
@@ -5,7 +6,7 @@ sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/e
                  '/home/piyush/Desktop/etf/ETFAnalysis/CommonServices'])
 sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_Scripts',
                  '/home/ubuntu/ETFAnalysis/HoldingsDataScripts', '/home/ubuntu/ETFAnalysis/CommonServices'])
-
+# Use absolute import paths
 import ETFsList_Scripts.WebdriverServices as serv
 from ETFsList_Scripts.Download523TickersList import Download523TickersList
 from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData, PullHoldingsListClass
@@ -41,6 +42,6 @@ try:
 except Exception as e:
     print(e)
     logger.exception("Exception in ProcessCaller")
-    # receiver's address, subject, body - exception message
-    EmailSender('piyush888@gmail.com', 'Exception Occurred', e).sendemail()
+    # receivers' address in a list (1 or more addresses), subject, body - exception message
+    EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception Occurred', e).sendemail()
     pass

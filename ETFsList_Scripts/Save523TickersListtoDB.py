@@ -15,12 +15,15 @@ class ETFListSaver:
         self.etflistdf = pd.DataFrame()
 
     def readandclean(self):
+        # specify path from where 523 etf list csv file is to be read
         self.readingpath = './ETFDailyData/ETFTickersDescription/' + datetime.now().strftime(
             "%Y%m%d") + '/etfs_details_type_fund_flow.csv'
+        # read csv file into dataframe
         self.etflistdf = pd.read_csv(self.readingpath)
         print(self.etflistdf)
 
     def pushtodb(self):
+        # Create document for db with 523 etf list
         etflistdocument = ETFListDocument(
             Download_date=datetime.now().date()
         )
@@ -48,5 +51,5 @@ class ETFListSaver:
             etflistdata.ConcentrationRating = str(row['Concentration Rating'])
             etflistdata.ESGScore = float(row['ESG Score'])
             etflistdocument.etflist.append(etflistdata)
-
+        # push to db
         etflistdocument.save()

@@ -12,6 +12,7 @@ logger.setLevel(logging.DEBUG)
 
 from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
 
+
 class PullHoldingsListClass(object):
 
     def __init__(self, dateofdownload=datetime.now().date()):
@@ -22,10 +23,11 @@ class PullHoldingsListClass(object):
     def ReturnetflistDF(self):
         return self.etfdescdf
 
+
 class DownloadsEtfHoldingsData(masterclass):
 
     def fetchHoldingsofETF(self, etfname):
-        retries = 1
+        retries = 1 # all etfs get only one retry upon failure
         while retries >= 0:
             try:
                 # initialise driver and login to ETFdb
@@ -34,13 +36,15 @@ class DownloadsEtfHoldingsData(masterclass):
                         "%Y%m%d"))
                 super().logintoetfdb()
 
+                # get the etf name and request ETFdb page for the same
                 url = 'https://etfdb.com/etf/%s/#holdings' % etfname
                 self.driver.get(url)
-                time.sleep(2)
+                time.sleep(2) # wait for page to load
                 e = self.driver.find_element_by_xpath(
                     '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
-                e.click()
+                e.click() # clicks download button
                 self.driver.close()
+                # if successfully downloaded, no retries needed
                 retries = -1
             except Exception as e:
                 print("Exception in DownloadHolding.py for {}".format(etfname))
@@ -48,5 +52,7 @@ class DownloadsEtfHoldingsData(masterclass):
                 logger.exception("Exception in DownloadHolding.py")
                 logger.info("Retrying once more")
                 retries -= 1
-                EmailSender('piyush888@gmail.com', 'Exception in DownloadHoldings.py', e).sendemail()
+                # send email on every failure
+                EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception in DownloadHoldings.py',
+                            e).sendemail()
                 pass

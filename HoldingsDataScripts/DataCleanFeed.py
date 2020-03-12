@@ -16,34 +16,40 @@ logger.setLevel(logging.DEBUG)
 
 
 class PullandCleanData:
-    
+
     def __init__(self):
         self.savingpath = './ETFDailyData' + '/' + datetime.now().strftime("%Y%m%d")
         self.detailsdata = pd.DataFrame()
         self.holdingsdata = pd.DataFrame()
+        # connect to 'ETF_db' database in Mongodb
         connect('ETF_db', alias='ETF_db')
 
     def readfilesandclean(self, etfname, etfdescdf):
-        # details = Details()
+        # take etf name to be stored and respective data in dataframe format
         for file in os.listdir(self.savingpath):
             filename = file.split('-')[0]
             try:
+                # For all the files downloaded, check for the specified etf and proceed with the same
                 if filename == etfname and file not in ['.DS_Store']:
-                    
                     print("Data loaded to save into Db = " + filename)
                     logger.debug("Data loaded to save into Db = {}".format(filename) )
+
+                    # Read the CSV file, filter the first eleven rows seperated by ":" using regex
                     self.detailsdata = pd.read_csv(self.savingpath + '/' + file, sep='\:\s', nrows=11,
                                                    index_col=False,
                                                    names=['Key', 'Value'])
 
+                    # Clean Data
+                    # Turn to float
                     self.detailsdata.iloc[5]['Value'] = float(self.detailsdata.iloc[5]['Value'][:-1])
-                    # Check for NaN Values in IndexTracker, if it exsists replace with None
 
+                    # Read the holdings data from the CSV into DataFrame and Clean the data
                     self.holdingsdata = pd.read_csv(self.savingpath + '/' + file, header=12,
                                                     names=['Holdings', 'Symbol', 'Weights'])
                     self.holdingsdata['Weights'] = list(map(lambda x: x[:-1], self.holdingsdata['Weights'].values))
                     self.holdingsdata['Weights'] = [float(x) for x in self.holdingsdata['Weights'].values]
 
+                    # Make an ETF object for each holding to be saved as a document in the collection
                     details = ETF(
                         DateOfScraping = datetime.now().date(),
                         ETFTicker=self.detailsdata.iloc[0]['Key'],
@@ -86,21 +92,22 @@ class PullandCleanData:
                             etfdescdf.loc[etfdescdf['Symbol'] == etfname]['ConcentrationRating'].values[0]),
                         ESGScore=float(etfdescdf.loc[etfdescdf['Symbol'] == etfname]['ESGScore'].values[0]),
                     )
-
+                    # For the said document for given etf, feed all the holdings from dataframe into embedded field list
                     for index, row in self.holdingsdata.iterrows():
                         holding = Holdings()
                         holding.TickerName = row.Holdings
                         holding.TickerSymbol = row.Symbol
                         holding.TickerWeight = row.Weights
                         details.holdings.append(holding)
-                    details.save()
+                    details.save() # save the document into the collection in db
                     print("Data for {} saved".format(filename))
                     logger.info("Data for {} saved".format(filename))
             except Exception as e:
                 logger.critical(e)
                 logger.exception("Exception occurred in DataCleanFeed.py")
-                EmailSender('piyush888@gmail.com', 'Exception in DataCleanFeed.py', e).sendemail()
+                EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception in DataCleanFeed.py', e).sendemail()
                 continue
+
 if __name__== "__main__":
 
     PullandCleanData().readfilesandclean()

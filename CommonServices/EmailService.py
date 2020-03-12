@@ -14,10 +14,10 @@ from email.mime.multipart import MIMEMultipart
 
 
 class EmailSender():
-    def __init__(self, receiver, subject, body):
+    def __init__(self, receivers, subject, body):
         self.email_sender = 'ticketsoftware2020@gmail.com'
         self.password = '9bg8!a41ph'
-        self.email_receiver = receiver
+        self.email_receivers = receivers
         self.subject = subject
         self.body = body
 
@@ -25,7 +25,7 @@ class EmailSender():
         try:
             msg = MIMEMultipart()  # used for define multipart message
             msg['From'] = self.email_sender
-            msg['To'] = self.email_receiver
+            msg['To'] = ", ".join(self.email_receivers)
             msg['Subject'] = self.subject
 
             msg.attach(MIMEText(self.body,
@@ -35,7 +35,7 @@ class EmailSender():
             connection = smtplib.SMTP('smtp.gmail.com', 587)
             connection.starttls()
             connection.login(self.email_sender, self.password)
-            connection.sendmail(self.email_sender, self.email_receiver, text)
+            connection.sendmail(self.email_sender, self.email_receivers, text)
             connection.quit()
         except Exception as e:
             print(e)

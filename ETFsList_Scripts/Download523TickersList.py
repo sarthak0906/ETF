@@ -14,7 +14,7 @@ class Download523TickersList(masterclass):
         try:
             super().initialisewebdriver()
             super().logintoetfdb()
-            # Fetch Data
+            # Fetch List using this url
             url = 'https://etfdb.com/etfs/sector/'
             self.driver.get(url)
             element = WebDriverWait(self.driver, 180).until(

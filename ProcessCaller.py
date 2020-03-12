@@ -41,6 +41,7 @@ def startCronJobForETFHoldings():
 
 try:
     startCronJobForETFHoldings()
+    # Begin deletion process after storing to DB is finished
     # Check for system via username of the system
     username = getpass.getuser()
     # Delete both 523 ETF List CSV file and Downloaded Ticker CSV files

@@ -5,7 +5,8 @@ sys.path.append("..")  # Remove in production - KTZ
 from PolygonTickData.PolygonDataAPIConnection2 import PolgonData
 from helper import Helper
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
-from ThreadingRequests import main
+from ThreadingRequests import IOBoundThreading
+from MultiProcessingTasks import CPUBonundThreading
 
 import logging
 import asyncio
@@ -14,11 +15,12 @@ import pandas as pd
 import sys
 import time
 
-class EtfData(object):
-    __slots__ = ('symbol', 'data')
-    def __init__(self, sybl, dt):
+class PolygonResponseStorage(object):
+    __slots__ = ('symbol', 'data','paginatedRequest')
+    def __init__(self, sybl=None, dt=None, paginatedRequest=None):
         self.symbol = sybl
         self.data = dt
+        self.paginatedRequest=paginatedRequest
 
 class CallPolygonApi(object):
 	
@@ -30,41 +32,54 @@ class CallPolygonApi(object):
 		self.endtimeLoop = endtimeLoop  # 4 PM
 		self.extractDataTillTime = self.helperObj.stringTimeToDatetime(date=self.date, time=self.endtimeLoop)
 		self.endTs=self.helperObj.convertHumanTimeToUnixTimeStamp(date=self.date,time=self.endtime)
+		self.PolygonMethod=None
+
 		self.tickHistDataQuotes = None
 		self.tickHistDataTrade = None
 		self.priceforNAVfilling = None
 
-	def getDataFromPolygon(self,getUrls=None,finalResultDict=None,PolygonMethod=None):
-		responses=main(getUrls)
-		paginatedURLS=[]
-		for response in responses:
-			
-			start_time=time.time()
-			symbol=response['ticker']
-			print("Time to get Symbol--- %s seconds ---" % (time.time() - start_time))
-			
-			start_time=time.time()
-			result = [dict(item, **{'Symbol':symbol}) for item in response['results']]
-			print("Time to append symbol to dict elements --- %s seconds ---" % (time.time() - start_time))
 
-			start_time=time.time()
-			finalResultDict=finalResultDict+result
-			print("Time to append to list finalResultDict--- %s seconds ---" % (time.time() - start_time))
-
-			start_time=time.time()
-			lastUnixTimeStamp=self.helperObj.getLastTimeStamp(response)
-			print("Time to get lastUnixTimeStamp--- %s seconds ---" % (time.time() - start_time))
-
-			if self.helperObj.checkTimeStampForPagination(lastUnixTimeStamp,self.extractDataTillTime):
-				paginatedURLS.append(PolygonMethod(date=self.date, symbol=symbol,startTS=str(lastUnixTimeStamp),endTS=self.endTs,limitresult=str(50000)))
+	def extractDataFromResponse(self,response):
+		symbol=response['ticker']
+		print("Symbol being processed "+symbol)
+		# Adding symbols to the response data to make it easier to convert to DF
+		responseData = [dict(item, **{'Symbol':symbol}) for item in response['results']]
 		
+		lastUnixTimeStamp=self.helperObj.getLastTimeStamp(response)
+		paginatedRequest=None
+		if self.helperObj.checkTimeStampForPagination(lastUnixTimeStamp,self.extractDataTillTime):
+			# Create new urls for pagination request
+			# Self.PolygonMethod is intilialized in assemblePolygonData before calling getDataFromPolygon
+			paginatedRequest = self.PolygonMethod(date=self.date, symbol=symbol,startTS=str(lastUnixTimeStamp),endTS=self.endTs,limitresult=str(50000))
+		
+		# Creating an efficient storage object with PolygonResponseStorage for returning 
+		# The results are than processed in getDataFromPolygon by looping over threadingResults
+		PoReObj=PolygonResponseStorage(symbol, responseData, paginatedRequest)
+		return PoReObj
+		
+	def getDataFromPolygon(self,getUrls=None,finalResultDict=None):
+		# Calling IO Bound Threading to fetch data for URLS
+		responses=IOBoundThreading(getUrls)
+		start = time.perf_counter()
+		# Calling CPU Bound Threading to proess the responses from URLS
+		threadingResults=CPUBonundThreading(self.extractDataFromResponse,responses)
+		paginatedURLS=[]
+		for result in threadingResults:
+			finalResultDict=finalResultDict+result.data
+			if result.paginatedRequest:
+				paginatedURLS.append(result.paginatedRequest)
+		
+		finish = time.perf_counter()
+		print(f'Finished in {round(finish-start, 2)} second(s)')
+	
+		# Check if we need to do pagination for results, if Yes we do a recursion call to getDataFromPolygon
 		if len(paginatedURLS)>0:
-			finalResultDict=self.getDataFromPolygon(getUrls=paginatedURLS,finalResultDict=finalResultDict,PolygonMethod=PolygonMethod)
+			finalResultDict=self.getDataFromPolygon(getUrls=paginatedURLS,finalResultDict=finalResultDict)
 		
 		return finalResultDict
 			
 	def getOpenCloseData(self,openCloseURLs=None):
-		responses=main(openCloseURLs)
+		responses=IOBoundThreading(openCloseURLs)
 		priceforNAVfilling={}
 		for response in responses:
 			priceforNAVfilling[response['symbol']] = response['open']
@@ -80,13 +95,15 @@ class CallPolygonApi(object):
 		openCloseURLs =[Polygonobj.PolygonDailyOpenClose(date=self.date, symbol=symbol) for symbol in symbols]
 
 		#tradesDataDf=pd.DataFrame(columns = ['p','s','t','x','Symbol'])
-		tradesDataDf=self.getDataFromPolygon(getUrls=trade_routines,finalResultDict=[],PolygonMethod=Polygonobj.PolygonHistoricTrades)
+		self.PolygonMethod=Polygonobj.PolygonHistoricTrades
+		tradesDataDf=self.getDataFromPolygon(getUrls=trade_routines,finalResultDict=[])
 		tradesDataDf=pd.DataFrame(tradesDataDf)[['Symbol','p','s','t','x']]
 		print(tradesDataDf)
 		print(tradesDataDf['Symbol'].unique())
 		
 		#quotesDataDf=pd.DataFrame(columns = ['P','S','p','s','t','X','x','Symbol'])
-		quotesDataDf=self.getDataFromPolygon(getUrls=quotes_routines,finalResultDict=[],PolygonMethod=Polygonobj.PolygonHistoricQuotes)
+		self.PolygonMethod=Polygonobj.PolygonHistoricQuotes
+		quotesDataDf=self.getDataFromPolygon(getUrls=quotes_routines,finalResultDict=[])
 		quotesDataDf=pd.DataFrame(quotesDataDf)[['Symbol','P','S','p','s','t','X','x']]
 		print(quotesDataDf)
 		print(quotesDataDf['Symbol'].unique())
@@ -95,26 +112,5 @@ class CallPolygonApi(object):
 		print(priceforNAVfilling)
 
 		return tradesDataDf, quotesDataDf, priceforNAVfilling
-
-
-''''
-if __name__ == "__main__":
-	# Create an object of date when we need and time between which we need data
-	previousdate = '2020-03-08'
-	date = '2020-03-09'
-	starttime = '9:30:00'
-	endtime = '17:00:00'
-	endtimeLoop = '16:00:00'
-	etfname = 'XLK'
-
-	etfData = LoadHoldingsdata(etfname=etfname, fundholdingsdate='20200226')
-
-	polygonApi=CallPolygonApi(date=date)
-	polygonApi.assemblePolygonData(etfData.getSymbols())
-'''
-
-
-
-
 
 

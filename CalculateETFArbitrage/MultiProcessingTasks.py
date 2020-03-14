@@ -1,19 +1,11 @@
-from multiprocessing import Process
-import os
+import concurrent.futures
+import time
 
-def info(title):
-    print(title)
-    print('module name:', __name__)
-    if hasattr(os, 'getppid'):  # only available on Unix
-        print('parent process:', os.getppid())
-    print('process id:', os.getpid())
-
-def f(name):
-    info('function f')
-    print 'hello', name
-
-if __name__ == '__main__':
-    info('main line')
-    p = Process(target=f, args=('bob',))
-    p.start()
-    p.join()
+def CPUBonundThreading(methodToBeCalled,dataToBeThreadedOn):
+    
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = executor.map(methodToBeCalled, dataToBeThreadedOn)
+    # Returns an object of results. This result can be anything from strings, to list of objects to a dict
+    # Depends on methodToBeCalled. What it's returning
+    return results
+    

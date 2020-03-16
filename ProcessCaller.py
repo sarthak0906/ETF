@@ -16,11 +16,16 @@ from CommonServices.EmailService import EmailSender
 from CommonServices.DirectoryRemover import Directory_Remover
 import getpass
 import logging
+import os
+if not os.path.exists("Logs/HoldingsScraperLogs/"):
+    os.makedirs("Logs/HoldingsScraperLogs/")
 
-filename = datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+filename = "/home/piyush/Desktop/etfnew/ETFAnalysis/Logs/HoldingsScraperLogs/" + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+handler = logging.FileHandler(filename)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+logger.addHandler(handler)
 
 
 def startCronJobForETFHoldings():
@@ -45,7 +50,7 @@ try:
     # Check for system via username of the system
     username = getpass.getuser()
     # Delete both 523 ETF List CSV file and Downloaded Ticker CSV files
-    if username is 'piyush':
+    if username == 'piyush':
         Directory_Remover('/home/piyush/Desktop/etfnew/ETFAnalysis/ETFDailyData').remdir()
     else:
         Directory_Remover('/home/ubuntu/ETFAnalysis/ETFDailyData').remdir()

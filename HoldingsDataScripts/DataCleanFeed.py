@@ -6,12 +6,17 @@ from mongoengine import *
 from HoldingsDataScripts.ETFMongo import ETF
 from HoldingsDataScripts.HoldingsMongo import Holdings
 from CommonServices.EmailService import EmailSender
-
+import os
+if not os.path.exists("Logs/HoldingsScraperLogs/"):
+    os.makedirs("Logs/HoldingsScraperLogs/")
 import logging
-filename = datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+
+filename = "/home/piyush/Desktop/etfnew/ETFAnalysis/Logs/HoldingsScraperLogs/" + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+handler = logging.FileHandler(filename)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+logger.addHandler(handler)
 
 
 
@@ -106,7 +111,7 @@ class PullandCleanData:
                 logger.critical(e)
                 logger.exception("Exception occurred in DataCleanFeed.py")
                 EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception in DataCleanFeed.py', e).sendemail()
-                continue
+                break
 
 if __name__== "__main__":
 

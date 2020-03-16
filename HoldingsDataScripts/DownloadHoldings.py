@@ -5,11 +5,20 @@ from datetime import datetime
 import logging
 import time
 from CommonServices.EmailService import EmailSender
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
-filename = datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+import os
+
+if not os.path.exists("Logs/HoldingsScraperLogs/"):
+    os.makedirs("Logs/HoldingsScraperLogs/")
+filename = "/home/piyush/Desktop/etfnew/ETFAnalysis/Logs/HoldingsScraperLogs/" + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+handler = logging.FileHandler(filename)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+logger.addHandler(handler)
 
 from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
 
@@ -28,7 +37,7 @@ class PullHoldingsListClass(object):
 class DownloadsEtfHoldingsData(masterclass):
 
     def fetchHoldingsofETF(self, etfname):
-        retries = 1 # all etfs get only one retry upon failure
+        retries = 1  # all etfs get only one retry upon failure
         while retries >= 0:
             try:
                 # initialise driver and login to ETFdb
@@ -40,10 +49,13 @@ class DownloadsEtfHoldingsData(masterclass):
                 # get the etf name and request ETFdb page for the same
                 url = 'https://etfdb.com/etf/%s/#holdings' % etfname
                 self.driver.get(url)
-                time.sleep(2) # wait for page to load
-                e = self.driver.find_element_by_xpath(
-                    '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
-                e.click() # clicks download button
+                time.sleep(2)  # wait for page to load
+                e = WebDriverWait(self.driver, 60).until(
+                    EC.presence_of_element_located((By.XPATH,
+                                                    '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')))
+                # e = self.driver.find_element_by_xpath(
+                #     '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
+                e.click()  # clicks download button
                 self.driver.close()
                 # if successfully downloaded, no retries needed
                 retries = -1

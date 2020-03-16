@@ -13,7 +13,7 @@ import os
 
 if not os.path.exists("Logs/HoldingsScraperLogs/"):
     os.makedirs("Logs/HoldingsScraperLogs/")
-filename = "/home/piyush/Desktop/etfnew/ETFAnalysis/Logs/HoldingsScraperLogs/" + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+filename = "/home/ubuntu/ETFAnalysis/Logs/HoldingsScraperLogs/" + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
 handler = logging.FileHandler(filename)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)

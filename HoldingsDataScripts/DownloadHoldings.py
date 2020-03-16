@@ -53,8 +53,6 @@ class DownloadsEtfHoldingsData(masterclass):
                 e = WebDriverWait(self.driver, 60).until(
                     EC.presence_of_element_located((By.XPATH,
                                                     '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')))
-                # e = self.driver.find_element_by_xpath(
-                #     '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
                 e.click()  # clicks download button
                 self.driver.close()
                 # if successfully downloaded, no retries needed

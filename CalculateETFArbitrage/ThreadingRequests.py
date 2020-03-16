@@ -36,7 +36,7 @@ async def run(getUrls):
             tasks.append(task)
         return await asyncio.gather(*tasks)
 
-def main(getUrls):
+def IOBoundThreading(getUrls):
     loop = asyncio.get_event_loop()
     future = asyncio.ensure_future(run(getUrls))
     responses=loop.run_until_complete(future)

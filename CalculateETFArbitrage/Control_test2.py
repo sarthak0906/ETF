@@ -91,7 +91,7 @@ class RunArbitrage(object):
 if __name__ == "__main__":
     # Create an object of date when we need and time between which we need data
     previousdate = '2020-03-08'
-    date = '2020-03-09'
+    date = '2020-03-13'
     starttime = '9:30:00'
     endtime = '17:00:00'
     endtimeLoop = '16:00:00'

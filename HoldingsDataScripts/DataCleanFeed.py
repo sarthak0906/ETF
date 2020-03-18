@@ -1,21 +1,27 @@
 import pandas as pd
-import os
 from datetime import datetime
 from mongoengine import *
 
 from HoldingsDataScripts.ETFMongo import ETF
 from HoldingsDataScripts.HoldingsMongo import Holdings
 from CommonServices.EmailService import EmailSender
-import os
-if not os.path.exists("Logs/HoldingsScraperLogs/"):
-    os.makedirs("Logs/HoldingsScraperLogs/")
+import getpass
+path = ''
+username = getpass.getuser()
+if username == 'piyush':
+    path = "/home/piyush/Desktop/etfnew/ETFAnalysis/Logs/HoldingsScraperLogs/"
+else:
+    path = "/home/ubuntu/ETFAnalysis/Logs/HoldingsScraperLogs/"
 import logging
+import os
 
-filename = "/home/ubuntu/ETFAnalysis/Logs/HoldingsScraperLogs/" + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+if not os.path.exists(path):
+    os.makedirs(path)
+filename = path + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
 handler = logging.FileHandler(filename)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.ERROR)
 logger.addHandler(handler)
 
 

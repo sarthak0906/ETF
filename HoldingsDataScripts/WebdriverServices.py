@@ -18,8 +18,9 @@ class masterclass:
         self.chrome_options = webdriver.ChromeOptions()
         # specifying default download directory for the particular instance of ChromeDriver
         self.prefs = {'download.default_directory': self.savingpath}
-        self.chrome_options.add_argument("headless")
-        self.chrome_options.add_argument("--remote-debugging-port=9222")
+        self.chrome_options.add_argument("--headless")
+        self.chrome_options.add_argument("--no-sandbox")
+        self.chrome_options.add_argument("--disable-dev-shm-usage")
         self.chrome_options.add_experimental_option('prefs', self.prefs)
         self.driver = webdriver.Chrome(executable_path='./chromextension/chromedriverWin/chromedriver', chrome_options=self.chrome_options)
 

@@ -8,16 +8,22 @@ from CommonServices.EmailService import EmailSender
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-
+import getpass
+path = ''
+username = getpass.getuser()
+if username == 'piyush':
+    path = "/home/piyush/Desktop/etfnew/ETFAnalysis/Logs/HoldingsScraperLogs/"
+else:
+    path = "/home/ubuntu/ETFAnalysis/Logs/HoldingsScraperLogs/"
 import os
 
-if not os.path.exists("Logs/HoldingsScraperLogs/"):
-    os.makedirs("Logs/HoldingsScraperLogs/")
-filename = "/home/ubuntu/ETFAnalysis/Logs/HoldingsScraperLogs/" + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
+if not os.path.exists(path):
+    os.makedirs(path)
+filename = path + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
 handler = logging.FileHandler(filename)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.ERROR)
 logger.addHandler(handler)
 
 from ETFsList_Scripts.List523ETFsMongo import ETFListDocument

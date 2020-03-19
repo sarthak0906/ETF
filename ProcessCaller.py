@@ -17,14 +17,8 @@ from CommonServices.DirectoryRemover import Directory_Remover
 import logging
 # Check for system via username of the system
 import getpass
-path = ''
-username = getpass.getuser()
-if username == 'piyush':
-    path = "/home/piyush/Desktop/etfnew/ETFAnalysis/Logs/HoldingsScraperLogs/"
-else:
-    path = "/home/ubuntu/ETFAnalysis/Logs/HoldingsScraperLogs/"
 import os
-
+path = os.path.join(os.getcwd(), "Logs/HoldingsScraperLogs/")
 if not os.path.exists(path):
     os.makedirs(path)
 filename = path + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
@@ -55,6 +49,7 @@ try:
     startCronJobForETFHoldings()
     # Begin deletion process after storing to DB is finished
     # Delete both 523 ETF List CSV file and Downloaded Ticker CSV files
+    username = getpass.getuser()
     if username == 'piyush':
         Directory_Remover('/home/piyush/Desktop/etfnew/ETFAnalysis/ETFDailyData').remdir()
     else:

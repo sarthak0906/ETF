@@ -5,16 +5,10 @@ from mongoengine import *
 from HoldingsDataScripts.ETFMongo import ETF
 from HoldingsDataScripts.HoldingsMongo import Holdings
 from CommonServices.EmailService import EmailSender
-import getpass
-path = ''
-username = getpass.getuser()
-if username == 'piyush':
-    path = "/home/piyush/Desktop/etfnew/ETFAnalysis/Logs/HoldingsScraperLogs/"
-else:
-    path = "/home/ubuntu/ETFAnalysis/Logs/HoldingsScraperLogs/"
+
 import logging
 import os
-
+path = os.path.join(os.getcwd(), "Logs/HoldingsScraperLogs/")
 if not os.path.exists(path):
     os.makedirs(path)
 filename = path + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"

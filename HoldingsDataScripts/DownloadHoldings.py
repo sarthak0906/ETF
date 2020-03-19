@@ -8,14 +8,9 @@ from CommonServices.EmailService import EmailSender
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-import getpass
-path = ''
-username = getpass.getuser()
-if username == 'piyush':
-    path = "/home/piyush/Desktop/etfnew/ETFAnalysis/Logs/HoldingsScraperLogs/"
-else:
-    path = "/home/ubuntu/ETFAnalysis/Logs/HoldingsScraperLogs/"
 import os
+
+path = os.path.join(os.getcwd(), "Logs/HoldingsScraperLogs/")
 
 if not os.path.exists(path):
     os.makedirs(path)

@@ -43,10 +43,15 @@ class PolygonTradesData(object):
     def fetchTradesDataFromMongoDB(self, symbols=None, date=None):
         objMongoTrades = MongoTradesData()
         data = []
+        dictlist = []
+        dictlistfinal = []
         for symbol in symbols:
             tradesDictData = objMongoTrades.fetchDataFromTradesData(s=symbol, date=date)
-            data = data + (tradesDictData['data'])
-        return pd.DataFrame(data)
+            data.append(tradesDictData['data'])
+            i= len(data)
+            dictlist = eval(data[i-1])
+            dictlistfinal.extend(dictlist)
+        return pd.DataFrame(dictlistfinal)
 
     def createTradesUrlsForStocks(self, symbols=None, date=None, endTs=None):
         createUrls = PolgonDataCreateURLS()

@@ -24,8 +24,7 @@ class TradesdataSchema(mongoengine.Document):
     symbol = mongoengine.StringField(required=True, max_length=200)
     dateForTrades = mongoengine.DateTimeField(required=True)
     dateWhenTradesWereFetched = mongoengine.DateTimeField(required=True)
-
-    data = mongoengine.EmbeddedDocumentListField(TradesDataFields)
+    data = mongoengine.DynamicField()
 
     meta = {
         'indexes': [
@@ -51,24 +50,13 @@ class MongoTradesData(object):
         tradesObj = TradesdataSchema(
             symbol=symbol,
             dateForTrades=datetime.datetime.strptime(dateForTrades, '%Y-%m-%d'),
-            dateWhenTradesWereFetched=datetime.datetime.now()
+            dateWhenTradesWereFetched=datetime.datetime.now(),
+            data=data.to_json(orient='records')
         )
-
         # Parse Trades Data Into Child EmbeddedDocument
         # This thing is taking too much time - KTZ In iterating over each row & saving
         # We can also save just as a Json rather than doing this
-        print("Lot of time consumed in saving data as child data in object Line 60 StoreFetchQuotesData")
-        for index, row in data.iterrows():
-            tradesDataObj = TradesDataFields()
-            tradesDataObj.TradePrice = row.p
-            tradesDataObj.TradeSize = row.s
-            tradesDataObj.TimeStamp = str(row.t)
-            tradesDataObj.Exchange = str(row.x)
 
-            tradesObj.data.append(tradesDataObj)
-        print("Lot of time consumed in saving data as child data in object Line 69 StoreFetchQuotesData")
-
-        # Saved Successfully
         try:
             tradesObj.save()
             return True
@@ -79,8 +67,8 @@ class MongoTradesData(object):
 
     def fetchDataFromTradesData(self, s=None, date=None):
         tradesD = TradesdataSchema.objects.filter(Q(symbol=s) & Q(dateForTrades=date)).first()
-        tradesD = tradesD.to_json()
-        return json.loads(tradesD)
+        tradesD = tradesD.to_mongo().to_dict()
+        return tradesD
 
     def doesItemExsistInTradesMongoDb(self, s=None, date=None):
         s = TradesdataSchema.objects.filter(Q(symbol=s) & Q(dateForTrades=date))

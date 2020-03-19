@@ -2,11 +2,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import time
-
 import functools
 
-from PolygonTickData.PolygonDataAPIConnection import PolgonData
-from HoldingsDataScripts.HoldingsMongo import Holdings
 ###################################################################
 ### Use this class for performing actions and keep code clean  ####
 ###################################################################

@@ -2,11 +2,11 @@ import sys  # Remove in production - KTZ
 
 sys.path.append("..")  # Remove in production - KTZ
 
-from PolygonTickData.PolygonDataAPIConnection2 import PolgonData
-from helper import Helper
+from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
+from PolygonTickData.Helper import Helper
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
-from ThreadingRequests import IOBoundThreading
-from MultiProcessingTasks import CPUBonundThreading
+from CommonServices.ThreadingRequests import IOBoundThreading
+from CommonServices.MultiProcessingTasks import CPUBonundThreading
 
 import logging
 import asyncio
@@ -22,9 +22,9 @@ class PolygonResponseStorage(object):
         self.data = dt
         self.paginatedRequest=paginatedRequest
 
-class CallPolygonApi(object):
+class FetchPolygonData(object):
 	
-	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00'):
+	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00', PolygonMethod=None):
 		self.helperObj = Helper()
 		self.date = date
 		self.starttime = starttime  # 9 AM
@@ -32,14 +32,10 @@ class CallPolygonApi(object):
 		self.endtimeLoop = endtimeLoop  # 4 PM
 		self.extractDataTillTime = self.helperObj.stringTimeToDatetime(date=self.date, time=self.endtimeLoop)
 		self.endTs=self.helperObj.convertHumanTimeToUnixTimeStamp(date=self.date,time=self.endtime)
-		self.PolygonMethod=None
+		self.PolygonMethod=PolygonMethod
 
-		self.tickHistDataQuotes = None
-		self.tickHistDataTrade = None
-		self.priceforNAVfilling = None
-
-
-	def extractDataFromResponse(self,response):
+		
+	def __extractDataFromResponse(self,response):
 		symbol=response['ticker']
 		print("Symbol being processed "+symbol)
 		# Adding symbols to the response data to make it easier to convert to DF
@@ -60,35 +56,25 @@ class CallPolygonApi(object):
 	def getDataFromPolygon(self,getUrls=None,finalResultDict=None):
 		# Calling IO Bound Threading to fetch data for URLS
 		responses=IOBoundThreading(getUrls)
-		start = time.perf_counter()
 		# Calling CPU Bound Threading to proess the responses from URLS
-		threadingResults=CPUBonundThreading(self.extractDataFromResponse,responses)
+		threadingResults=CPUBonundThreading(self.__extractDataFromResponse,responses)
 		paginatedURLS=[]
 		for result in threadingResults:
 			finalResultDict=finalResultDict+result.data
 			if result.paginatedRequest:
 				paginatedURLS.append(result.paginatedRequest)
-		
-		finish = time.perf_counter()
-		print(f'Finished in {round(finish-start, 2)} second(s)')
-	
+		return finalResultDict
 		# Check if we need to do pagination for results, if Yes we do a recursion call to getDataFromPolygon
 		if len(paginatedURLS)>0:
 			finalResultDict=self.getDataFromPolygon(getUrls=paginatedURLS,finalResultDict=finalResultDict)
 		
 		return finalResultDict
 			
-	def getOpenCloseData(self,openCloseURLs=None):
-		responses=IOBoundThreading(openCloseURLs)
-		priceforNAVfilling={}
-		for response in responses:
-			priceforNAVfilling[response['symbol']] = response['open']
-		return priceforNAVfilling
-
+	'''
 	# Pass here etfdata object
 	def assemblePolygonData(self,symbols):
 	# Objects for polygon requests
-		Polygonobj = PolgonData()
+		Polygonobj = PolgonDataCreateURLS()
 		# Get all tickers for the ETF
 		trade_routines = [Polygonobj.PolygonHistoricTrades(date=self.date, symbol=symbol,startTS=None,endTS=self.endTs,limitresult=str(50000)) for symbol in symbols]
 		quotes_routines = [Polygonobj.PolygonHistoricQuotes(date=self.date, symbol=symbol,startTS=None,endTS=self.endTs,limitresult=str(50000)) for symbol in ['XLK']]
@@ -112,5 +98,5 @@ class CallPolygonApi(object):
 		print(priceforNAVfilling)
 
 		return tradesDataDf, quotesDataDf, priceforNAVfilling
-
+	'''
 

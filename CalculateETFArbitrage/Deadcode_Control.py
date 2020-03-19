@@ -15,7 +15,7 @@ sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/e
 import pandas as pd
 import logging
 import asyncio
-from CalculateETFArbitrage.helper import Helper
+from PolygonTickData.helper import Helper
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 from CreateURLSForThreading import CallPolygonApi
 

@@ -8,7 +8,7 @@ import pandas as pd
 from time import mktime
 
 
-class PolgonData(object):
+class PolgonDataCreateURLS(object):
 
 	def __init__(self):
 		self.params=params = (('apiKey', 'M_PKVL_rqHZI7VM9ZYO_hwPiConz5rIklx893F'),)

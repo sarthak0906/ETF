@@ -1,4 +1,5 @@
 import mongoengine
+from mongoengine.queryset.visitor import Q
 import datetime
 import json
 mongoengine.connect('ETF_db', alias='ETF_db')
@@ -54,6 +55,9 @@ class MongoQuotesData(object):
 			)
 
 		# Parse Quotes Data Into Child EmbeddedDocument
+		# This thing is taking too much time - KTZ In iterating over each row & saving
+		# We can also save just as a Json rather than doing this
+		print("Lot of time consumed in saving data as child data in object Lin3 59 StoreFetchQuotesData")
 		for index, row in data.iterrows():
 			quotesDataObj = QuotesDataFields()
 			quotesDataObj.AskPrice=row.P
@@ -65,7 +69,8 @@ class MongoQuotesData(object):
 			quotesDataObj.TimeStamp=str(row.t)
 
 			quotesObj.data.append(quotesDataObj)
-		
+		print("Lot of time consumed in saving data as child data in object Lin3 59 StoreFetchQuotesData")
+
 		# Saved Successfully
 		try:
 			quotesObj.save()
@@ -75,9 +80,16 @@ class MongoQuotesData(object):
 			print(e)
 			return False
 
+	def fetchDataFromQuotesData(self,s=None, date=None):
+		quotesD = QuotesdataSchema.objects.filter(Q(symbol=s) & Q(dateForQuotes=date)).first()
+		quotesD=quotesD.to_json()
+		return json.loads(quotesD)
+		
+
 	def doesItemExsistInQuotesMongoDb(self, s=None, date=None):
-		s = QuotesdataSchema.objects(symbol='XLP',dateForQuotes='ISODate({})'.format(date))
-		return True if len(s)==1 else False
+		s = QuotesdataSchema.objects.filter(Q(symbol=s) & Q(dateForQuotes=date))
+		# Return False is list is empty, that mean symbol, date combination doesn't exsist and it needs to be downloaded
+		return False if not s else True
 		
 
 

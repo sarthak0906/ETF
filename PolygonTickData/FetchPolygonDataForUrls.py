@@ -63,7 +63,7 @@ class FetchPolygonData(object):
 			finalResultDict=finalResultDict+result.data
 			if result.paginatedRequest:
 				paginatedURLS.append(result.paginatedRequest)
-		return finalResultDict
+		return finalResultDict # - Temporarily added to save time for writting code - KTZ
 		# Check if we need to do pagination for results, if Yes we do a recursion call to getDataFromPolygon
 		if len(paginatedURLS)>0:
 			finalResultDict=self.getDataFromPolygon(getUrls=paginatedURLS,finalResultDict=finalResultDict)
@@ -81,6 +81,7 @@ class FetchPolygonData(object):
 		openCloseURLs =[Polygonobj.PolygonDailyOpenClose(date=self.date, symbol=symbol) for symbol in symbols]
 
 		#tradesDataDf=pd.DataFrame(columns = ['p','s','t','x','Symbol'])
+		# p : TradePrice, s : TradeSie, t :Timestamp, x: Exchange
 		self.PolygonMethod=Polygonobj.PolygonHistoricTrades
 		tradesDataDf=self.getDataFromPolygon(getUrls=trade_routines,finalResultDict=[])
 		tradesDataDf=pd.DataFrame(tradesDataDf)[['Symbol','p','s','t','x']]

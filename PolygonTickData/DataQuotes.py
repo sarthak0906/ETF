@@ -30,20 +30,26 @@ class PolygonQuotesData(object):
 		else:
 			print("Error Occured While Saving {} for {} at {}".format(symbol,dateForQuotes,datetime.datetime.now()))
 		
-	# Checks if quotes data already exsists for the symbol and date
-	def checkIfQuotesDataExsistInMongoDB(self, symbol=None, date=None):
+	# Check if symbol,date pair exsist in MongoDB, If don't exsist download URLs for the symbols
+	def checkIfQuotesDataExsistInMongoDB(self, symbols=None, date=None):
 		objMongoQuotes = MongoQuotesData()
-		return objMongoQuotes.doesItemExsistInQuotesMongoDb(symbol,date)
-	
-	def fetchQuotesDataFromMongoDBIfExsist(self):
-		pass
-
-	def createQuotesUrlsForStocks(self,symbols=None, date=None, endTs=None):
-		quotesRoutines=[]
-		createUrls=PolgonDataCreateURLS()
+		symbolsToBeDownloaded=[]
 		for symbol in symbols:
-			if not self.checkIfQuotesDataExsistInMongoDB(symbol,date):
-					quotesRoutines.append(createUrls.PolygonHistoricQuotes(date=date, symbol=symbol,startTS=None,endTS=endTs,limitresult=str(50000)))
+			if not objMongoQuotes.doesItemExsistInQuotesMongoDb(symbol,date):
+				symbolsToBeDownloaded.append(symbol)
+		return symbolsToBeDownloaded
+
+	def fetchQuotesDataFromMongoDB(self,symbols=None, date=None):
+		objMongoQuotes = MongoQuotesData()
+		data=[]
+		for symbol in symbols:
+			quotesDictData=objMongoQuotes.fetchDataFromQuotesData(s=symbol, date=date)
+			data=data+(quotesDictData['data'])
+		return pd.DataFrame(data)
+		
+	def createQuotesUrlsForStocks(self,symbols=None, date=None, endTs=None):
+		createUrls=PolgonDataCreateURLS()
+		quotesRoutines = [createUrls.PolygonHistoricQuotes(date=date, symbol=symbol,startTS=None,endTS=endTs,limitresult=str(50000)) for symbol in symbols]
 		return quotesRoutines
 
 
@@ -55,16 +61,29 @@ class AssembleQuotesData(object):
 		self.objQuotes=PolygonQuotesData()
 		
 	def getQuotesData(self):
-		# Create URLs
-		quotesRoutines=self.objQuotes.createQuotesUrlsForStocks(symbols=self.symbols, date=self.date, endTs= self.endTs)
-		# Fetch Data for URLs
-		finalResultDf=self.objQuotes.fetchQuotesDataFromPolygonAPI(quotesRoutines=quotesRoutines, date=self.date)
-		# Save the finalResultDf into MongoDb one by one for each symbol
-		for symbol in self.symbols:
-			data=finalResultDf[finalResultDf['Symbol']==symbol]
-			_ = self.objQuotes.saveQuotesDataInMongoDB(symbol=symbol, dateForQuotes=self.date, data=data)
-		
+		# Perform check if symbols need to be downloaded or they already exist in the DB
+		symbolsToBeDownloaded = self.objQuotes.checkIfQuotesDataExsistInMongoDB(symbols=self.symbols, date=self.date)
+		# Check if any symbol needs to be downloaded
+		if symbolsToBeDownloaded:
+			# Create URLs
+			quotesRoutines=self.objQuotes.createQuotesUrlsForStocks(symbols=symbolsToBeDownloaded, date=self.date, endTs= self.endTs)
+			# Fetch Data for URLs
+			finalResultDf=self.objQuotes.fetchQuotesDataFromPolygonAPI(quotesRoutines=quotesRoutines, date=self.date)
+			
+			print("DataQuotes.py Time to Do a query over symbol in Pandas Dataframe Line 73")
+			# Save the finalResultDf into MongoDb one by one for each symbol
+			# This thing is taking too much time - KTZ In searching over symbol
+			for symbol in symbolsToBeDownloaded:
+				data=finalResultDf[finalResultDf['Symbol']==symbol]
+				_ = self.objQuotes.saveQuotesDataInMongoDB(symbol=symbol, dateForQuotes=self.date, data=data)
+			print("DataQuotes.py - Line 79 ")
+
+		# Prepare to Return a dataframe for the Symbols
+		return self.objQuotes.fetchQuotesDataFromMongoDB(symbols =self.symbols, date = self.date)
+			
 if __name__ == "__main__":
 	ob=AssembleQuotesData(symbols=['XLK'],date='2020-03-13')
-	ob.getQuotesData()
+	quotesDataDf=ob.getQuotesData()
+	print(quotesDataDf)
+
 

@@ -26,19 +26,24 @@ class PolygonQuotesData(object):
 		objMongoQuotes = MongoQuotesData()
 		savingStatus = objMongoQuotes.saveQuotesDataToMongo(symbol=symbol, dateForQuotes=dateForQuotes, data=data)
 		if savingStatus:
-			print("Saved Successfully")
+			print("Saved Succesfully {} for {} at {}".format(symbol,dateForQuotes,datetime.datetime.now()))
 		else:
 			print("Error Occured While Saving {} for {} at {}".format(symbol,dateForQuotes,datetime.datetime.now()))
 		
-	def checkIfQuotesDataExsistInMongoDB(self):
-		pass
-
+	# Checks if quotes data already exsists for the symbol and date
+	def checkIfQuotesDataExsistInMongoDB(self, symbol=None, date=None):
+		objMongoQuotes = MongoQuotesData()
+		return objMongoQuotes.doesItemExsistInQuotesMongoDb(symbol,date)
+	
 	def fetchQuotesDataFromMongoDBIfExsist(self):
 		pass
 
 	def createQuotesUrlsForStocks(self,symbols=None, date=None, endTs=None):
+		quotesRoutines=[]
 		createUrls=PolgonDataCreateURLS()
-		quotesRoutines = [createUrls.PolygonHistoricQuotes(date=date, symbol=symbol,startTS=None,endTS=endTs,limitresult=str(50000)) for symbol in symbols]
+		for symbol in symbols:
+			if not self.checkIfQuotesDataExsistInMongoDB(symbol,date):
+					quotesRoutines.append(createUrls.PolygonHistoricQuotes(date=date, symbol=symbol,startTS=None,endTS=endTs,limitresult=str(50000)))
 		return quotesRoutines
 
 
@@ -54,7 +59,7 @@ class AssembleQuotesData(object):
 		quotesRoutines=self.objQuotes.createQuotesUrlsForStocks(symbols=self.symbols, date=self.date, endTs= self.endTs)
 		# Fetch Data for URLs
 		finalResultDf=self.objQuotes.fetchQuotesDataFromPolygonAPI(quotesRoutines=quotesRoutines, date=self.date)
-		# Save the Dict result into DataFrame
+		# Save the finalResultDf into MongoDb one by one for each symbol
 		for symbol in self.symbols:
 			data=finalResultDf[finalResultDf['Symbol']==symbol]
 			_ = self.objQuotes.saveQuotesDataInMongoDB(symbol=symbol, dateForQuotes=self.date, data=data)

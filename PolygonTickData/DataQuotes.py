@@ -1,80 +1,23 @@
-# API to get Quotes Data 
-# Check if Quotes data already exists in MongoDB, If Does fetch from MongoDb
-# If Doesn't exist fetch from polygon and save in MongoDb
-
-# Gather quotes data in AssembleQuotesData and return 'READY' a Quotes pandas dataframe object
 import sys
-
 sys.path.append("..")  # Remove in production - KTZ
 
-import pandas as pd
-import datetime
-import ast # Converts string list to a Python List
 
-from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
-from PolygonTickData.FetchPolygonDataForUrls import FetchPolygonData
+from PolygonTickData.CommonPolygonTradeQuotes import AssembleData
 from MongoDB.StoreFetchQuotesData import MongoQuotesData
-from PolygonTickData.Helper import Helper
-
-
-class PolygonQuotesData(object):
-
-    def fetchQuotesDataFromPolygonAPI(self, quotesRoutines=None, date=None):
-        objFetchData = FetchPolygonData(date=date, PolygonMethod=PolgonDataCreateURLS().PolygonHistoricQuotes, storeDataInMongo=storeDataInMongo)
-        storageAndCrawlingStatus = objFetchData.getDataFromPolygon(getUrls=quotesRoutines)
-        if storageAndCrawlingStatus:
-            print("Data was successfully got and stored")
-        else:
-            print("Issue occured while getting & saving data from Polygon")
-        
-
-    # Check if symbol,date pair exsist in MongoDB, If don't exsist download URLs for the symbols
-    def checkIfQuotesDataExsistInMongoDB(self, symbols=None, date=None):
-        objMongoQuotes = MongoQuotesData()
-        symbolsToBeDownloaded = []
-        for symbol in symbols:
-            if not objMongoQuotes.doesItemExsistInQuotesMongoDb(symbol, date):
-                symbolsToBeDownloaded.append(symbol)
-        return symbolsToBeDownloaded
-
-    def fetchQuotesDataFromMongoDB(self, symbols=None, date=None):
-        objMongoQuotes = MongoQuotesData()
-        data = []
-        for symbol in symbols:
-            quotesDictData = objMongoQuotes.fetchDataFromQuotesData(s=symbol, date=date)
-            data = data + quotesDictData['data']
-        return pd.DataFrame(data)
-
-    def createQuotesUrlsForStocks(self, symbols=None, date=None, endTs=None):
-        createUrls = PolgonDataCreateURLS()
-        quotesRoutines = [createUrls.PolygonHistoricQuotes(date=date, symbol=symbol, startTS=None, endTS=endTs,
-                                                           limitresult=str(50000)) for symbol in symbols]
-        return quotesRoutines
-
-
-class AssembleQuotesData(object):
-    def __init__(self, symbols=None, date=None):
-        self.date = date
-        self.endTs = Helper().convertHumanTimeToUnixTimeStamp(date=self.date, time='17:00:00')
-        self.symbols = symbols
-        self.objQuotes = PolygonQuotesData()
-
-    def getQuotesData(self):
-        # Perform check if symbols need to be downloaded or they already exist in the DB
-        symbolsToBeDownloaded = self.objQuotes.checkIfQuotesDataExsistInMongoDB(symbols=self.symbols, date=self.date)
-        # Check if any symbol needs to be downloaded
-        if symbolsToBeDownloaded:
-            # Create URLs
-            quotesRoutines = self.objQuotes.createQuotesUrlsForStocks(symbols=symbolsToBeDownloaded, date=self.date,
-                                                                      endTs=self.endTs)
-            # Fetch Data for URLs
-            _ = self.objQuotes.fetchQuotesDataFromPolygonAPI(quotesRoutines=quotesRoutines, date=self.date, storeDataInMongo= MongoQuotesData().saveQuotesDataToMongo)
-
-        # Prepare to Return a dataframe for the Symbols
-        return self.objQuotes.fetchQuotesDataFromMongoDB(symbols=self.symbols, date=self.date)
+from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
 
 
 if __name__ == "__main__":
-    ob = AssembleQuotesData(symbols=['XLK'], date='2020-03-13')
-    quotesDataDf = ob.getQuotesData()
-    print(quotesDataDf)    
+    ob = AssembleData(symbols=['XLK'], date='2020-03-13')
+    
+    dataExsist=MongoQuotesData().doesItemExsistInQuotesMongoDb
+    createUrlsMethod=PolgonDataCreateURLS().PolygonHistoricQuotes
+    saveDataMethod= MongoQuotesData().saveQuotesDataToMongo
+    fetchDataMethod= MongoQuotesData().fetchDataFromQuotesData
+
+    tradesDataDf = ob.getData(dataExsistMethod=dataExsist, 
+        createUrlsMethod=createUrlsMethod, 
+        saveDataMethod=saveDataMethod, 
+        fetchDataMethod=fetchDataMethod)
+
+    print(tradesDataDf)

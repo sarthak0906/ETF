@@ -53,9 +53,12 @@ class MongoTradesQuotesData(object):
         return self.saveDataInBatches(symbol=symbol, datetosave=datetosave, savedata=savedata, batchSize=batchSize, dataschematype=dataschematype)
 
     def fetchQuotesTradesDataFromMongo(self, s=None, date=None, dataschematype=None):
-        dataD = dataschematype.objects.filter(Q(symbol=s) & Q(dateForData=date)).first()
-        dataD = dataD.to_mongo().to_dict()
-        return dataD
+        combineddata = []
+        dataD = dataschematype.objects.filter(Q(symbol=s) & Q(dateForData=date))
+        for item in dataD:
+            item = item.to_mongo().to_dict()
+            combineddata.extend(item['data'])
+        return combineddata
 
     def doesItemExsistInQuotesTradesMongoDb(self, s=None, date=None, dataschematype=None):
         s = dataschematype.objects.filter(Q(symbol=s) & Q(dateForData=date))

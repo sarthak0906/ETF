@@ -21,4 +21,4 @@ if __name__ == "__main__":
                               fetchDataMethod=fetchDataMethod,
                               dataschematype=dataschematype)
 
-    print(tradesDataDf)
+    print(tradesDataDf.columns)

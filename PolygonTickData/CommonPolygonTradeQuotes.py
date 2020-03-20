@@ -35,11 +35,13 @@ class PolygonQuotesTradesData(object):
 
     # Fetch Data from MongoDb
     def fetchDataFromMongoDB(self, symbols=None, date=None, dataschematype=None):
-        data=[]
+        data=[] # Will become a list of all dictionary elements
         for symbol in symbols:
             DictData = self.mtqd.fetchQuotesTradesDataFromMongo(s=symbol, date=date,
                                                                             dataschematype=dataschematype)
-            data = data + DictData['data']
+            DictData = [dict(item, **{'Symbol': symbol}) for item in DictData]
+            # DictData returns a list of dictionary elements
+            data.extend(DictData)
         return pd.DataFrame(data)
 
     # Create Urls to get data for

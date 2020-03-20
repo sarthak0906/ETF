@@ -19,22 +19,14 @@ from PolygonTickData.Helper import Helper
 
 class PolygonQuotesData(object):
 
-    def fetchQuotesDataFromPolygonAPI(self, quotesRoutines=None, date=None, storeDataInMongo=None):
-        objFetchData = FetchPolygonData(date=date, PolygonMethod=PolgonDataCreateURLS().PolygonHistoricQuotes)
-        storageAndCrawlingStatus = objFetchData.getDataFromPolygon(getUrls=quotesRoutines, storeDataInMongo=storeDataInMongo)
+    def fetchQuotesDataFromPolygonAPI(self, quotesRoutines=None, date=None):
+        objFetchData = FetchPolygonData(date=date, PolygonMethod=PolgonDataCreateURLS().PolygonHistoricQuotes, storeDataInMongo=storeDataInMongo)
+        storageAndCrawlingStatus = objFetchData.getDataFromPolygon(getUrls=quotesRoutines)
         if storageAndCrawlingStatus:
             print("Data was successfully got and stored")
         else:
             print("Issue occured while getting & saving data from Polygon")
         
-
-    def saveQuotesDataInMongoDB(self, symbol=None, dateForQuotes=None, data=None):
-        objMongoQuotes = MongoQuotesData()
-        savingStatus = objMongoQuotes.saveQuotesDataToMongo(symbol=symbol, dateForQuotes=dateForQuotes, data=data)
-        if savingStatus:
-            print("Saved Succesfully {} for {} at {}".format(symbol, dateForQuotes, datetime.datetime.now()))
-        else:
-            print("Error Occured While Saving {} for {} at {}".format(symbol, dateForQuotes, datetime.datetime.now()))
 
     # Check if symbol,date pair exsist in MongoDB, If don't exsist download URLs for the symbols
     def checkIfQuotesDataExsistInMongoDB(self, symbols=None, date=None):

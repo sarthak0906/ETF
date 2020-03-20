@@ -19,19 +19,14 @@ from PolygonTickData.Helper import Helper
 
 class PolygonTradesData(object):
 
-    def fetchTradesDataFromPolygonAPI(self, tradesRoutines=None, date=None):
-        objFetchData = FetchPolygonData(date=date, PolygonMethod=PolgonDataCreateURLS().PolygonHistoricTrades)
-        finalResultDict = objFetchData.getDataFromPolygon(getUrls=tradesRoutines, finalResultDict=[])
-        return pd.DataFrame(finalResultDict)[['Symbol', 'p', 's', 't', 'x']]
-
-    def saveTradesDataInMongoDB(self, symbol=None, dateForTrades=None, data=None):
-        objMongoTrades = MongoTradesData()
-        savingStatus = objMongoTrades.saveTradesDataToMongo(symbol=symbol, dateForTrades=dateForTrades, data=data)
-        if savingStatus:
-            print("Saved Succesfully {} for {} at {}".format(symbol, dateForTrades, datetime.datetime.now()))
+    def fetchTradesDataFromPolygonAPI(self, tradesRoutines=None, date=None, storeDataInMongo=None):
+        objFetchData = FetchPolygonData(date=date, PolygonMethod=PolgonDataCreateURLS().PolygonHistoricTrades, storeDataInMongo=storeDataInMongo)
+        storageAndCrawlingStatus = objFetchData.getDataFromPolygon(getUrls=tradesRoutines)
+        if storageAndCrawlingStatus:
+            print("Data was successfully got and stored")
         else:
-            print("Error Occured While Saving {} for {} at {}".format(symbol, dateForTrades, datetime.datetime.now()))
-
+            print("Issue occured while getting & saving data from Polygon")
+    
     # Check if symbol,date pair exist in MongoDB, If don't exist download URLs for the symbols
     def checkIfTradesDataExsistInMongoDB(self, symbols=None, date=None):
         objMongoTrades = MongoTradesData()
@@ -48,7 +43,7 @@ class PolygonTradesData(object):
         dictlistfinal = []
         for symbol in symbols:
             tradesDictData = objMongoTrades.fetchDataFromTradesData(s=symbol, date=date)
-            data = data + ast.literal_eval(tradesDictData['data'])
+            data = data + tradesDictData['data']
         return pd.DataFrame(data)
 
     def createTradesUrlsForStocks(self, symbols=None, date=None, endTs=None):
@@ -74,14 +69,8 @@ class AssembleTradesData(object):
             tradesRoutines = self.objTrades.createTradesUrlsForStocks(symbols=symbolsToBeDownloaded, date=self.date,
                                                                       endTs=self.endTs)
             # Fetch Data for URLs
-            finalResultDf = self.objTrades.fetchTradesDataFromPolygonAPI(tradesRoutines=tradesRoutines, date=self.date)
+            _ = self.objTrades.fetchTradesDataFromPolygonAPI(tradesRoutines=tradesRoutines, date=self.date, storeDataInMongo= MongoTradesData().saveTradesDataToMongo)
 
-            # Save the finalResultDf into MongoDb one by one for each symbol
-            # This thing is taking too much time - KTZ In searching over symbol
-            for symbol in symbolsToBeDownloaded:
-                data = finalResultDf[finalResultDf['Symbol'] == symbol]
-                _ = self.objTrades.saveTradesDataInMongoDB(symbol=symbol, dateForTrades=self.date, data=data)
-            
         # Prepare to Return a dataframe for the Symbols
         return self.objTrades.fetchTradesDataFromMongoDB(symbols=self.symbols, date=self.date)
 

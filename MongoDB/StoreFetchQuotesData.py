@@ -40,7 +40,7 @@ class MongoQuotesData(object):
         pass
 
     def saveQuotesInBatches(self,symbol=None, datetosave=None, savedata=None, batchSize=None):
-        print("batchSize is="+str(batchSize))
+        print(symbol+" BatchSize is="+str(batchSize))
         quotesObj = QuotesdataSchema(
             symbol=symbol,
             dateForQuotes=datetime.datetime.strptime(datetosave, '%Y-%m-%d'),
@@ -59,10 +59,8 @@ class MongoQuotesData(object):
 
     def saveQuotesDataToMongo(self, symbol=None, datetosave=None, savedata=None):
         if not self.doesItemExsistInQuotesMongoDb(s=symbol, date=datetosave):
-            print("First time")
             batchSize=0
         else:
-            print("second time")
             # Object already exsists we need to increment Batch Size and add new Document For it. We retrieve last entry
             quotesD = QuotesdataSchema.objects.filter(Q(symbol=symbol) & Q(dateForQuotes=datetosave)).order_by('-id').first()
             quotesD = quotesD.to_mongo().to_dict()
@@ -71,7 +69,7 @@ class MongoQuotesData(object):
         return self.saveQuotesInBatches(symbol=symbol, datetosave=datetosave, savedata=savedata, batchSize=batchSize)
 
     def fetchDataFromQuotesData(self, s=None, date=None):
-        quotesD = QuotesdataSchema.objects.filter(Q(symbol=s) & Q(dateForQuotes=date)).first()
+        quotesD = QuotesdataSchema.objects.filter(Q(symbol=s) & Q(dateForQuotes=date))
         quotesD = quotesD.to_mongo().to_dict()
         return quotesD
 

@@ -16,15 +16,13 @@ import sys
 import time
 
 class PolygonResponseStorage(object):
-    __slots__ = ('symbol', 'data','paginatedRequest')
-    def __init__(self, symbol=None, data=None, paginatedRequest=None):
-        self.symbol = symbol
-        self.data = data
+    __slots__ = ('paginatedRequest')
+    def __init__(self, paginatedRequest=None):
         self.paginatedRequest=paginatedRequest
         
 class FetchPolygonData(object):
 	
-	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00', PolygonMethod=None):
+	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00', PolygonMethod=None, storeDataInMongo=None):
 		self.helperObj = Helper()
 		self.date = date
 		self.starttime = starttime  # 9 AM
@@ -33,6 +31,7 @@ class FetchPolygonData(object):
 		self.extractDataTillTime = self.helperObj.stringTimeToDatetime(date=self.date, time=self.endtimeLoop)
 		self.endTs=self.helperObj.convertHumanTimeToUnixTimeStamp(date=self.date,time=self.endtime)
 		self.PolygonMethod=PolygonMethod
+		self.storeDataInMongo=storeDataInMongo
 
 		
 	def __extractDataFromResponse(self,response):
@@ -46,10 +45,11 @@ class FetchPolygonData(object):
 			paginatedRequest = self.PolygonMethod(date=self.date, symbol=symbol,startTS=str(lastUnixTimeStamp),endTS=self.endTs,limitresult=str(50000))
 		
 		# Creating an efficient storage object with PolygonResponseStorage for returning 
-		PoReObj=PolygonResponseStorage(symbol=symbol, data=response['results'], paginatedRequest=paginatedRequest)
+		_ = self.storeDataInMongo( symbol=symbol, datetosave=self.date, savedata=response['results'])
+		PoReObj=PolygonResponseStorage(paginatedRequest=paginatedRequest)
 		return PoReObj
 		
-	def getDataFromPolygon(self,getUrls=None, storeDataInMongo=None):
+	def getDataFromPolygon(self,getUrls=None):
 		# Calling IO Bound Threading to fetch data for URLS
 		responses=IOBoundThreading(getUrls)
 		# Calling CPU Bound Threading to proess the responses from URLS
@@ -57,14 +57,12 @@ class FetchPolygonData(object):
 		paginatedURLS=[]
 		for result in threadingResults:
 			# Store Data In MongoDB
-			_ = storeDataInMongo( symbol=result.symbol, datetosave=self.date, savedata=result.data)
 			if result.paginatedRequest:
 				paginatedURLS.append(result.paginatedRequest)
 		
 		# Check if we need to do pagination for results, if Yes we do a recursion call to getDataFromPolygon
 		if len(paginatedURLS)>0:
-			_ = self.getDataFromPolygon(getUrls=paginatedURLS,storeDataInMongo=storeDataInMongo)
-		
+			_ = self.getDataFromPolygon(getUrls=paginatedURLS)
 		return True
 			
 	'''

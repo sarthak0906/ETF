@@ -24,12 +24,13 @@ class TradesdataSchema(mongoengine.Document):
     symbol = mongoengine.StringField(required=True, max_length=200)
     dateForTrades = mongoengine.DateTimeField(required=True)
     dateWhenTradesWereFetched = mongoengine.DateTimeField(required=True)
+    batchSize = mongoengine.IntField(required=True)
     data = mongoengine.DynamicField()
 
     meta = {
         'indexes': [
             {
-                'fields': ['symbol', 'dateForTrades'],
+                'fields': ['symbol', 'dateForTrades','batchSize'],
                 'unique': True
             }
         ],
@@ -45,17 +46,16 @@ class MongoTradesData(object):
     def __init__(self):
         pass
 
-    def saveTradesDataToMongo(self, symbol=None, dateForTrades=None, data=None):
+    def saveTradesInBatches(self,symbol=None, datetosave=None, savedata=None, batchSize=None):
+        print(symbol+" BatchSize is="+str(batchSize))
         tradesObj = TradesdataSchema(
             symbol=symbol,
-            dateForTrades=datetime.datetime.strptime(dateForTrades, '%Y-%m-%d'),
+            dateForTrades=datetime.datetime.strptime(datetosave, '%Y-%m-%d'),
             dateWhenTradesWereFetched=datetime.datetime.now(),
-            data=data.to_json(orient='records')
+            data=savedata,
+            batchSize=batchSize
         )
-        # Parse Trades Data Into Child EmbeddedDocument
-        # This thing is taking too much time - KTZ In iterating over each row & saving
-        # We can also save just as a Json rather than doing this
-
+        # Saved Successfully
         try:
             tradesObj.save()
             return True
@@ -63,6 +63,17 @@ class MongoTradesData(object):
             # failure in saving data
             print(e)
             return False
+
+
+    def saveTradesDataToMongo(self, symbol=None, datetosave=None, savedata=None, batchSize=None):
+        if not self.doesItemExsistInTradesMongoDb(s=symbol, date=datetosave):
+            batchSize=0
+        else:
+            # Object already exsists we need to increment Batch Size and add new Document For it. We retrieve last entry
+            tradesD = TradesdataSchema.objects.filter(Q(symbol=symbol) & Q(dateForTrades=datetosave)).order_by('-id').first()
+            tradesD = tradesD.to_mongo().to_dict()
+            batchSize=tradesD['batchSize']+1
+        return self.saveTradesInBatches(symbol=symbol, datetosave=datetosave, savedata=savedata, batchSize=batchSize)
 
     def fetchDataFromTradesData(self, s=None, date=None):
         tradesD = TradesdataSchema.objects.filter(Q(symbol=s) & Q(dateForTrades=date)).first()

@@ -9,6 +9,7 @@ sys.path.append("..")  # Remove in production - KTZ
 
 import pandas as pd
 import datetime
+import ast 
 
 from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
 from PolygonTickData.FetchPolygonDataForUrls import FetchPolygonData
@@ -47,11 +48,8 @@ class PolygonTradesData(object):
         dictlistfinal = []
         for symbol in symbols:
             tradesDictData = objMongoTrades.fetchDataFromTradesData(s=symbol, date=date)
-            data.append(tradesDictData['data'])
-            i= len(data)
-            dictlist = eval(data[i-1])
-            dictlistfinal.extend(dictlist)
-        return pd.DataFrame(dictlistfinal)
+            data = data + ast.literal_eval(tradesDictData['data'])
+        return pd.DataFrame(data)
 
     def createTradesUrlsForStocks(self, symbols=None, date=None, endTs=None):
         createUrls = PolgonDataCreateURLS()
@@ -78,14 +76,12 @@ class AssembleTradesData(object):
             # Fetch Data for URLs
             finalResultDf = self.objTrades.fetchTradesDataFromPolygonAPI(tradesRoutines=tradesRoutines, date=self.date)
 
-            print("DataTrades.py Time to Do a query over symbol in Pandas Dataframe Line 73")
             # Save the finalResultDf into MongoDb one by one for each symbol
             # This thing is taking too much time - KTZ In searching over symbol
             for symbol in symbolsToBeDownloaded:
                 data = finalResultDf[finalResultDf['Symbol'] == symbol]
                 _ = self.objTrades.saveTradesDataInMongoDB(symbol=symbol, dateForTrades=self.date, data=data)
-            print("DataTrade.py - Line 79 ")
-
+            
         # Prepare to Return a dataframe for the Symbols
         return self.objTrades.fetchTradesDataFromMongoDB(symbols=self.symbols, date=self.date)
 

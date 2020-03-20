@@ -17,11 +17,11 @@ import time
 
 class PolygonResponseStorage(object):
     __slots__ = ('symbol', 'data','paginatedRequest')
-    def __init__(self, sybl=None, dt=None, paginatedRequest=None):
-        self.symbol = sybl
-        self.data = dt
+    def __init__(self, symbol=None, data=None, paginatedRequest=None):
+        self.symbol = symbol
+        self.data = data
         self.paginatedRequest=paginatedRequest
-
+        
 class FetchPolygonData(object):
 	
 	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00', PolygonMethod=None):
@@ -38,37 +38,34 @@ class FetchPolygonData(object):
 	def __extractDataFromResponse(self,response):
 		symbol=response['ticker']
 		print("Symbol being processed "+symbol)
-		# Adding symbols to the response data to make it easier to convert to DF
-		responseData = [dict(item, **{'Symbol':symbol}) for item in response['results']]
 		
 		lastUnixTimeStamp=self.helperObj.getLastTimeStamp(response)
 		paginatedRequest=None
 		if self.helperObj.checkTimeStampForPagination(lastUnixTimeStamp,self.extractDataTillTime):
 			# Create new urls for pagination request
-			# Self.PolygonMethod is intilialized in assemblePolygonData before calling getDataFromPolygon
 			paginatedRequest = self.PolygonMethod(date=self.date, symbol=symbol,startTS=str(lastUnixTimeStamp),endTS=self.endTs,limitresult=str(50000))
 		
 		# Creating an efficient storage object with PolygonResponseStorage for returning 
-		# The results are than processed in getDataFromPolygon by looping over threadingResults
-		PoReObj=PolygonResponseStorage(symbol, responseData, paginatedRequest)
+		PoReObj=PolygonResponseStorage(symbol=symbol, data=response['results'], paginatedRequest=paginatedRequest)
 		return PoReObj
 		
-	def getDataFromPolygon(self,getUrls=None,finalResultDict=None):
+	def getDataFromPolygon(self,getUrls=None, storeDataInMongo=None):
 		# Calling IO Bound Threading to fetch data for URLS
 		responses=IOBoundThreading(getUrls)
 		# Calling CPU Bound Threading to proess the responses from URLS
 		threadingResults=CPUBonundThreading(self.__extractDataFromResponse,responses)
 		paginatedURLS=[]
 		for result in threadingResults:
-			finalResultDict=finalResultDict+result.data
+			# Store Data In MongoDB
+			_ = storeDataInMongo( symbol=result.symbol, datetosave=self.date, savedata=result.data)
 			if result.paginatedRequest:
 				paginatedURLS.append(result.paginatedRequest)
-		return finalResultDict # - Temporarily added to save time for writting code - KTZ
+		
 		# Check if we need to do pagination for results, if Yes we do a recursion call to getDataFromPolygon
 		if len(paginatedURLS)>0:
-			finalResultDict=self.getDataFromPolygon(getUrls=paginatedURLS,finalResultDict=finalResultDict)
+			_ = self.getDataFromPolygon(getUrls=paginatedURLS,storeDataInMongo=storeDataInMongo)
 		
-		return finalResultDict
+		return True
 			
 	'''
 	# Pass here etfdata object

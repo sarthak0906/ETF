@@ -37,7 +37,6 @@ class TradesdataSchema(mongoengine.Document):
         'collection': 'TradesData'
     }
 
-
 ##########
 # Save and Fetch Trades Data
 ##########

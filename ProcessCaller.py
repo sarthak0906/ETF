@@ -58,11 +58,13 @@ try:
         Directory_Remover('/home/ubuntu/ETFAnalysis/ETFDailyData').remdir()
     t1_stop = perf_counter()
     logger.debug("Execution Time (NE) {}".format(t1_stop-t1_start))
+    print("Execution Time (NE) {}".format(t1_stop-t1_start))
 except Exception as e:
     print(e)
     logger.exception("Exception in ProcessCaller")
     t1_stop = perf_counter()
     logger.debug("Execution Time (E) {}".format(t1_stop - t1_start))
+    print("Execution Time (NE) {}".format(t1_stop - t1_start))
     # receivers' address in a list (1 or more addresses), subject, body - exception message
     EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception Occurred', e).sendemail()
     pass

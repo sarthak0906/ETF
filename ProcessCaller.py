@@ -1,6 +1,7 @@
 # Add paths to System PATH for the packages to be locatable by python
 import sys
-
+from time import perf_counter
+t1_start = perf_counter()
 sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/etf/ETFAnalysis/ETFsList_Scripts',
                  '/home/piyush/Desktop/etf/ETFAnalysis/HoldingsDataScripts',
                  '/home/piyush/Desktop/etf/ETFAnalysis/CommonServices'])
@@ -46,6 +47,7 @@ def startCronJobForETFHoldings():
 
 
 try:
+
     startCronJobForETFHoldings()
     # Begin deletion process after storing to DB is finished
     # Delete both 523 ETF List CSV file and Downloaded Ticker CSV files
@@ -54,9 +56,13 @@ try:
         Directory_Remover('/home/piyush/Desktop/etfnew/ETFAnalysis/ETFDailyData').remdir()
     else:
         Directory_Remover('/home/ubuntu/ETFAnalysis/ETFDailyData').remdir()
+    t1_stop = perf_counter()
+    logger.debug("Execution Time (NE) {}".format(t1_stop-t1_start))
 except Exception as e:
     print(e)
     logger.exception("Exception in ProcessCaller")
+    t1_stop = perf_counter()
+    logger.debug("Execution Time (E) {}".format(t1_stop - t1_start))
     # receivers' address in a list (1 or more addresses), subject, body - exception message
     EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception Occurred', e).sendemail()
     pass

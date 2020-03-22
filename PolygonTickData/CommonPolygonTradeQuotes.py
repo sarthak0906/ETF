@@ -15,10 +15,10 @@ class PolygonQuotesTradesData(object):
         self.mtqd = MongoTradesQuotesData()
 
     # Fetch Data from Polygon API
-    def fetchDataFromPolygonAPI(self, Routines=None, date=None, storeDataInMongo=None, PolygonMethodForUrls=None,
-                                CollectionName=None):
+    def fetchDataFromPolygonAPI(self, Routines=None, date=None, insertIntoCollection=None, PolygonMethodForUrls=None,
+                                CollectionName=None, symbolStatus=None ):
         objFetchData = FetchPolygonData(date=date, PolygonMethod=PolygonMethodForUrls,
-                                        storeDataInMongo=storeDataInMongo, CollectionName=CollectionName)
+                                        insertIntoCollection=insertIntoCollection, CollectionName=CollectionName, symbolStatus=symbolStatus)
         storageAndCrawlingStatus = objFetchData.getDataFromPolygon(getUrls=Routines)
         if storageAndCrawlingStatus:
             print("Data was successfully got and stored")
@@ -41,9 +41,12 @@ class PolygonQuotesTradesData(object):
 
     # Create Urls to get data for
     def createUrlsForStocks(self, symbols=None, date=None, endTs=None, PolygonMethodForUrls=None):
-        Routines = [PolygonMethodForUrls(date=date, symbol=symbol, startTS=None, endTS=endTs, limitresult=str(50000))
-                    for symbol in symbols]
-        return Routines
+        symbolStatus={}
+        Routines=[]
+        for symbol in symbols:
+            Routines.append(PolygonMethodForUrls(date=date, symbol=symbol, startTS=None, endTS=endTs, limitresult=str(50000)))
+            symbolStatus[symbol]={'batchSize':0}
+        return Routines, symbolStatus
 
 
 class AssembleData(object):
@@ -61,13 +64,14 @@ class AssembleData(object):
         # Check if any symbol needs to be downloaded
         if symbolsToBeDownloaded:
             # Create URLs
-            Routines = self.obj.createUrlsForStocks(symbols=symbolsToBeDownloaded, date=self.date,
+            Routines, symbolStatus = self.obj.createUrlsForStocks(symbols=symbolsToBeDownloaded, date=self.date,
                                                     endTs=self.endTs,
                                                     PolygonMethodForUrls=createUrlsMethod)
+            
             # Fetch Data for URLs
             _ = self.obj.fetchDataFromPolygonAPI(Routines=Routines, date=self.date,
-                                                 storeDataInMongo=insertIntoCollection,
-                                                 PolygonMethodForUrls=createUrlsMethod, CollectionName=CollectionName)
+                                                 insertIntoCollection=insertIntoCollection,
+                                                 PolygonMethodForUrls=createUrlsMethod, CollectionName=CollectionName, symbolStatus=symbolStatus)
 
         # Prepare to Return a dataframe for the Symbols
         resultdf = self.obj.fetchDataFromMongoDB(symbols=self.symbols, date=self.date,

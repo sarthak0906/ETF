@@ -3,21 +3,16 @@ import sys
 sys.path.append("..")  # Remove in production - KTZ
 
 from PolygonTickData.CommonPolygonTradeQuotes import AssembleData
-from MongoDB.Schemas import TradesdataSchema
+from MongoDB.Schemas import tradeCollection
 from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
 from MongoDB.CommonTradeQuotes import MongoTradesQuotesData
 
 if __name__ == "__main__":
     ob = AssembleData(symbols=['XLK', 'AAPL', 'MSFT'], date='2020-03-16')
 
-    dataExsist = MongoTradesQuotesData().doesItemExsistInQuotesTradesMongoDb
-    createUrlsMethod = PolgonDataCreateURLS().PolygonHistoricTrades
-    saveDataMethod = MongoTradesQuotesData().insertIntoCollection
-    fetchDataMethod = MongoTradesQuotesData().fetchQuotesTradesDataFromMongo
-    dataschematype = TradesdataSchema
-    tradesDataDf = ob.getData(dataExsistMethod=dataExsist,
-                              createUrlsMethod=createUrlsMethod,
-                              insertIntoCollection=insertIntoCollection,
-                              fetchDataMethod=fetchDataMethod,
+    tradesDataDf = ob.getData(dataExsistMethod=MongoTradesQuotesData().doesItemExsistInQuotesTradesMongoDb,
+                              createUrlsMethod=PolgonDataCreateURLS().PolygonHistoricTrades,
+                              insertIntoCollection=MongoTradesQuotesData().insertIntoCollection,
+                              fetchDataMethod= MongoTradesQuotesData().fetchQuotesTradesDataFromMongo,
                               CollectionName=tradeCollection)
     print(tradesDataDf)

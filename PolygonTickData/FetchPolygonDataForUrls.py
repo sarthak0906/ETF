@@ -15,22 +15,10 @@ import pandas as pd
 import sys
 import time
 
-
-class PolygonResponseStorage(object):
-	__slots__ = ('symbol','paginatedRequest','batchsize')
-
-	def __init__(self, paginatedRequest=None,symbol=None,batchsize=None):
-		self.symbol=symbol
-		self.batchsize=0
-		self.paginatedRequest = paginatedRequest
-
-	def incrementBatchSize(self):
-		return self.batchsize+1
-
 class FetchPolygonData(object):
 
 	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00',
-				 PolygonMethod=None, insertIntoCollection=None, dataschematype=None):
+				 PolygonMethod=None, insertIntoCollection=None, symbolStatus=None, CollectionName=None):
 		self.helperObj = Helper()
 		self.date = date
 		self.starttime = starttime  # 9 AM
@@ -40,39 +28,37 @@ class FetchPolygonData(object):
 		self.endTs = self.helperObj.convertHumanTimeToUnixTimeStamp(date=self.date, time=self.endtime)
 		self.PolygonMethod = PolygonMethod
 		self.insertIntoCollection = insertIntoCollection
-		self.dataschematype = dataschematype
+		self.CollectionName=CollectionName
+		self.symbolStatus=symbolStatus
 
 	def __extractDataFromResponse(self, response):
+		PaginationRequest=None
 		symbol = response['ticker']
 		print("Symbol being processed " + symbol)
 		responseData = [dict(item, **{'Symbol':symbol}) for item in response['results']]
 		lastUnixTimeStamp = self.helperObj.getLastTimeStamp(response)
-		paginatedRequest = None
 		if self.helperObj.checkTimeStampForPagination(lastUnixTimeStamp, self.extractDataTillTime):
 			# Create new urls for pagination request
-			paginatedRequest = self.PolygonMethod(date=self.date, symbol=symbol, startTS=str(lastUnixTimeStamp),
+			PaginationRequest=self.PolygonMethod(date=self.date, symbol=symbol, startTS=str(lastUnixTimeStamp),
 												  endTS=self.endTs, limitresult=str(50000))
-
+			self.symbolStatus[symbol]['batchSize'] += 1
 		# Creating an efficient storage object with PolygonResponseStorage for returning
-		_ = self.insertIntoCollection(symbol=symbol, datetosave=self.date, savedata=responseData,dataschematype=self.dataschematype, batchSize=)
-		PoReObj = PolygonResponseStorage(paginatedRequest=paginatedRequest)
-		return PoReObj
+		_ = self.insertIntoCollection(symbol=symbol, datetosave=self.date, savedata=responseData,CollectionName=self.CollectionName, batchSize=self.symbolStatus[symbol]['batchSize'])
+		
+		if PaginationRequest:
+			return PaginationRequest 
+		else:
+			print("No Pagination Required for = " + symbol)
 
 	def getDataFromPolygon(self, getUrls=None):
-		
 		# Calling IO Bound Threading to fetch data for URLS
 		responses = IOBoundThreading(getUrls)
 		# Calling CPU Bound Threading to proess the responses from URLS
-		threadingResults = CPUBonundThreading(self.__extractDataFromResponse, responses)
-		paginatedURLS = []
-		for result in threadingResults:
-			# Store Data In MongoDB
-			if result.paginatedRequest:
-				paginatedURLS.append(result.paginatedRequest)
-
+		PaginationRequest = CPUBonundThreading(self.__extractDataFromResponse, responses)
+		print(PaginationRequest)
 		# Check if we need to do pagination for results, if Yes we do a recursion call to getDataFromPolygon
-		if len(paginatedURLS) > 0:
-			_ = self.getDataFromPolygon(getUrls=paginatedURLS)
+		if len(PaginationRequest) > 0:
+			_ = self.getDataFromPolygon(getUrls=PaginationRequest)
 		return True
 
 	'''

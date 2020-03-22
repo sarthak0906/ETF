@@ -23,10 +23,11 @@ class MongoTradesQuotesData(object):
                 'batchSize':batchSize}
         CollectionName.insert_one(inserData)
 
-    def fetchQuotesTradesDataFromMongo(self, s=None, date=None, CollectionName=None):
-        combineddata = []
-        dataD = CollectionName.find(symbol__in=s, dateForData=date)
-        return [combineddata.extend(item.to_mongo().to_dict()['data']) for item in data]
+    def fetchQuotesTradesDataFromMongo(self, symbolList=None, date=None, CollectionName=None):
+        dataD = CollectionName.find({ 'symbol': { '$in': symbolList }, 'dateForData':date})
+        combineddata=[]
+        [combineddata.extend(item['data']) for item in dataD]
+        return combineddata
         
 
     def doesItemExsistInQuotesTradesMongoDb(self, s=None, date=None, CollectionName=None):

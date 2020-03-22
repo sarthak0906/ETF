@@ -4,6 +4,7 @@ sys.path.append("..")  # Remove in production - KTZ
 
 import pandas as pd
 import datetime
+import time
 
 from PolygonTickData.FetchPolygonDataForUrls import FetchPolygonData
 from PolygonTickData.Helper import Helper
@@ -73,8 +74,9 @@ class AssembleData(object):
                                                  insertIntoCollection=insertIntoCollection,
                                                  PolygonMethodForUrls=createUrlsMethod, CollectionName=CollectionName, symbolStatus=symbolStatus)
 
+        starttime=time.time()
         # Prepare to Return a dataframe for the Symbols
         resultdf = self.obj.fetchDataFromMongoDB(symbols=self.symbols, date=self.date,
                                                  CollectionName=CollectionName)
-
+        print("-------%s-------" %(time.time() - starttime))
         return resultdf

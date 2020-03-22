@@ -8,12 +8,15 @@ sys.path.append("..")  # Remove in production - KTZ
 
 
 import pandas as pd
+
 from PolygonTickData.CommonPolygonTradeQuotes import AssembleData
-from MongoDB.Schemas import TradesdataSchema, QuotesdataSchema
+from MongoDB.Schemas import quotesCollection, tradeCollection
 from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
 from PolygonTickData.DataDailyOpenClose import DailyOpenCloseData
 from MongoDB.CommonTradeQuotes import MongoTradesQuotesData
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
+
+
 
 class DataApi(object):
 
@@ -35,30 +38,21 @@ class DataApi(object):
 
 	def gatherTradeData(self):
 		ob = AssembleData(symbols=self.etfData.getSymbols(), date=self.date)
-		dataExsist = MongoTradesQuotesData().doesItemExsistInQuotesTradesMongoDb
-		createUrlsMethod = PolgonDataCreateURLS().PolygonHistoricTrades
-		saveDataMethod = MongoTradesQuotesData().saveDataToMongo
-		fetchDataMethod = MongoTradesQuotesData().fetchQuotesTradesDataFromMongo
-		dataschematype = TradesdataSchema
-		tradesDataDf = ob.getData(dataExsistMethod=dataExsist,
-		                          createUrlsMethod=createUrlsMethod,
-		                          saveDataMethod=saveDataMethod,
-		                          fetchDataMethod=fetchDataMethod,
-		                          dataschematype=dataschematype)
+		tradesDataDf = ob.getData(dataExsistMethod=MongoTradesQuotesData().doesItemExsistInQuotesTradesMongoDb,
+							createUrlsMethod=PolgonDataCreateURLS().PolygonHistoricTrades,
+							insertIntoCollection=MongoTradesQuotesData().insertIntoCollection,
+							fetchDataMethod= MongoTradesQuotesData().fetchQuotesTradesDataFromMongo,
+							CollectionName=tradeCollection)
+    
 		return tradesDataDf    
 
 	def gatherQuotesData(self):
-		ob = AssembleData(symbols=[self.etfname], date=self.date)
-		dataExsist = MongoTradesQuotesData().doesItemExsistInQuotesTradesMongoDb
-		createUrlsMethod = PolgonDataCreateURLS().PolygonHistoricQuotes
-		saveDataMethod = MongoTradesQuotesData().saveDataToMongo
-		fetchDataMethod = MongoTradesQuotesData().fetchQuotesTradesDataFromMongo
-		dataschematype = QuotesdataSchema
-		quotesDataDf = ob.getData(dataExsistMethod=dataExsist,
-		                      createUrlsMethod=createUrlsMethod,
-		                      saveDataMethod=saveDataMethod,
-		                      fetchDataMethod=fetchDataMethod,
-		                      dataschematype=dataschematype)
+		ob = AssembleData(symbols=['XLK'], date='2020-03-16')
+		quotesDataDf = ob.getData(dataExsistMethod=MongoTradesQuotesData().doesItemExsistInQuotesTradesMongoDb,
+    						createUrlsMethod=PolgonDataCreateURLS().PolygonHistoricQuotes,
+    						insertIntoCollection=MongoTradesQuotesData().insertIntoCollection,
+    						fetchDataMethod=MongoTradesQuotesData().fetchQuotesTradesDataFromMongo,
+    						CollectionName=quotesCollection)
 		return quotesDataDf
 		
 	def gatherOpenCloseData(self):
@@ -67,11 +61,10 @@ class DataApi(object):
 
 if __name__ == "__main__":
 	ob=DataApi(etfname='XLK', date='2020-03-16')
-	print(self.etfData)
-	print(self.etfData.getSymbols())
-	print(self.tradesDataDf)
-	print(self.quotesDataDf)
-	print(self.openPriceData)
+	print(ob.etfData)
+	print(ob.tradesDataDf)
+	print(ob.quotesDataDf)
+	print(ob.openPriceData)
 
 
 

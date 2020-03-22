@@ -36,7 +36,7 @@ class PolygonQuotesTradesData(object):
     # Fetch Data from MongoDb
     def fetchDataFromMongoDB(self, symbols=None, date=None, CollectionName=None):
         print("Fetching Data")
-        DictData = self.mtqd.fetchQuotesTradesDataFromMongo(s=symbols, date=date,CollectionName=CollectionName)
+        DictData = self.mtqd.fetchQuotesTradesDataFromMongo(symbolList=symbols, date=date,CollectionName=CollectionName)
         return pd.DataFrame(DictData)
 
     # Create Urls to get data for

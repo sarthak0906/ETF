@@ -14,19 +14,20 @@ class MongoTradesQuotesData(object):
     def __init__(self):
         pass
 
-   def insertIntoCollection(self, symbol=None, datetosave=None, savedata=None, CollectionName=None,batchsize=None):
+    def insertIntoCollection(self, symbol=None, datetosave=None, savedata=None, CollectionName=None, batchSize=None):
         print(symbol + " BatchSize is=" + str(batchSize))
-        inserData={'symbol':s, 
+        inserData={'symbol':symbol, 
                 'dateForData':datetosave, 
                 'dateWhenDataWasFetched': datetime.datetime.today().strftime('%Y-%m-%d'),
                 'data':savedata,
-                'batchsize':batchsize}
+                'batchSize':batchSize}
         CollectionName.insert_one(inserData)
 
-    def fetchQuotesTradesDataFromMongo(self, s=None, date=None, CollectionName=None):
-        combineddata = []
-        dataD = CollectionName.find(symbol__in=s, dateForData=date)
-        return [combineddata.extend(item.to_mongo().to_dict()['data']) for item in data]
+    def fetchQuotesTradesDataFromMongo(self, symbolList=None, date=None, CollectionName=None):
+        dataD = CollectionName.find({ 'symbol': { '$in': symbolList }, 'dateForData':date})
+        combineddata=[]
+        [combineddata.extend(item['data']) for item in dataD]
+        return combineddata
         
 
     def doesItemExsistInQuotesTradesMongoDb(self, s=None, date=None, CollectionName=None):

@@ -49,13 +49,14 @@ class FetchPolygonData(object):
 			return PaginationRequest 
 		else:
 			print("No Pagination Required for = " + symbol)
+			return None
 
 	def getDataFromPolygon(self, getUrls=None):
 		# Calling IO Bound Threading to fetch data for URLS
 		responses = IOBoundThreading(getUrls)
 		# Calling CPU Bound Threading to proess the responses from URLS
-		PaginationRequest = CPUBonundThreading(self.__extractDataFromResponse, responses)
-		print(PaginationRequest)
+		ThreadingResults = CPUBonundThreading(self.__extractDataFromResponse, responses)
+		PaginationRequest=[paginationUrl for paginationUrl in ThreadingResults if paginationUrl]
 		# Check if we need to do pagination for results, if Yes we do a recursion call to getDataFromPolygon
 		if len(PaginationRequest) > 0:
 			_ = self.getDataFromPolygon(getUrls=PaginationRequest)

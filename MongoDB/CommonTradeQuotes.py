@@ -14,13 +14,13 @@ class MongoTradesQuotesData(object):
     def __init__(self):
         pass
 
-   def insertIntoCollection(self, symbol=None, datetosave=None, savedata=None, CollectionName=None,batchsize=None):
+    def insertIntoCollection(self, symbol=None, datetosave=None, savedata=None, CollectionName=None, batchSize=None):
         print(symbol + " BatchSize is=" + str(batchSize))
-        inserData={'symbol':s, 
+        inserData={'symbol':symbol, 
                 'dateForData':datetosave, 
                 'dateWhenDataWasFetched': datetime.datetime.today().strftime('%Y-%m-%d'),
                 'data':savedata,
-                'batchsize':batchsize}
+                'batchSize':batchSize}
         CollectionName.insert_one(inserData)
 
     def fetchQuotesTradesDataFromMongo(self, s=None, date=None, CollectionName=None):

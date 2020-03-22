@@ -17,16 +17,20 @@ import time
 
 
 class PolygonResponseStorage(object):
-	__slots__ = ('paginatedRequest')
+	__slots__ = ('symbol','paginatedRequest','batchsize')
 
-	def __init__(self, paginatedRequest=None):
+	def __init__(self, paginatedRequest=None,symbol=None,batchsize=None):
+		self.symbol=symbol
+		self.batchsize=0
 		self.paginatedRequest = paginatedRequest
 
+	def incrementBatchSize(self):
+		return self.batchsize+1
 
 class FetchPolygonData(object):
 
 	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00',
-				 PolygonMethod=None, storeDataInMongo=None, dataschematype=None):
+				 PolygonMethod=None, insertIntoCollection=None, dataschematype=None):
 		self.helperObj = Helper()
 		self.date = date
 		self.starttime = starttime  # 9 AM
@@ -35,13 +39,13 @@ class FetchPolygonData(object):
 		self.extractDataTillTime = self.helperObj.stringTimeToDatetime(date=self.date, time=self.endtimeLoop)
 		self.endTs = self.helperObj.convertHumanTimeToUnixTimeStamp(date=self.date, time=self.endtime)
 		self.PolygonMethod = PolygonMethod
-		self.storeDataInMongo = storeDataInMongo
+		self.insertIntoCollection = insertIntoCollection
 		self.dataschematype = dataschematype
 
 	def __extractDataFromResponse(self, response):
 		symbol = response['ticker']
 		print("Symbol being processed " + symbol)
-
+		responseData = [dict(item, **{'Symbol':symbol}) for item in response['results']]
 		lastUnixTimeStamp = self.helperObj.getLastTimeStamp(response)
 		paginatedRequest = None
 		if self.helperObj.checkTimeStampForPagination(lastUnixTimeStamp, self.extractDataTillTime):
@@ -50,12 +54,12 @@ class FetchPolygonData(object):
 												  endTS=self.endTs, limitresult=str(50000))
 
 		# Creating an efficient storage object with PolygonResponseStorage for returning
-		_ = self.storeDataInMongo(symbol=symbol, datetosave=self.date, savedata=response['results'],
-								  dataschematype=self.dataschematype)
+		_ = self.insertIntoCollection(symbol=symbol, datetosave=self.date, savedata=responseData,dataschematype=self.dataschematype, batchSize=)
 		PoReObj = PolygonResponseStorage(paginatedRequest=paginatedRequest)
 		return PoReObj
 
 	def getDataFromPolygon(self, getUrls=None):
+		
 		# Calling IO Bound Threading to fetch data for URLS
 		responses = IOBoundThreading(getUrls)
 		# Calling CPU Bound Threading to proess the responses from URLS

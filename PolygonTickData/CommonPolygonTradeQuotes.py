@@ -16,9 +16,9 @@ class PolygonQuotesTradesData(object):
 
     # Fetch Data from Polygon API
     def fetchDataFromPolygonAPI(self, Routines=None, date=None, storeDataInMongo=None, PolygonMethodForUrls=None,
-                                dataschematype=None):
+                                CollectionName=None):
         objFetchData = FetchPolygonData(date=date, PolygonMethod=PolygonMethodForUrls,
-                                        storeDataInMongo=storeDataInMongo, dataschematype=dataschematype)
+                                        storeDataInMongo=storeDataInMongo, CollectionName=CollectionName)
         storageAndCrawlingStatus = objFetchData.getDataFromPolygon(getUrls=Routines)
         if storageAndCrawlingStatus:
             print("Data was successfully got and stored")
@@ -26,23 +26,18 @@ class PolygonQuotesTradesData(object):
             print("Issue occured while getting & saving data from Polygon")
 
     # Check if symbol,date pair exist in MongoDB, If don't exist download URLs for the symbols
-    def checkIfDataExsistInMongoDB(self, symbols=None, date=None, dataschematype=None):
+    def checkIfDataExsistInMongoDB(self, symbols=None, date=None, CollectionName=None):
         symbolsToBeDownloaded = []
         for symbol in symbols:
-            if not self.mtqd.doesItemExsistInQuotesTradesMongoDb(symbol, date, dataschematype):
+            if not self.mtqd.doesItemExsistInQuotesTradesMongoDb(symbol, date, CollectionName):
                 symbolsToBeDownloaded.append(symbol)
         return symbolsToBeDownloaded
 
     # Fetch Data from MongoDb
-    def fetchDataFromMongoDB(self, symbols=None, date=None, dataschematype=None):
-        data=[] # Will become a list of all dictionary elements
-        for symbol in symbols:
-            DictData = self.mtqd.fetchQuotesTradesDataFromMongo(s=symbol, date=date,
-                                                                            dataschematype=dataschematype)
-            DictData = [dict(item, **{'Symbol': symbol}) for item in DictData]
-            # DictData returns a list of dictionary elements
-            data.extend(DictData)
-        return pd.DataFrame(data)
+    def fetchDataFromMongoDB(self, symbols=None, date=None, CollectionName=None):
+        print("Fetching Data")
+        DictData = self.mtqd.fetchQuotesTradesDataFromMongo(s=symbols, date=date,CollectionName=CollectionName)
+        return pd.DataFrame(DictData)
 
     # Create Urls to get data for
     def createUrlsForStocks(self, symbols=None, date=None, endTs=None, PolygonMethodForUrls=None):
@@ -58,11 +53,11 @@ class AssembleData(object):
         self.symbols = symbols
         self.obj = PolygonQuotesTradesData()
 
-    def getData(self, dataExsistMethod=None, createUrlsMethod=None, saveDataMethod=None, fetchDataMethod=None,
-                dataschematype=None):
+    def getData(self, dataExsistMethod=None, createUrlsMethod=None, insertIntoCollection=None, fetchDataMethod=None,
+                CollectionName=None):
         # Perform check if symbols need to be downloaded or they already exist in the DB
         symbolsToBeDownloaded = self.obj.checkIfDataExsistInMongoDB(symbols=self.symbols, date=self.date,
-                                                                    dataschematype=dataschematype)
+                                                                    CollectionName=CollectionName)
         # Check if any symbol needs to be downloaded
         if symbolsToBeDownloaded:
             # Create URLs
@@ -71,11 +66,11 @@ class AssembleData(object):
                                                     PolygonMethodForUrls=createUrlsMethod)
             # Fetch Data for URLs
             _ = self.obj.fetchDataFromPolygonAPI(Routines=Routines, date=self.date,
-                                                 storeDataInMongo=saveDataMethod,
-                                                 PolygonMethodForUrls=createUrlsMethod, dataschematype=dataschematype)
+                                                 storeDataInMongo=insertIntoCollection,
+                                                 PolygonMethodForUrls=createUrlsMethod, CollectionName=CollectionName)
 
         # Prepare to Return a dataframe for the Symbols
         resultdf = self.obj.fetchDataFromMongoDB(symbols=self.symbols, date=self.date,
-                                                 dataschematype=dataschematype)
+                                                 CollectionName=CollectionName)
 
         return resultdf

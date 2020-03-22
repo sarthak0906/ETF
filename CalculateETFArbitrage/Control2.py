@@ -1,10 +1,3 @@
-'''
-Id:          "$Id$"
-Copyright:   Copyright (c) 2020 Bank of America Merrill Lynch, All Rights Reserved
-Description:
-Test:
-'''
-
 import sys  # Remove in production - KTZ
 
 sys.path.append("..")  # Remove in production - KTZ
@@ -17,7 +10,6 @@ import logging
 import asyncio
 from PolygonTickData.helper import Helper
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
-from CreateURLSForThreading import CallPolygonApi
 
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
@@ -27,12 +19,9 @@ logging.basicConfig(filename="Test2Logs.log", format='%(asctime)s %(message)s')
 class RunArbitrage(object):
 
     def __init__(self,etfname=None):
-        self.etfname=etfname
+        self.tradePricesDF=None
+        self.quotesSpreadsDf=None
         
-        self.tradePricesDFMinutes=None
-        self.quotesSpreadsMinutes=None
-        self.tradeData=None
-        self.quotesData=None        
         
     def giveArbitrageResults(self,tradeData=None,quotesData=None,priceforNAVfilling=None):
         helperObj = Helper()
@@ -89,12 +78,7 @@ class RunArbitrage(object):
 
 
 if __name__ == "__main__":
-    # Create an object of date when we need and time between which we need data
-    previousdate = '2020-03-08'
     date = '2020-03-13'
-    starttime = '9:30:00'
-    endtime = '17:00:00'
-    endtimeLoop = '16:00:00'
     etfname = 'XLK'
 
     etfData = LoadHoldingsdata(etfname=etfname, fundholdingsdate='20200226')

@@ -11,7 +11,7 @@ logging.basicConfig(filename="LoadEtfs.log", format='%(asctime)s %(message)s')
 
 class LoadHoldingsdata(object):
 
-    def __init__(self, etfname=None, fundholdingsdate='20200226'):
+    def __init__(self, etfname=None, fundholdingsdate=None):
         try:
             holdings = self.getHoldingsDatafromDB(etfname, fundholdingsdate)
             holdings['TickerWeight'] = holdings['TickerWeight'] / 100
@@ -35,15 +35,15 @@ class LoadHoldingsdata(object):
     def getHoldingsDatafromDB(self, etfname, fundholdingsdate):
         try:
             connect('ETF_db', alias='ETF_db')
-            if type(fundholdingsdate) is not datetime:
-                fundholdingsdate = datetime.strptime(fundholdingsdate, "%Y%m%d").date()
-            else:
-                fundholdingsdate = fundholdingsdate.date()
-            etfdata = ETF.objects(ETFTicker=etfname, FundHoldingsDate__lte=fundholdingsdate).order_by('-FundHoldingsDate').first()
+            print(etfname)
+            print(fundholdingsdate)
+            etfdata = ETF.objects(ETFTicker=etfname).order_by('-FundHoldingsDate').first()
+            print(etfdata)
             holdingsdatadf = pd.DataFrame(etfdata.to_mongo().to_dict()['holdings'])
             print(str(etfdata.FundHoldingsDate))
             return holdingsdatadf
         except Exception as e:
+            print("Can't Fetch Fund Holdings Data")
             print(e)
     
     def getETFWeights(self):

@@ -10,7 +10,7 @@ sys.path.append("..")  # Remove in production - KTZ
 import pandas as pd
 
 from PolygonTickData.CommonPolygonTradeQuotes import AssembleData
-from MongoDB.Schemas import quotesCollection, tradeCollection
+from MongoDB.Schemas import quotesCollection, tradeCollection, dailyopencloseCollection
 from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
 from PolygonTickData.DataDailyOpenClose import DailyOpenCloseData
 from MongoDB.CommonTradeQuotes import MongoTradesQuotesData
@@ -56,7 +56,7 @@ class DataApi(object):
 		return quotesDataDf
 		
 	def gatherOpenCloseData(self):
-		return DailyOpenCloseData(symbols=self.etfData.getSymbols(), date=self.date).run()
+		return DailyOpenCloseData(symbols=self.etfData.getSymbols(), date=self.date, collectionName=dailyopencloseCollection).run()
 
 
 if __name__ == "__main__":

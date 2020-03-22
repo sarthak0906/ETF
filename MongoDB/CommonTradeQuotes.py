@@ -13,9 +13,8 @@ mongoengine.connect('ETF_db', alias='ETF_db')
 
 class MongoTradesQuotesData(object):
 
-    def __init__(self,CollectionName=None, date=None):
-        self.CollectionName=CollectionName
-        self.date=date
+    def __init__(self):
+        pass
     
     def insertIntoCollection(self, symbol=None, datetosave=None, savedata=None, CollectionName=None, batchSize=None):
         print(symbol + " BatchSize is=" + str(batchSize))
@@ -32,6 +31,7 @@ class MongoTradesQuotesData(object):
         #print(json.dumps(explain, indent=2,default=json_util.default))
         # Cursor
         dataD = CollectionName.find(query)
+        print(dataD)
         combineddata=[]
         [combineddata.extend(item['data']) for item in dataD]
         return combineddata
@@ -42,8 +42,32 @@ class MongoTradesQuotesData(object):
         return False if s==0 else True
 
 
+class MongoDailyOpenCloseData(MongoTradesQuotesData):
 
+    def insertIntoCollection(self, symbol=None, datetosave=None, savedata=None, CollectionName=None):
+        inserData={'symbol':symbol, 
+                'dateForData':datetime.datetime.strptime(datetosave,'%Y-%m-%d'), 
+                'dateWhenDataWasFetched': datetime.datetime.today(),
+                'symbol':savedata['symbol'],
+                'open':savedata['open'],
+                'high':savedata['high'],
+                'low':savedata['low'],
+                'close':savedata['close'],
+                'afterHours':savedata['afterHours']
+                }
+        CollectionName.insert_one(inserData)
 
+    def fetchDailyOpenCloseData(self, symbolList=None, date=None, CollectionName=None):
+        query={'dateForData':datetime.datetime.strptime(date,'%Y-%m-%d'), 'symbol': { '$in': symbolList }}
+        #explain=(CollectionName.find(query).explain())
+        #print(json.dumps(explain, indent=2,default=json_util.default))
+        # Cursor
+        dataD = CollectionName.find(query)
+        combineddata=[]
+        for item in dataD:
+            combineddata.append(item)
+        return combineddata
+    
 
         
 

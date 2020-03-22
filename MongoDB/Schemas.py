@@ -10,4 +10,5 @@ quotesCollection.create_index([("dateForData", DESCENDING), ("symbol", ASCENDING
 tradeCollection = db.TradesData
 tradeCollection.create_index([("dateForData", DESCENDING), ("symbol", ASCENDING)])
 
-
+dailyopencloseCollection=db.dailyopencloseCollection
+dailyopencloseCollection.create_index([("dateForData", DESCENDING), ("symbol", ASCENDING)])

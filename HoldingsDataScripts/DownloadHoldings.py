@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import os
+from selenium.common.exceptions import TimeoutException
 
 path = os.path.join(os.getcwd(), "Logs/HoldingsScraperLogs/")
 
@@ -43,7 +44,7 @@ class PullHoldingsListClass(object):
 class DownloadsEtfHoldingsData(masterclass):
 
     def fetchHoldingsofETF(self, etfname):
-        retries = 1  # all etfs get only one retry upon failure
+        retries = 0  # login module for all etfs gets zero retries upon failure
         while retries >= 0:
             try:
                 # initialise driver and login to ETFdb
@@ -51,14 +52,32 @@ class DownloadsEtfHoldingsData(masterclass):
                     savingpath="ETFDailyData/" + datetime.now().strftime(
                         "%Y%m%d"))
                 super().logintoetfdb()
+                retries = -1
+            except TimeoutException:
+                retries -= 1
+            except Exception as e:
+                print(e)
+                pass
 
-                # get the etf name and request ETFdb page for the same
-                url = 'https://etfdb.com/etf/%s/#holdings' % etfname
-                self.driver.get(url)
-                time.sleep(2)  # wait for page to load
-                element = WebDriverWait(self.driver, 180).until(
-                    EC.presence_of_element_located((By.XPATH,
-                                                    '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')))
+        # Presence-of-elem-check for all etfs gets zero retries upon failure
+        try:
+            # get the etf name and request ETFdb page for the same
+            url = 'https://etfdb.com/etf/%s/#holdings' % etfname
+            self.driver.get(url)
+            time.sleep(2)  # wait for page to load
+            element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH,
+                                                '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')))
+        except TimeoutException:
+            print("Timeout on EC, Retrying once more")
+            pass
+        except Exception as e:
+            print(e)
+            pass
+
+        retries = 1  # Check for presence of records and downloading csv for all etfs get only one retry upon failure
+        while retries >= 0:
+            try:
                 # DateCheck receives Boolean that marks presence of record in MongoDB
                 # Can/Shall be used to send flag to DataCleanFeed
                 DateUpdateElem = self.driver.find_element_by_class_name('date-modified').get_attribute('datetime')

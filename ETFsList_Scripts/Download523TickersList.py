@@ -4,9 +4,8 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from datetime import datetime
 import time
-from ETFsList_Scripts.WebdriverServices import masterclass
 from CommonServices.EmailService import EmailSender
-
+from CommonServices.WebdriverServices import masterclass
 # Logging
 ###############################################################################################################
 import logging
@@ -49,6 +48,7 @@ class Download523TickersList(masterclass):
                 logger.exception("Exception in Download523TickersList.py")
                 logger.info("Retrying once more")
                 retries -= 1
+                self.driver.quit()
                 # send email on every failure
                 EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception in DownloadHoldings.py',
                             e).sendemail()

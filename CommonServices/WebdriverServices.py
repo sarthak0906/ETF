@@ -1,4 +1,3 @@
-import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -6,30 +5,33 @@ from datetime import datetime
 import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from ETFsList_Scripts.Save523TickersListtoDB import ETFListSaver
+from CommonServices.EmailService import EmailSender
 
-# from EmailNotifier import SendEmail
 
 class masterclass:
 
-    def initialisewebdriver(self, savingpath='ETFDailyData/ETFTickersDescription/'+datetime.now().strftime("%Y%m%d")):
+    def initialisewebdriver(self, savingpath='ETFDailyData/ETFTickersDescription/' + datetime.now().strftime("%Y%m%d")):
         # initialise driver with headless options
-
         # Getting the absolute path for the passed savingpath
-        self.savingpath = os.path.join(os.getcwd(), savingpath)
+        # self.savingpath = os.path.join(os.getcwd(), savingpath)
+        self.savingpath = './' + savingpath
         self.chrome_options = Options()
         # specifying default download directory for the particular instance of ChromeDriver
         self.prefs = {'download.default_directory': self.savingpath}
-        self.chrome_options.add_argument("--headless")
-        self.chrome_options.add_argument("--incognito")
+        self.chrome_options.add_argument("headless")
         self.chrome_options.add_argument("--no-sandbox")
         self.chrome_options.binary_location = "/usr/bin/google-chrome-stable"
+        # self.chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        # self.chrome_options.add_experimental_option('useAutomationExtension', False)
         self.chrome_options.add_experimental_option('prefs', self.prefs)
-        self.driver = webdriver.Chrome(executable_path='./chromextension/chromedriverWin/chromedriver', chrome_options=self.chrome_options)
+        self.driver = webdriver.Chrome(executable_path='./chromextension/chromedriverWin/chromedriver',
+                                       chrome_options=self.chrome_options)
 
     def logintoetfdb(self):
         self.driver.get("https://etfdb.com/members/login/")
         # wait only until the presence of 'login-button' is detected
-        element = WebDriverWait(self.driver, 60).until(
+        element = WebDriverWait(self.driver, 120).until(
             EC.presence_of_element_located((By.ID, "login-button")))
         e = self.driver.find_element(By.ID, "user_login")
         e.send_keys("piyushg795")
@@ -37,4 +39,18 @@ class masterclass:
         e.send_keys("etfapp2020")
         e = self.driver.find_element(By.ID, "login-button")
         e.click()
+        time.sleep(3)
 
+    def savelisttodb(self):
+
+        try:
+            etflistsaverobject = ETFListSaver()
+            etflistsaverobject.readandclean()
+
+            etflistsaverobject.pushtodb()
+
+        except Exception as e:
+            print("Not stored in DB")
+            print(e)
+            EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception Occurred in savelisttodv func',
+                        e).sendemail()

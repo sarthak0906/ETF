@@ -1,4 +1,4 @@
-from HoldingsDataScripts.WebdriverServices import masterclass
+from CommonServices.WebdriverServices import masterclass
 from mongoengine import *
 import pandas as pd
 from datetime import datetime
@@ -22,7 +22,7 @@ logger.setLevel(logging.ERROR)
 logger.addHandler(handler)
 
 from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
-
+from HoldingsDataScripts.ETFMongo import ETF
 
 class PullHoldingsListClass(object):
 
@@ -34,6 +34,11 @@ class PullHoldingsListClass(object):
     def ReturnetflistDF(self):
         return self.etfdescdf
 
+    def checkFundHoldingsDate(self, checkDate, etfname):
+        if ETF.objects(FundHoldingsDate=datetime.strptime(checkDate, "%Y-%m-%d"), ETFTicker=etfname).first():
+            return True
+        else:
+            return False
 
 class DownloadsEtfHoldingsData(masterclass):
 
@@ -51,19 +56,31 @@ class DownloadsEtfHoldingsData(masterclass):
                 url = 'https://etfdb.com/etf/%s/#holdings' % etfname
                 self.driver.get(url)
                 time.sleep(2)  # wait for page to load
-                e = WebDriverWait(self.driver, 60).until(
+                element = WebDriverWait(self.driver, 180).until(
                     EC.presence_of_element_located((By.XPATH,
                                                     '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')))
-                e.click()  # clicks download button
-                self.driver.close()
-                # if successfully downloaded, no retries needed
+                # DateCheck receives Boolean that marks presence of record in MongoDB
+                # Can/Shall be used to send flag to DataCleanFeed
+                DateUpdateElem = self.driver.find_element_by_class_name('date-modified').get_attribute('datetime')
+                DateCheck = PullHoldingsListClass().checkFundHoldingsDate(DateUpdateElem, etfname)
+                if not DateCheck:
+                    el = self.driver.find_element_by_xpath(
+                        '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
+                    el.click()  # clicks download button
+                    time.sleep(3)
+                else:
+                    logger.error("Record for {} already present, Moving to next etf".format(etfname))
+                self.driver.quit()
+                # if successfully downloaded or data already exists, no retries needed
                 retries = -1
+                return DateCheck
             except Exception as e:
                 print("Exception in DownloadHolding.py for {}".format(etfname))
                 print(e)
                 logger.exception("Exception in DownloadHolding.py")
                 logger.info("Retrying once more")
                 retries -= 1
+                self.driver.quit()
                 # send email on every failure
                 EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception in DownloadHoldings.py',
                             e).sendemail()

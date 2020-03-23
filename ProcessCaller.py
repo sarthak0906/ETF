@@ -8,7 +8,7 @@ sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/e
 sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_Scripts',
                  '/home/ubuntu/ETFAnalysis/HoldingsDataScripts', '/home/ubuntu/ETFAnalysis/CommonServices'])
 # Use absolute import paths
-import ETFsList_Scripts.WebdriverServices as serv
+import CommonServices.WebdriverServices as serv
 from ETFsList_Scripts.Download523TickersList import Download523TickersList
 from HoldingsDataScripts.DownloadHoldings import DownloadsEtfHoldingsData, PullHoldingsListClass
 from HoldingsDataScripts.DataCleanFeed import PullandCleanData
@@ -39,11 +39,22 @@ def startCronJobForETFHoldings():
     # For each ETF download all holdings and save to DB
     for etf in ETFListDF['Symbol'].tolist():
         # for etf in ['XLK']:
-        # Download Holdings for given ETF
-        DownloadsEtfHoldingsData().fetchHoldingsofETF(etf)
+        try:
+            # Download Holdings for given ETF
+            # Will also return flag for DataCleanFeed for whether the record is already present
+            FlagRecord = DownloadsEtfHoldingsData().fetchHoldingsofETF(etf)
 
-        # Save Holdings for given ETF to DB
-        PullandCleanData().readfilesandclean(etf, ETFListDF)
+            if not FlagRecord:
+                # Save Holdings for given ETF to DB
+                PullandCleanData().readfilesandclean(etf, ETFListDF)
+
+        except FileNotFoundError:
+            continue
+            logger.error("Today's File/Folder Not Found...")
+        except Exception as e:
+            logger.exception(e)
+            continue
+
 
 
 try:
@@ -53,7 +64,7 @@ try:
     # Delete both 523 ETF List CSV file and Downloaded Ticker CSV files
     username = getpass.getuser()
     if username == 'piyush':
-        Directory_Remover('/home/piyush/Desktop/etfnew/ETFAnalysis/ETFDailyData').remdir()
+        Directory_Remover('/home/piyush/Desktop/etf1903/ETFDailyData').remdir()
     else:
         Directory_Remover('/home/ubuntu/ETFAnalysis/ETFDailyData').remdir()
     t1_stop = perf_counter()

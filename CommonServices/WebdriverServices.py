@@ -31,7 +31,7 @@ class masterclass:
     def logintoetfdb(self):
         self.driver.get("https://etfdb.com/members/login/")
         # wait only until the presence of 'login-button' is detected
-        element = WebDriverWait(self.driver, 120).until(
+        element = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.ID, "login-button")))
         e = self.driver.find_element(By.ID, "user_login")
         e.send_keys("piyushg795")

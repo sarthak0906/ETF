@@ -1,1 +1,151 @@
-2020-03-20 20:43:02,823 Using selector: KqueueSelector
+2020-03-22 19:44:42,116 Command createIndexes with request id 984943658 started on server ('localhost', 27017)
+2020-03-22 19:44:42,117 Command createIndexes with request id 984943658 on server ('localhost', 27017) succeeded in 491 microseconds
+2020-03-22 19:44:42,118 Command createIndexes with request id 1144108930 started on server ('localhost', 27017)
+2020-03-22 19:44:42,119 Command createIndexes with request id 1144108930 on server ('localhost', 27017) succeeded in 604 microseconds
+2020-03-22 19:44:42,119 Command createIndexes with request id 470211272 started on server ('localhost', 27017)
+2020-03-22 19:44:42,120 Command createIndexes with request id 470211272 on server ('localhost', 27017) succeeded in 465 microseconds
+2020-03-22 19:44:42,151 Data Successfully Loaded
+2020-03-22 19:44:42,153 Command count with request id 2007237709 started on server ('localhost', 27017)
+2020-03-22 19:44:42,154 Command count with request id 2007237709 on server ('localhost', 27017) succeeded in 627 microseconds
+2020-03-22 19:44:42,155 Command count with request id 823564440 started on server ('localhost', 27017)
+2020-03-22 19:44:42,156 Command count with request id 823564440 on server ('localhost', 27017) succeeded in 749 microseconds
+2020-03-22 19:44:42,158 Command count with request id 1115438165 started on server ('localhost', 27017)
+2020-03-22 19:44:42,159 Command count with request id 1115438165 on server ('localhost', 27017) succeeded in 1497 microseconds
+2020-03-22 19:44:42,160 Command count with request id 1784484492 started on server ('localhost', 27017)
+2020-03-22 19:44:42,161 Command count with request id 1784484492 on server ('localhost', 27017) succeeded in 710 microseconds
+2020-03-22 19:44:42,162 Command count with request id 74243042 started on server ('localhost', 27017)
+2020-03-22 19:44:42,162 Command count with request id 74243042 on server ('localhost', 27017) succeeded in 514 microseconds
+2020-03-22 19:44:42,163 Command count with request id 114807987 started on server ('localhost', 27017)
+2020-03-22 19:44:42,164 Command count with request id 114807987 on server ('localhost', 27017) succeeded in 610 microseconds
+2020-03-22 19:44:42,164 Command count with request id 1137522503 started on server ('localhost', 27017)
+2020-03-22 19:44:42,165 Command count with request id 1137522503 on server ('localhost', 27017) succeeded in 667 microseconds
+2020-03-22 19:44:42,167 Command count with request id 1441282327 started on server ('localhost', 27017)
+2020-03-22 19:44:42,167 Command count with request id 1441282327 on server ('localhost', 27017) succeeded in 629 microseconds
+2020-03-22 19:44:42,168 Command count with request id 16531729 started on server ('localhost', 27017)
+2020-03-22 19:44:42,169 Command count with request id 16531729 on server ('localhost', 27017) succeeded in 889 microseconds
+2020-03-22 19:44:42,170 Command count with request id 823378840 started on server ('localhost', 27017)
+2020-03-22 19:44:42,171 Command count with request id 823378840 on server ('localhost', 27017) succeeded in 755 microseconds
+2020-03-22 19:44:42,172 Command count with request id 143542612 started on server ('localhost', 27017)
+2020-03-22 19:44:42,172 Command count with request id 143542612 on server ('localhost', 27017) succeeded in 595 microseconds
+2020-03-22 19:44:42,173 Command count with request id 896544303 started on server ('localhost', 27017)
+2020-03-22 19:44:42,174 Command count with request id 896544303 on server ('localhost', 27017) succeeded in 867 microseconds
+2020-03-22 19:44:42,175 Command count with request id 1474833169 started on server ('localhost', 27017)
+2020-03-22 19:44:42,176 Command count with request id 1474833169 on server ('localhost', 27017) succeeded in 596 microseconds
+2020-03-22 19:44:42,176 Command count with request id 1264817709 started on server ('localhost', 27017)
+2020-03-22 19:44:42,177 Command count with request id 1264817709 on server ('localhost', 27017) succeeded in 526 microseconds
+2020-03-22 19:44:42,178 Command count with request id 1998097157 started on server ('localhost', 27017)
+2020-03-22 19:44:42,180 Command count with request id 1998097157 on server ('localhost', 27017) succeeded in 1502 microseconds
+2020-03-22 19:44:42,182 Command count with request id 1817129560 started on server ('localhost', 27017)
+2020-03-22 19:44:42,185 Command count with request id 1817129560 on server ('localhost', 27017) succeeded in 2537 microseconds
+2020-03-22 19:44:42,186 Command count with request id 1131570933 started on server ('localhost', 27017)
+2020-03-22 19:44:42,187 Command count with request id 1131570933 on server ('localhost', 27017) succeeded in 750 microseconds
+2020-03-22 19:44:42,187 Command count with request id 197493099 started on server ('localhost', 27017)
+2020-03-22 19:44:42,188 Command count with request id 197493099 on server ('localhost', 27017) succeeded in 512 microseconds
+2020-03-22 19:44:42,189 Command count with request id 1404280278 started on server ('localhost', 27017)
+2020-03-22 19:44:42,190 Command count with request id 1404280278 on server ('localhost', 27017) succeeded in 949 microseconds
+2020-03-22 19:44:42,191 Command count with request id 893351816 started on server ('localhost', 27017)
+2020-03-22 19:44:42,191 Command count with request id 893351816 on server ('localhost', 27017) succeeded in 635 microseconds
+2020-03-22 19:44:42,192 Command count with request id 1505795335 started on server ('localhost', 27017)
+2020-03-22 19:44:42,193 Command count with request id 1505795335 on server ('localhost', 27017) succeeded in 555 microseconds
+2020-03-22 19:44:42,193 Command count with request id 1954899097 started on server ('localhost', 27017)
+2020-03-22 19:44:42,194 Command count with request id 1954899097 on server ('localhost', 27017) succeeded in 484 microseconds
+2020-03-22 19:44:42,195 Command count with request id 1636807826 started on server ('localhost', 27017)
+2020-03-22 19:44:42,195 Command count with request id 1636807826 on server ('localhost', 27017) succeeded in 668 microseconds
+2020-03-22 19:44:42,196 Command count with request id 563613512 started on server ('localhost', 27017)
+2020-03-22 19:44:42,197 Command count with request id 563613512 on server ('localhost', 27017) succeeded in 529 microseconds
+2020-03-22 19:44:42,198 Command count with request id 101929267 started on server ('localhost', 27017)
+2020-03-22 19:44:42,199 Command count with request id 101929267 on server ('localhost', 27017) succeeded in 734 microseconds
+2020-03-22 19:44:42,200 Command count with request id 1580723810 started on server ('localhost', 27017)
+2020-03-22 19:44:42,200 Command count with request id 1580723810 on server ('localhost', 27017) succeeded in 513 microseconds
+2020-03-22 19:44:42,201 Command count with request id 704877633 started on server ('localhost', 27017)
+2020-03-22 19:44:42,202 Command count with request id 704877633 on server ('localhost', 27017) succeeded in 610 microseconds
+2020-03-22 19:44:42,203 Command count with request id 1358580979 started on server ('localhost', 27017)
+2020-03-22 19:44:42,203 Command count with request id 1358580979 on server ('localhost', 27017) succeeded in 569 microseconds
+2020-03-22 19:44:42,204 Command count with request id 1624379149 started on server ('localhost', 27017)
+2020-03-22 19:44:42,205 Command count with request id 1624379149 on server ('localhost', 27017) succeeded in 553 microseconds
+2020-03-22 19:44:42,206 Command count with request id 2128236579 started on server ('localhost', 27017)
+2020-03-22 19:44:42,207 Command count with request id 2128236579 on server ('localhost', 27017) succeeded in 915 microseconds
+2020-03-22 19:44:42,207 Command count with request id 784558821 started on server ('localhost', 27017)
+2020-03-22 19:44:42,208 Command count with request id 784558821 on server ('localhost', 27017) succeeded in 532 microseconds
+2020-03-22 19:44:42,209 Command count with request id 530511967 started on server ('localhost', 27017)
+2020-03-22 19:44:42,209 Command count with request id 530511967 on server ('localhost', 27017) succeeded in 518 microseconds
+2020-03-22 19:44:42,210 Command count with request id 2110010672 started on server ('localhost', 27017)
+2020-03-22 19:44:42,211 Command count with request id 2110010672 on server ('localhost', 27017) succeeded in 857 microseconds
+2020-03-22 19:44:42,212 Command count with request id 1551901393 started on server ('localhost', 27017)
+2020-03-22 19:44:42,213 Command count with request id 1551901393 on server ('localhost', 27017) succeeded in 772 microseconds
+2020-03-22 19:44:42,213 Command count with request id 1617819336 started on server ('localhost', 27017)
+2020-03-22 19:44:42,214 Command count with request id 1617819336 on server ('localhost', 27017) succeeded in 573 microseconds
+2020-03-22 19:44:42,215 Command count with request id 1399125485 started on server ('localhost', 27017)
+2020-03-22 19:44:42,215 Command count with request id 1399125485 on server ('localhost', 27017) succeeded in 607 microseconds
+2020-03-22 19:44:42,216 Command count with request id 156091745 started on server ('localhost', 27017)
+2020-03-22 19:44:42,217 Command count with request id 156091745 on server ('localhost', 27017) succeeded in 501 microseconds
+2020-03-22 19:44:42,217 Command count with request id 1356425228 started on server ('localhost', 27017)
+2020-03-22 19:44:42,218 Command count with request id 1356425228 on server ('localhost', 27017) succeeded in 519 microseconds
+2020-03-22 19:44:42,219 Command count with request id 1899894091 started on server ('localhost', 27017)
+2020-03-22 19:44:42,219 Command count with request id 1899894091 on server ('localhost', 27017) succeeded in 653 microseconds
+2020-03-22 19:44:42,222 Command count with request id 585640194 started on server ('localhost', 27017)
+2020-03-22 19:44:42,223 Command count with request id 585640194 on server ('localhost', 27017) succeeded in 890 microseconds
+2020-03-22 19:44:42,223 Command count with request id 937186357 started on server ('localhost', 27017)
+2020-03-22 19:44:42,224 Command count with request id 937186357 on server ('localhost', 27017) succeeded in 585 microseconds
+2020-03-22 19:44:42,225 Command count with request id 1646035001 started on server ('localhost', 27017)
+2020-03-22 19:44:42,225 Command count with request id 1646035001 on server ('localhost', 27017) succeeded in 545 microseconds
+2020-03-22 19:44:42,226 Command count with request id 1025921153 started on server ('localhost', 27017)
+2020-03-22 19:44:42,227 Command count with request id 1025921153 on server ('localhost', 27017) succeeded in 509 microseconds
+2020-03-22 19:44:42,227 Command count with request id 510616708 started on server ('localhost', 27017)
+2020-03-22 19:44:42,228 Command count with request id 510616708 on server ('localhost', 27017) succeeded in 506 microseconds
+2020-03-22 19:44:42,229 Command count with request id 590357944 started on server ('localhost', 27017)
+2020-03-22 19:44:42,230 Command count with request id 590357944 on server ('localhost', 27017) succeeded in 707 microseconds
+2020-03-22 19:44:42,230 Command count with request id 771515668 started on server ('localhost', 27017)
+2020-03-22 19:44:42,231 Command count with request id 771515668 on server ('localhost', 27017) succeeded in 569 microseconds
+2020-03-22 19:44:42,232 Command count with request id 357571490 started on server ('localhost', 27017)
+2020-03-22 19:44:42,232 Command count with request id 357571490 on server ('localhost', 27017) succeeded in 533 microseconds
+2020-03-22 19:44:42,233 Command count with request id 1044788124 started on server ('localhost', 27017)
+2020-03-22 19:44:42,233 Command count with request id 1044788124 on server ('localhost', 27017) succeeded in 529 microseconds
+2020-03-22 19:44:42,234 Command count with request id 1927702196 started on server ('localhost', 27017)
+2020-03-22 19:44:42,235 Command count with request id 1927702196 on server ('localhost', 27017) succeeded in 526 microseconds
+2020-03-22 19:44:42,235 Command count with request id 1952509530 started on server ('localhost', 27017)
+2020-03-22 19:44:42,236 Command count with request id 1952509530 on server ('localhost', 27017) succeeded in 668 microseconds
+2020-03-22 19:44:42,237 Command count with request id 130060903 started on server ('localhost', 27017)
+2020-03-22 19:44:42,238 Command count with request id 130060903 on server ('localhost', 27017) succeeded in 598 microseconds
+2020-03-22 19:44:42,238 Command count with request id 1942727722 started on server ('localhost', 27017)
+2020-03-22 19:44:42,239 Command count with request id 1942727722 on server ('localhost', 27017) succeeded in 583 microseconds
+2020-03-22 19:44:42,240 Command count with request id 1083454666 started on server ('localhost', 27017)
+2020-03-22 19:44:42,240 Command count with request id 1083454666 on server ('localhost', 27017) succeeded in 526 microseconds
+2020-03-22 19:44:42,241 Command count with request id 1108728549 started on server ('localhost', 27017)
+2020-03-22 19:44:42,241 Command count with request id 1108728549 on server ('localhost', 27017) succeeded in 542 microseconds
+2020-03-22 19:44:42,242 Command count with request id 685118024 started on server ('localhost', 27017)
+2020-03-22 19:44:42,243 Command count with request id 685118024 on server ('localhost', 27017) succeeded in 516 microseconds
+2020-03-22 19:44:42,243 Command count with request id 2118797801 started on server ('localhost', 27017)
+2020-03-22 19:44:42,244 Command count with request id 2118797801 on server ('localhost', 27017) succeeded in 627 microseconds
+2020-03-22 19:44:42,245 Command count with request id 1060806853 started on server ('localhost', 27017)
+2020-03-22 19:44:42,246 Command count with request id 1060806853 on server ('localhost', 27017) succeeded in 595 microseconds
+2020-03-22 19:44:42,246 Command count with request id 571540977 started on server ('localhost', 27017)
+2020-03-22 19:44:42,247 Command count with request id 571540977 on server ('localhost', 27017) succeeded in 522 microseconds
+2020-03-22 19:44:42,247 Command count with request id 194847408 started on server ('localhost', 27017)
+2020-03-22 19:44:42,248 Command count with request id 194847408 on server ('localhost', 27017) succeeded in 720 microseconds
+2020-03-22 19:44:42,249 Command count with request id 2035308228 started on server ('localhost', 27017)
+2020-03-22 19:44:42,250 Command count with request id 2035308228 on server ('localhost', 27017) succeeded in 623 microseconds
+2020-03-22 19:44:42,250 Command count with request id 158374933 started on server ('localhost', 27017)
+2020-03-22 19:44:42,251 Command count with request id 158374933 on server ('localhost', 27017) succeeded in 543 microseconds
+2020-03-22 19:44:42,252 Command count with request id 1075260298 started on server ('localhost', 27017)
+2020-03-22 19:44:42,253 Command count with request id 1075260298 on server ('localhost', 27017) succeeded in 614 microseconds
+2020-03-22 19:44:42,253 Command count with request id 824938981 started on server ('localhost', 27017)
+2020-03-22 19:44:42,254 Command count with request id 824938981 on server ('localhost', 27017) succeeded in 839 microseconds
+2020-03-22 19:44:42,255 Command count with request id 595028635 started on server ('localhost', 27017)
+2020-03-22 19:44:42,256 Command count with request id 595028635 on server ('localhost', 27017) succeeded in 574 microseconds
+2020-03-22 19:44:42,257 Command count with request id 1962408013 started on server ('localhost', 27017)
+2020-03-22 19:44:42,257 Command count with request id 1962408013 on server ('localhost', 27017) succeeded in 689 microseconds
+2020-03-22 19:44:42,258 Command count with request id 1137623865 started on server ('localhost', 27017)
+2020-03-22 19:44:42,259 Command count with request id 1137623865 on server ('localhost', 27017) succeeded in 617 microseconds
+2020-03-22 19:44:42,259 Command count with request id 997389814 started on server ('localhost', 27017)
+2020-03-22 19:44:42,260 Command count with request id 997389814 on server ('localhost', 27017) succeeded in 532 microseconds
+2020-03-22 19:44:42,261 Command count with request id 2020739063 started on server ('localhost', 27017)
+2020-03-22 19:44:42,261 Command count with request id 2020739063 on server ('localhost', 27017) succeeded in 532 microseconds
+2020-03-22 19:44:42,262 Command count with request id 107554536 started on server ('localhost', 27017)
+2020-03-22 19:44:42,263 Command count with request id 107554536 on server ('localhost', 27017) succeeded in 541 microseconds
+2020-03-22 19:44:42,263 Command count with request id 1635339425 started on server ('localhost', 27017)
+2020-03-22 19:44:42,264 Command count with request id 1635339425 on server ('localhost', 27017) succeeded in 501 microseconds
+2020-03-22 19:44:42,264 Command count with request id 1654001669 started on server ('localhost', 27017)
+2020-03-22 19:44:42,265 Command count with request id 1654001669 on server ('localhost', 27017) succeeded in 783 microseconds
+2020-03-22 19:44:42,266 Command find with request id 1777724115 started on server ('localhost', 27017)
+2020-03-22 19:44:42,268 Command find with request id 1777724115 on server ('localhost', 27017) succeeded in 1506 microseconds

@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from ETFsList_Scripts.Save523TickersListtoDB import ETFListSaver
 from CommonServices.EmailService import EmailSender
-
+from selenium.common.exceptions import TimeoutException
 
 class masterclass:
 
@@ -31,8 +31,16 @@ class masterclass:
     def logintoetfdb(self):
         self.driver.get("https://etfdb.com/members/login/")
         # wait only until the presence of 'login-button' is detected
-        element = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.ID, "login-button")))
+        try:
+            element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.ID, "login-button")))
+        except TimeoutException:
+            print("Timeout exception caused by EC in Login ETFdb module")
+            pass
+        except Exception as e:
+            print("Exception in WebdriverServices : {}".format(e))
+            pass
+
         e = self.driver.find_element(By.ID, "user_login")
         e.send_keys("piyushg795")
         e = self.driver.find_element(By.ID, "password")

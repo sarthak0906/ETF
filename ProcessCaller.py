@@ -38,7 +38,7 @@ def startCronJobForETFHoldings():
 
     # For each ETF download all holdings and save to DB
     for etf in ETFListDF['Symbol'].tolist():
-        # for etf in ['XLK']:
+    # for etf in ['EMTY']:
         try:
             # Download Holdings for given ETF
             # Will also return flag for DataCleanFeed for whether the record is already present

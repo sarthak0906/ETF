@@ -56,7 +56,9 @@ class DownloadsEtfHoldingsData(masterclass):
             except TimeoutException:
                 retries -= 1
             except Exception as e:
+                logger.exception(e)
                 print(e)
+                return True
                 pass
 
         # Presence-of-elem-check for all etfs gets zero retries upon failure

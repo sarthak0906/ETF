@@ -99,8 +99,8 @@ class PullandCleanData:
                 # For the said document for given etf, feed all the holdings from dataframe into embedded field list
                 for index, row in self.holdingsdata.iterrows():
                     holding = Holdings()
-                    holding.TickerName = row.Holdings
-                    holding.TickerSymbol = row.Symbol
+                    holding.TickerName = str(row.Holdings)
+                    holding.TickerSymbol = str(row.Symbol)
                     holding.TickerWeight = row.Weights
                     details.holdings.append(holding)
                 details.save()  # save the document into the collection in db

@@ -10,10 +10,12 @@ sys.path.append("..")  # Remove in production - KTZ
 import pandas as pd
 
 from PolygonTickData.CommonPolygonTradeQuotes import AssembleData
+# Import Collections
 from MongoDB.Schemas import quotesCollection, tradeCollection, dailyopencloseCollection
-from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
+# Import Pipeline
+from MongoDB.Schemas import quotespipeline, tradespipeline
+
 from PolygonTickData.DataDailyOpenClose import DailyOpenCloseData
-from MongoDB.CommonTradeQuotes import MongoTradesQuotesData
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 
 
@@ -38,21 +40,13 @@ class DataApi(object):
 
 	def gatherTradeData(self):
 		ob = AssembleData(symbols=self.etfData.getSymbols(), date=self.date)
-		tradesDataDf = ob.getData(dataExsistMethod=MongoTradesQuotesData().doesItemExsistInQuotesTradesMongoDb,
-							createUrlsMethod=PolgonDataCreateURLS().PolygonHistoricTrades,
-							insertIntoCollection=MongoTradesQuotesData().insertIntoCollection,
-							fetchDataMethod= MongoTradesQuotesData().fetchQuotesTradesDataFromMongo,
-							CollectionName=tradeCollection)
+		tradesDataDf = ob.getData(CollectionName=tradeCollection,pipeline=tradespipeline, tradeDataFlag=True)
     
 		return tradesDataDf    
 
 	def gatherQuotesData(self):
-		ob = AssembleData(symbols=['XLK'], date='2020-03-16')
-		quotesDataDf = ob.getData(dataExsistMethod=MongoTradesQuotesData().doesItemExsistInQuotesTradesMongoDb,
-    						createUrlsMethod=PolgonDataCreateURLS().PolygonHistoricQuotes,
-    						insertIntoCollection=MongoTradesQuotesData().insertIntoCollection,
-    						fetchDataMethod=MongoTradesQuotesData().fetchQuotesTradesDataFromMongo,
-    						CollectionName=quotesCollection)
+		ob = AssembleData(symbols=[self.etfname], date=self.date)
+		quotesDataDf = ob.getData(CollectionName=quotesCollection,pipeline=quotespipeline)
 		return quotesDataDf
 		
 	def gatherOpenCloseData(self):

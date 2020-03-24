@@ -7,6 +7,7 @@ from PolygonTickData.Helper import Helper
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 from CommonServices.ThreadingRequests import IOBoundThreading
 from CommonServices.MultiProcessingTasks import CPUBonundThreading
+from MongoDB.SaveFetchQuotesData import MongoTradesQuotesData
 
 import logging
 import asyncio
@@ -18,7 +19,7 @@ import time
 class FetchPolygonData(object):
 
 	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00',
-				 PolygonMethod=None, insertIntoCollection=None, symbolStatus=None, CollectionName=None):
+				 PolygonMethod=None, symbolStatus=None, CollectionName=None):
 		self.helperObj = Helper()
 		self.date = date
 		self.starttime = starttime  # 9 AM
@@ -27,7 +28,7 @@ class FetchPolygonData(object):
 		self.extractDataTillTime = self.helperObj.stringTimeToDatetime(date=self.date, time=self.endtimeLoop)
 		self.endTs = self.helperObj.convertHumanTimeToUnixTimeStamp(date=self.date, time=self.endtime)
 		self.PolygonMethod = PolygonMethod
-		self.insertIntoCollection = insertIntoCollection
+		self.insertIntoCollection = MongoTradesQuotesData().insertIntoCollection
 		self.CollectionName=CollectionName
 		self.symbolStatus=symbolStatus
 
@@ -51,7 +52,7 @@ class FetchPolygonData(object):
 			print("No Pagination Required for = " + symbol)
 			return None
 
-	def getDataFromPolygon(self, getUrls=None):
+	def getQuotesDataFromPolygon(self, getUrls=None):
 		# Calling IO Bound Threading to fetch data for URLS
 		responses = IOBoundThreading(getUrls)
 		# Calling CPU Bound Threading to proess the responses from URLS
@@ -59,7 +60,16 @@ class FetchPolygonData(object):
 		PaginationRequest=[paginationUrl for paginationUrl in ThreadingResults if paginationUrl]
 		# Check if we need to do pagination for results, if Yes we do a recursion call to getDataFromPolygon
 		if len(PaginationRequest) > 0:
-			_ = self.getDataFromPolygon(getUrls=PaginationRequest)
+			_ = self.getQuotesDataFromPolygon(getUrls=PaginationRequest)
+		return True
+
+	def getTradeDataFromPolygon(self, getUrls=None):
+		# Calling IO Bound Threading to fetch data for URLS
+		responses = IOBoundThreading(getUrls)
+		for response in responses:
+			symbol = response['ticker']
+			responseData = [dict(item, **{'Symbol':symbol}) for item in response['results']]
+			_ = self.insertIntoCollection(symbol=symbol, datetosave=self.date, savedata=responseData,CollectionName=self.CollectionName)
 		return True
 
 	'''

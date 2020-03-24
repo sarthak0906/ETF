@@ -8,23 +8,12 @@ import time
 
 from PolygonTickData.FetchPolygonDataForUrls import FetchPolygonData
 from PolygonTickData.Helper import Helper
-from MongoDB.CommonTradeQuotes import MongoTradesQuotesData
-
+from MongoDB.SaveFetchQuotesData import MongoTradesQuotesData
+from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
 
 class PolygonQuotesTradesData(object):
     def __init__(self):
         self.mtqd = MongoTradesQuotesData()
-
-    # Fetch Data from Polygon API
-    def fetchDataFromPolygonAPI(self, Routines=None, date=None, insertIntoCollection=None, PolygonMethodForUrls=None,
-                                CollectionName=None, symbolStatus=None ):
-        objFetchData = FetchPolygonData(date=date, PolygonMethod=PolygonMethodForUrls,
-                                        insertIntoCollection=insertIntoCollection, CollectionName=CollectionName, symbolStatus=symbolStatus)
-        storageAndCrawlingStatus = objFetchData.getDataFromPolygon(getUrls=Routines)
-        if storageAndCrawlingStatus:
-            print("Data was successfully got and stored")
-        else:
-            print("Issue occured while getting & saving data from Polygon")
 
     # Check if symbol,date pair exist in MongoDB, If don't exist download URLs for the symbols
     def checkIfDataExsistInMongoDB(self, symbols=None, date=None, CollectionName=None):
@@ -35,19 +24,25 @@ class PolygonQuotesTradesData(object):
         return symbolsToBeDownloaded
 
     # Fetch Data from MongoDb
-    def fetchDataFromMongoDB(self, symbols=None, date=None, CollectionName=None):
+    def fetchDataFromMongoDB(self, symbols=None, date=None, CollectionName=None, pipeline=None):
         print("Fetching Data")
-        DictData = self.mtqd.fetchQuotesTradesDataFromMongo(symbolList=symbols, date=date,CollectionName=CollectionName)
+        DictData = self.mtqd.fetchQuotesTradesDataFromMongo(symbolList=symbols, date=date, CollectionName=CollectionName, pipeline=pipeline)
         return pd.DataFrame(DictData)
 
-    # Create Urls to get data for
-    def createUrlsForStocks(self, symbols=None, date=None, endTs=None, PolygonMethodForUrls=None):
-        symbolStatus={}
-        Routines=[]
+    def createURLSforquotes(self, symbols=None, date=None, endTs=None, Routines=[], symbolStatus={}):
+        quotesUrls=PolgonDataCreateURLS()
         for symbol in symbols:
-            Routines.append(PolygonMethodForUrls(date=date, symbol=symbol, startTS=None, endTS=endTs, limitresult=str(50000)))
-            symbolStatus[symbol]={'batchSize':0}
+                Routines.append(quotesUrls.PolygonHistoricQuotes(date=date, symbol=symbol, startTS=None, endTS=endTs, limitresult=str(50000)))
+                symbolStatus[symbol]={'batchSize':0}
         return Routines, symbolStatus
+
+    def createURLSfortrade(self, symbols=None, startDate=None, Routines=[]):
+        endDate=datetime.datetime.strptime(startDate,'%Y-%m-%d')+datetime.timedelta(days=1)
+        endDate=endDate.strftime('%Y-%m-%d')
+        tradeUrls=PolgonDataCreateURLS()
+        for symbol in symbols:    
+            Routines.append(tradeUrls.PolygonAggregdateData(symbol=symbol, aggregateBy='minute', startDate=startDate, endDate=endDate))
+        return Routines
 
 
 class AssembleData(object):
@@ -57,26 +52,27 @@ class AssembleData(object):
         self.symbols = symbols
         self.obj = PolygonQuotesTradesData()
 
-    def getData(self, dataExsistMethod=None, createUrlsMethod=None, insertIntoCollection=None, fetchDataMethod=None,
-                CollectionName=None):
+    def getData(self, pipeline=None, CollectionName=None, tradeDataFlag=False):
         # Perform check if symbols need to be downloaded or they already exist in the DB
-        symbolsToBeDownloaded = self.obj.checkIfDataExsistInMongoDB(symbols=self.symbols, date=self.date,
-                                                                    CollectionName=CollectionName)
-        # Check if any symbol needs to be downloaded
-        if symbolsToBeDownloaded:
-            # Create URLs
-            Routines, symbolStatus = self.obj.createUrlsForStocks(symbols=symbolsToBeDownloaded, date=self.date,
-                                                    endTs=self.endTs,
-                                                    PolygonMethodForUrls=createUrlsMethod)
+        symbolsToBeDownloaded = self.obj.checkIfDataExsistInMongoDB(symbols=self.symbols, date=self.date, CollectionName=CollectionName)
+        
+        # Trade Configuration
+        if symbolsToBeDownloaded and tradeDataFlag:
+            Routines = self.obj.createURLSfortrade(symbols=symbolsToBeDownloaded, startDate=self.date)
+            objFetchData = FetchPolygonData(date=self.date, CollectionName=CollectionName)
+            storageAndCrawlingStatus = objFetchData.getTradeDataFromPolygon(getUrls=Routines)
             
-            # Fetch Data for URLs
-            _ = self.obj.fetchDataFromPolygonAPI(Routines=Routines, date=self.date,
-                                                 insertIntoCollection=insertIntoCollection,
-                                                 PolygonMethodForUrls=createUrlsMethod, CollectionName=CollectionName, symbolStatus=symbolStatus)
-
+        # Quotes Configuration
+        elif symbolsToBeDownloaded:
+            # Create URLs
+            createUrl=PolgonDataCreateURLS().PolygonHistoricQuotes
+            Routines, symbolStatus = self.obj.createURLSforquotes(symbols=symbolsToBeDownloaded, date=self.date, endTs=self.endTs)
+            objFetchData = FetchPolygonData(date=self.date, PolygonMethod=createUrl, CollectionName=CollectionName, symbolStatus=symbolStatus)
+            storageAndCrawlingStatus = objFetchData.getQuotesDataFromPolygon(getUrls=Routines)
+            
+            
         starttime=time.time()
         # Prepare to Return a dataframe for the Symbols
-        resultdf = self.obj.fetchDataFromMongoDB(symbols=self.symbols, date=self.date,
-                                                 CollectionName=CollectionName)
+        resultdf = self.obj.fetchDataFromMongoDB(symbols=self.symbols, date=self.date, CollectionName=CollectionName, pipeline=pipeline)
         print("-------%s-------" %(time.time() - starttime))
         return resultdf

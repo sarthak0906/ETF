@@ -71,8 +71,9 @@ class ETF(mongoengine.Document):
     meta = {
         'indexes': [
             {
-                'fields': ['ETFTicker', 'FundHoldingsDate'],
-                'unique': True
+                'fields': ['-FundHoldingsDate', 'ETFTicker'],
+                'unique': True,
+                'name': 'Query_Index_1'
             }
         ],
         'db_alias': 'ETF_db',

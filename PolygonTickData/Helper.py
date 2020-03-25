@@ -52,24 +52,21 @@ class Helper(object):
         datetimeobject = " ".join([date, time])
         return self.unix_time_millis(datetime.strptime(datetimeobject, '%Y-%m-%d %H:%M:%S'))
 
-    def getHumanTime(self, ts, getMilliSecondsAlso=False):
-        try:
-            s, ms = divmod(ts, 1000000000)
-            if getMilliSecondsAlso:
-                return datetime(*time.gmtime(s)[:6]), ms
-            else:
-                return datetime(*time.gmtime(s)[:6])
-        # print('{}.{:03d}'.format(time.strftime('%Y-%m-%d %H:%M:%S',  time.gmtime(s)), ms))
-        except AttributeError:
-            print("Attribute Error Occured")
-            print(ts)
-            print(s)
-            print(ms)
+    def getHumanTime(self, ts=None, divideby=None):
+        s, ms = divmod(ts, divideby)
+        return datetime(*time.gmtime(s)[:6])
+    
 
     def getLastTimeStamp(self,data):
         return data['results'][-1]['t']
 
     def checkTimeStampForPagination(self,checkTime,extractDataTillTime):
-        return True if self.getHumanTime(checkTime) < extractDataTillTime else False
+        return True if self.getHumanTime(ts=checkTime, divideby=1000000000) < extractDataTillTime else False
+
+    # vwap : Volume Weighted Average Price
+    def vwap(self,df):
+        q = df['Spread'].values
+        p = df['Total Bid Ask Size'].values
+        return df.assign(vwap=(p * q).cumsum() / q.cumsum())
 
 

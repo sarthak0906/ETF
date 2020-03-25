@@ -18,7 +18,7 @@ class PolgonDataCreateURLS(object):
 		requesturl='https://api.polygon.io/v1/last/stocks/'+symbol
 		return requesturl
 
-	def PolygonHistoricQuotes(self, date=None, symbol=None,startTS=None,endTS=None,limitresult=10):
+	def PolygonHistoricQuotes(self, date=None, symbol=None,startTS=None,endTS=None,limitresult=10, aggregateBy=None):
 		if startTS:
 			# For Getting Paginated Request
 			requesturl='https://api.polygon.io/v2/ticks/stocks/nbbo/'+symbol+'/'+date+'?timestamp='+startTS+'&timestampLimit='+endTS+'&limit='+limitresult+'&apiKey=M_PKVL_rqHZI7VM9ZYO_hwPiConz5rIklx893F'
@@ -43,9 +43,9 @@ class PolgonDataCreateURLS(object):
 		return requesturl
 	
 
-	def PolygonAggregdateData(self):
+	def PolygonAggregdateData(self, symbol=None, aggregateBy=None, startDate=None, endDate=None):
 		# Make use of Tickers, Date and Limit
-		requesturl='https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/minute/2020-02-14/2020-02-15'
+		requesturl='https://api.polygon.io/v2/aggs/ticker/'+symbol+'/range/1/'+aggregateBy+'/'+startDate+'/'+endDate+'?apiKey=M_PKVL_rqHZI7VM9ZYO_hwPiConz5rIklx893F'
 		return requesturl
 
 	def PolygonTickTrades(self,symbolList=None):

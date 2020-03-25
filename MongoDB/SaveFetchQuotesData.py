@@ -11,6 +11,7 @@ import json
 from bson import json_util
 mongoengine.connect('ETF_db', alias='ETF_db')
 
+# This class is for saving Trades and Quotes Daily data in QuotesData and TradeData Collection
 class MongoTradesQuotesData(object):
 
     def __init__(self):
@@ -25,13 +26,12 @@ class MongoTradesQuotesData(object):
                 'batchSize':batchSize}
         CollectionName.insert_one(inserData)
 
-    def fetchQuotesTradesDataFromMongo(self, symbolList=None, date=None, CollectionName=None):
+    def fetchQuotesTradesDataFromMongo(self, symbolList=None, date=None, CollectionName=None, pipeline=None):
         query={'dateForData':datetime.datetime.strptime(date,'%Y-%m-%d'), 'symbol': { '$in': symbolList }}
-        #explain=(CollectionName.find(query).explain())
-        #print(json.dumps(explain, indent=2,default=json_util.default))
+        pipeline[0]['$match']=query
         # Cursor
-        dataD = CollectionName.find(query)
-        print(dataD)
+        dataD = CollectionName.aggregate(pipeline,allowDiskUse=True)
+        
         combineddata=[]
         [combineddata.extend(item['data']) for item in dataD]
         return combineddata
@@ -41,28 +41,28 @@ class MongoTradesQuotesData(object):
         # Return False is list is empty, that mean symbol, date combination doesn't exsist and it needs to be downloaded
         return False if s==0 else True
 
-
+# This class is for saving Daily Data - Open and close in collection - dailyopenloseCollection
 class MongoDailyOpenCloseData(MongoTradesQuotesData):
 
     def insertIntoCollection(self, symbol=None, datetosave=None, savedata=None, CollectionName=None):
-        inserData={'symbol':symbol, 
+        inserData={'Symbol':symbol, 
                 'dateForData':datetime.datetime.strptime(datetosave,'%Y-%m-%d'), 
                 'dateWhenDataWasFetched': datetime.datetime.today(),
-                'symbol':savedata['symbol'],
-                'open':savedata['open'],
-                'high':savedata['high'],
-                'low':savedata['low'],
-                'close':savedata['close'],
-                'afterHours':savedata['afterHours']
+                'Open Price':savedata['o'],
+                'Volume':savedata['v'],
+                'Volume Price':savedata['vw'],
+                'Close':savedata['c'],
+                'High':savedata['h'],
+                'Low':savedata['l'],
                 }
         CollectionName.insert_one(inserData)
 
     def fetchDailyOpenCloseData(self, symbolList=None, date=None, CollectionName=None):
-        query={'dateForData':datetime.datetime.strptime(date,'%Y-%m-%d'), 'symbol': { '$in': symbolList }}
+        query={'dateForData':datetime.datetime.strptime(date,'%Y-%m-%d'), 'Symbol': { '$in': symbolList }}
         #explain=(CollectionName.find(query).explain())
         #print(json.dumps(explain, indent=2,default=json_util.default))
         # Cursor
-        dataD = CollectionName.find(query)
+        dataD = CollectionName.find(query,{'Symbol':1,'Open Price':1,'_id':0})
         combineddata=[]
         for item in dataD:
             combineddata.append(item)

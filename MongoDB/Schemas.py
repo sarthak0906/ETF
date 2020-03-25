@@ -43,7 +43,7 @@ tradespipeline =[
 
 
 dailyopencloseCollection=db.DailyOpenCloseCollection
-dailyopencloseCollection.create_index([("dateForData", DESCENDING), ("symbol", ASCENDING)])
+dailyopencloseCollection.create_index([("dateForData", DESCENDING), ("Symbol", ASCENDING)])
 
 
 

@@ -62,7 +62,7 @@ class MongoDailyOpenCloseData(MongoTradesQuotesData):
         #explain=(CollectionName.find(query).explain())
         #print(json.dumps(explain, indent=2,default=json_util.default))
         # Cursor
-        dataD = CollectionName.find(query,{'symbol':1,'Open Price':1,'_id':0})
+        dataD = CollectionName.find(query,{'Symbol':1,'Open Price':1,'_id':0})
         combineddata=[]
         for item in dataD:
             combineddata.append(item)

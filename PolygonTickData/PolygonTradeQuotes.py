@@ -41,7 +41,7 @@ class PolygonQuotesTradesData(object):
         endDate=endDate.strftime('%Y-%m-%d')
         tradeUrls=PolgonDataCreateURLS()
         for symbol in symbols:    
-            Routines.append(tradeUrls.PolygonAggregdateData(symbol=symbol, aggregateBy='minute', startDate=startDate, endDate=endDate))
+            Routines.append(tradeUrls.PolygonAggregdateData(symbol=symbol, aggregateBy='minute', startDate=startDate, endDate=startDate))
         return Routines
 
 

@@ -45,7 +45,7 @@ class MongoTradesQuotesData(object):
 class MongoDailyOpenCloseData(MongoTradesQuotesData):
 
     def insertIntoCollection(self, symbol=None, datetosave=None, savedata=None, CollectionName=None):
-        inserData={'symbol':symbol, 
+        inserData={'Symbol':symbol, 
                 'dateForData':datetime.datetime.strptime(datetosave,'%Y-%m-%d'), 
                 'dateWhenDataWasFetched': datetime.datetime.today(),
                 'Open Price':savedata['o'],
@@ -58,7 +58,7 @@ class MongoDailyOpenCloseData(MongoTradesQuotesData):
         CollectionName.insert_one(inserData)
 
     def fetchDailyOpenCloseData(self, symbolList=None, date=None, CollectionName=None):
-        query={'dateForData':datetime.datetime.strptime(date,'%Y-%m-%d'), 'symbol': { '$in': symbolList }}
+        query={'dateForData':datetime.datetime.strptime(date,'%Y-%m-%d'), 'Symbol': { '$in': symbolList }}
         #explain=(CollectionName.find(query).explain())
         #print(json.dumps(explain, indent=2,default=json_util.default))
         # Cursor

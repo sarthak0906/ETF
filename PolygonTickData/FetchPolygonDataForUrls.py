@@ -18,7 +18,7 @@ import time
 
 class FetchPolygonData(object):
 
-	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='17:00:00', endtimeLoop='16:00:00',
+	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='21:00:00', endtimeLoop='20:00:00',
 				 PolygonMethod=None, symbolStatus=None, CollectionName=None):
 		self.helperObj = Helper()
 		self.date = date
@@ -72,33 +72,4 @@ class FetchPolygonData(object):
 			_ = self.insertIntoCollection(symbol=symbol, datetosave=self.date, savedata=responseData,CollectionName=self.CollectionName)
 		return True
 
-	'''
-	# Pass here etfdata object
-	def assemblePolygonData(self,symbols):
-	# Objects for polygon requests
-		Polygonobj = PolgonDataCreateURLS()
-		# Get all tickers for the ETF
-		trade_routines = [Polygonobj.PolygonHistoricTrades(date=self.date, symbol=symbol,startTS=None,endTS=self.endTs,limitresult=str(50000)) for symbol in symbols]
-		quotes_routines = [Polygonobj.PolygonHistoricQuotes(date=self.date, symbol=symbol,startTS=None,endTS=self.endTs,limitresult=str(50000)) for symbol in ['XLK']]
-		openCloseURLs =[Polygonobj.PolygonDailyOpenClose(date=self.date, symbol=symbol) for symbol in symbols]
-
-		#tradesDataDf=pd.DataFrame(columns = ['p','s','t','x','Symbol'])
-		# p : TradePrice, s : TradeSie, t :Timestamp, x: Exchange
-		self.PolygonMethod=Polygonobj.PolygonHistoricTrades
-		tradesDataDf=self.getDataFromPolygon(getUrls=trade_routines,finalResultDict=[])
-		tradesDataDf=pd.DataFrame(tradesDataDf)[['Symbol','p','s','t','x']]
-		print(tradesDataDf)
-		print(tradesDataDf['Symbol'].unique())
-		
-		#quotesDataDf=pd.DataFrame(columns = ['P','S','p','s','t','X','x','Symbol'])
-		self.PolygonMethod=Polygonobj.PolygonHistoricQuotes
-		quotesDataDf=self.getDataFromPolygon(getUrls=quotes_routines,finalResultDict=[])
-		quotesDataDf=pd.DataFrame(quotesDataDf)[['Symbol','P','S','p','s','t','X','x']]
-		print(quotesDataDf)
-		print(quotesDataDf['Symbol'].unique())
-		
-		priceforNAVfilling=self.getOpenCloseData(openCloseURLs=openCloseURLs)
-		print(priceforNAVfilling)
-
-		return tradesDataDf, quotesDataDf, priceforNAVfilling
-	'''
+	

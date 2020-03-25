@@ -59,31 +59,4 @@ class DailyOpenCloseData(object):
 
 		data=self.fetchData()
 		return pd.DataFrame(data)
-'''
-# Debugger Code
-	# TO debug where it's failling
-	def debuggetOpenCloseData(self,openCloseURLs=None):
-		import urllib.request
-		import json
-		priceforNAVfilling={}
-		for url in openCloseURLs:
-			response=json.loads(urllib.request.urlopen(url).read())
-			try:
-				del response['status']
-				del response['from']
-				self.dailyopencloseObj.insertIntoCollection(symbol=response['symbol'], datetosave=self.date, savedata=response, CollectionName=self.collectionName)
-			except Exception as e:
-				print("Was not able to fetch data for Stock")
-				print(url)
-				print(e)
-				continue
-		
-if __name__=="__main__":
-	from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
-	from MongoDB.Schemas import dailyopencloseCollection
-	etfData=LoadHoldingsdata(etfname='VGT', fundholdingsdate='2020-03-16')
-	data=DailyOpenCloseData(symbols=etfData.getSymbols(), date='2020-03-16',collectionName=dailyopencloseCollection).run()
-	print(data)
-	obj.debuggetOpenCloseData(openCloseURLs=obj.createUrls())
-# Debugger Code
-'''
+

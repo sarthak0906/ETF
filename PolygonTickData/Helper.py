@@ -63,4 +63,10 @@ class Helper(object):
     def checkTimeStampForPagination(self,checkTime,extractDataTillTime):
         return True if self.getHumanTime(ts=checkTime, divideby=1000000000) < extractDataTillTime else False
 
+    # vwap : Volume Weighted Average Price
+    def vwap(self,df):
+        q = df['Spread'].values
+        p = df['Total Bid Ask Size'].values
+        return df.assign(vwap=(p * q).cumsum() / q.cumsum())
+
 

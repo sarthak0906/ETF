@@ -18,7 +18,7 @@ class ArbitrageCalculation():
         date = date
 
         # Load the ETF Holding
-        etfData = LoadHoldingsdata(etfname=etfname, fundholdingsdate=date)
+        etfData = LoadHoldingsdata().LoadHoldingsAndClean(etfname=etfname, fundholdingsdate=date)
 
         # Load all the data - Holdings data for Etf, trade data, quotes data, open-close price
         allData = DataApi(etfname=etfname, date=date, etfData=etfData)

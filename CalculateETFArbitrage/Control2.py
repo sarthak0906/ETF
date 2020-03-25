@@ -81,7 +81,7 @@ if __name__ == "__main__":
     date = '2020-03-13'
     etfname = 'XLK'
 
-    etfData = LoadHoldingsdata(etfname=etfname, fundholdingsdate='20200226')
+    etfData = LoadHoldingsdata().LoadHoldingsAndClean(etfname=etfname, fundholdingsdate='20200226')
     print(dir(etfData))
     print(etfData.getSymbols())
     print(etfData.getETFWeights())

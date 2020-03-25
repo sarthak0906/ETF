@@ -41,11 +41,13 @@ tradespipeline =[
     }}
 ]
 
-
+# Daily Open Close Collection
 dailyopencloseCollection=db.DailyOpenCloseCollection
 dailyopencloseCollection.create_index([("dateForData", DESCENDING), ("Symbol", ASCENDING)])
 
-
+# Arbitrage
+arbitragecollection = db.ArbitrageCollection
+arbitragecollection.create_index([("dateOfAnalysis", DESCENDING), ("ETFName", ASCENDING)])
 
 
 

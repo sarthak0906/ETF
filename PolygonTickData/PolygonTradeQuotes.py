@@ -29,14 +29,17 @@ class PolygonQuotesTradesData(object):
         DictData = self.mtqd.fetchQuotesTradesDataFromMongo(symbolList=symbols, date=date, CollectionName=CollectionName, pipeline=pipeline)
         return pd.DataFrame(DictData)
 
-    def createURLSforquotes(self, symbols=None, date=None, endTs=None, Routines=[], symbolStatus={}):
+    def createURLSforquotes(self, symbols=None, date=None, endTs=None):
+        Routines = []
+        symbolStatus = {}
         quotesUrls=PolgonDataCreateURLS()
         for symbol in symbols:
                 Routines.append(quotesUrls.PolygonHistoricQuotes(date=date, symbol=symbol, startTS=None, endTS=endTs, limitresult=str(50000)))
                 symbolStatus[symbol]={'batchSize':0}
         return Routines, symbolStatus
 
-    def createURLSfortrade(self, symbols=None, startDate=None, Routines=[]):
+    def createURLSfortrade(self, symbols=None, startDate=None):
+        Routines = []
         endDate=datetime.datetime.strptime(startDate,'%Y-%m-%d')+datetime.timedelta(days=1)
         endDate=endDate.strftime('%Y-%m-%d')
         tradeUrls=PolgonDataCreateURLS()

@@ -104,16 +104,19 @@ class PullandCleanData:
                     holding.TickerWeight = row.Weights
                     details.holdings.append(holding)
                 details.save()  # save the document into the collection in db
+                disconnect('ETF_db')
                 print("Data for {} saved".format(etfname))
                 logger.debug("Data for {} saved".format(etfname))
         except FileNotFoundError:
             pass
             logger.error("Today's File/Folder Not Found...")
+            disconnect('ETF_db')
         except Exception as e:
             logger.critical(e)
             logger.exception("Exception occurred in DataCleanFeed.py")
             EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception in DataCleanFeed.py',
                         e).sendemail()
+            disconnect('ETF_db')
 
 
 if __name__ == "__main__":

@@ -49,5 +49,5 @@ dailyopencloseCollection.create_index([("dateForData", DESCENDING), ("Symbol", A
 arbitragecollection = db.ArbitrageCollection
 arbitragecollection.create_index([("dateOfAnalysis", DESCENDING), ("ETFName", ASCENDING)])
 
-
+connection.close()
 

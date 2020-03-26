@@ -18,7 +18,7 @@ import time
 
 class FetchPolygonData(object):
 
-	def __init__(self, date=None, previousdate=None, starttime='9:00:00', endtime='21:00:00', endtimeLoop='20:00:00',
+	def __init__(self, date=None, previousdate=None, starttime='12:00:00', endtime='21:00:00', endtimeLoop='20:00:00',
 				 PolygonMethod=None, symbolStatus=None, CollectionName=None):
 		self.helperObj = Helper()
 		self.date = date

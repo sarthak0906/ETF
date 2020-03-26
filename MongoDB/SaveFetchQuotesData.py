@@ -5,11 +5,9 @@ import sys
 sys.path.append("..")  # Remove in production - KTZ
 
 import datetime
-import mongoengine
 from mongoengine.queryset.visitor import Q
 import json
 from bson import json_util
-mongoengine.connect('ETF_db', alias='ETF_db')
 
 # This class is for saving Trades and Quotes Daily data in QuotesData and TradeData Collection
 class MongoTradesQuotesData(object):

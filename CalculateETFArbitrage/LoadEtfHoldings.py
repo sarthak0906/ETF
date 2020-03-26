@@ -8,9 +8,13 @@ log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 logging.basicConfig(filename="LoadEtfs.log", format='%(asctime)s %(message)s')
 
+# from MongoDB.Schemas import connection
 
 class LoadHoldingsdata(object):
-
+    def __init__(self):
+        self.cashvalueweight = None
+        self.weights = None
+        self.symbols = None
     def LoadHoldingsAndClean(self, etfname, fundholdingsdate):
         try:
             holdings = self.getHoldingsDatafromDB(etfname, fundholdingsdate)
@@ -26,8 +30,8 @@ class LoadHoldingsdata(object):
             symbols.append(etfname)
             symbols.remove('CASH')
             self.symbols = symbols
-            
             log.info("Data Successfully Loaded")
+            return self
         except Exception as e:
             log.error("Data Not Loaded")
             logging.critical(e, exc_info=True)
@@ -42,10 +46,14 @@ class LoadHoldingsdata(object):
             print(etfdata)
             holdingsdatadf = pd.DataFrame(etfdata.to_mongo().to_dict()['holdings'])
             print(str(etfdata.FundHoldingsDate))
+            disconnect('ETF_db')
             return holdingsdatadf
+
         except Exception as e:
             print("Can't Fetch Fund Holdings Data")
             print(e)
+            logging.critical(e, exc_info=True)
+            disconnect('ETF_db')
 
     def getHoldingsDataForAllETFfromDB(self, etfname):
         try:
@@ -56,10 +64,12 @@ class LoadHoldingsdata(object):
             print(etfdata.ETFTicker)
             holdingsdatadf = pd.DataFrame(etfdata.to_mongo().to_dict()['holdings'])
             print(str(etfdata.FundHoldingsDate))
+            disconnect('ETF_db')
             return holdingsdatadf['TickerSymbol'].to_list()
         except Exception as e:
             print("Can't Fetch Fund Holdings Data for all ETFs")
             print(e)
+            disconnect('ETF_db')
 
     def getETFWeights(self):
         return self.weights

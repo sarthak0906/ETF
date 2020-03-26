@@ -30,6 +30,7 @@ class PullHoldingsListClass(object):
     def __init__(self, dateofdownload=datetime.now().date()):
         connect('ETF_db', alias='ETF_db')
         self.todaysdata = ETFListDocument.objects(Download_date=dateofdownload).first()
+        disconnect('ETF_db')
         self.etfdescdf = pd.DataFrame(self.todaysdata.to_mongo().to_dict()['etflist'])
 
     def ReturnetflistDF(self):

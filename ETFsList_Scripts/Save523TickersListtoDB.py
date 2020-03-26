@@ -5,12 +5,11 @@ from mongoengine import *
 from ETFsList_Scripts.ETFListCollection import ETFListData
 from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
 
-connect('ETF_db', alias='ETF_db')
-
 
 class ETFListSaver:
 
     def __init__(self):
+        connect('ETF_db', alias='ETF_db')
         self.readingpath = ''
         self.etflistdf = pd.DataFrame()
 
@@ -53,3 +52,4 @@ class ETFListSaver:
             etflistdocument.etflist.append(etflistdata)
         # push to db
         etflistdocument.save()
+        disconnect('ETF_db')

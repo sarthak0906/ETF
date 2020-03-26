@@ -5,8 +5,10 @@ import pandas as pd
 from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
 from CommonServices.ThreadingRequests import IOBoundThreading
 from MongoDB.SaveFetchQuotesData import MongoDailyOpenCloseData
+import traceback
 import datetime
-
+import requests
+import json
 
 class DailyOpenCloseData(object):
 
@@ -37,6 +39,24 @@ class DailyOpenCloseData(object):
 				print(e)
 				print("Was not able to fetch data for Stock")
 
+	# Used for ubthreading
+	def getSaveOpenCloseDataNoThreading(self,openCloseURLs=None):
+		priceforNAVfilling={}
+		for URL in openCloseURLs:
+			try:
+				response=json.loads(requests.get(url=URL).text)
+				symbol=response['ticker']
+				responseData = [dict(item, **{'Symbol':symbol}) for item in response['results']]
+				self.dailyopencloseObj.insertIntoCollection(symbol=symbol, datetosave=self.date, savedata=responseData[0], CollectionName=self.collectionName)
+			except Exception as e:
+				print(e)
+				print("Holding can't be fetched for URL ="+ URL)
+				traceback.print_exc()
+				# Failure if any holding gave an issue
+				return False
+			# Success if holdings were scrapped success
+			return True
+
 	def fetchData(self):
 		return self.dailyopencloseObj.fetchDailyOpenCloseData(symbolList=self.symbols, date=self.date, CollectionName=self.collectionName)
 
@@ -55,7 +75,9 @@ class DailyOpenCloseData(object):
 			# Create New URLS
 			createNewUrls=self.createUrls(symbolsToBeDownloaded=symbolsToBeDownloaded)
 			# Save data for those URls
-			_ = self.getSaveOpenCloseData(openCloseURLs=createNewUrls)
+			dailyDataStatus = self.getSaveOpenCloseDataNoThreading(openCloseURLs=createNewUrls)
+			if not dailyDataStatus:
+				return None
 
 		data=self.fetchData()
 		return pd.DataFrame(data)

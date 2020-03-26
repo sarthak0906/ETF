@@ -38,6 +38,7 @@ class FetchPolygonData(object):
 		print("Symbol being processed " + symbol)
 		responseData = [dict(item, **{'Symbol':symbol}) for item in response['results']]
 		lastUnixTimeStamp = self.helperObj.getLastTimeStamp(response)
+		print("Fetched till time for ="+str(self.helperObj.getHumanTime(lastUnixTimeStamp)))
 		if self.helperObj.checkTimeStampForPagination(lastUnixTimeStamp, self.extractDataTillTime):
 			# Create new urls for pagination request
 			PaginationRequest=self.PolygonMethod(date=self.date, symbol=symbol, startTS=str(lastUnixTimeStamp),

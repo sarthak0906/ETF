@@ -52,7 +52,7 @@ class Helper(object):
         datetimeobject = " ".join([date, time])
         return self.unix_time_millis(datetime.strptime(datetimeobject, '%Y-%m-%d %H:%M:%S'))
 
-    def getHumanTime(self, ts=None, divideby=None):
+    def getHumanTime(self, ts=None, divideby=1000000000):
         s, ms = divmod(ts, divideby)
         return datetime(*time.gmtime(s)[:6])
     

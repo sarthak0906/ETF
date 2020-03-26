@@ -1,4 +1,5 @@
 import sys  # Remove in production - KTZ
+import traceback
 
 sys.path.append("..")  # Remove in production - KTZ
 
@@ -9,22 +10,36 @@ from MongoDB.SaveArbitrageCalcs import SaveCalculatedArbitrage
 from CalculateETFArbitrage.GetRelevantHoldings import RelevantHoldings
 import csv
 
-try:
-    # etflist = []
-    # with open('NonChineseETFs.csv', 'r') as file:
-    #     reader = csv.reader(file)
-    #     for row in reader:
-    #         etflist.extend(row)
-    # print(etflist)
-    # print(len(etflist))
-    # etflist = ['XLK','XLY', 'XLC', 'VCR', 'ITB', 'IYC', 'FDIS', 'XRT', 'FXD']
-    etflist = ['XLK','QQQ']
-    date = '2020-03-17'
-    for etfname in etflist:
+
+etfwhichfailed=[]
+etflist = list(pd.read_csv("NonChineseETFs.csv").columns.values)
+etflist=etflist[etflist.index('IBB'):]
+print(etflist)
+print(len(etflist))
+# etflist = ['XLK','XLY', 'XLC', 'VCR', 'ITB', 'IYC', 'FDIS', 'XRT', 'FXD']
+#etflist = ['IBB']
+date = '2020-03-17'
+
+for etfname in etflist:
+    try:
+        print("Doing Analysis for ETF= " + etfname)
         data = ArbitrageCalculation().calculateArbitrage(etfname, date)
-        data.reset_index(inplace=True)
-        SaveCalculatedArbitrage().insertIntoCollection(etfname, datetime.now().date().strftime('%Y-%m-%d'),
+
+        if data is None:
+            print("Holding Belong to some other Exchange, No data was found")
+            etfwhichfailed.append(etfname)
+            continue
+        else:
+            data.reset_index(inplace=True)
+            SaveCalculatedArbitrage().insertIntoCollection(etfname, datetime.now().date().strftime('%Y-%m-%d'),
                                                        data.to_dict(orient='records'))
-except Exception as e:
-    print("exception in {} etf".format(etfname))
-    print(e)
+            
+    except Exception as e:
+        etfwhichfailed.append(etfname)
+        print("exception in {} etf, not crawled".format(etfname))
+        print(e)
+        traceback.print_exc()
+        continue
+
+print(etflist)
+print(etfwhichfailed)

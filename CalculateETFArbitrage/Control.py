@@ -23,6 +23,10 @@ class ArbitrageCalculation():
         # Load all the data - Holdings data for Etf, trade data, quotes data, open-close price
         allData = DataApi(etfname=etfname, date=date, etfData=etfData)
 
+        # Check if any holdings is trading in Non-US markets
+        if allData.openPriceData is None:
+            return None
+
         # Convert Time Stamps to Pandas Timestamp
         helperObj = Helper()
         allData.tradesDataDf['Time'] = allData.tradesDataDf['Time'].apply(lambda x: helperObj.getHumanTime(ts=x, divideby=1000))

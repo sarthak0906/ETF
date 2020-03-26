@@ -1,3 +1,6 @@
+import sys  # Remove in production - KTZ
+sys.path.append("..")  # Remove in production - KTZ
+
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
 from mongoengine import *

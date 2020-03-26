@@ -8,7 +8,8 @@ from CalculateETFArbitrage.Control import ArbitrageCalculation
 from MongoDB.SaveArbitrageCalcs import SaveCalculatedArbitrage
 
 try:
-    etflist = ['XLK','XLY', 'XLC', 'VCR', 'ITB', 'IYC', 'FDIS', 'XRT', 'FXD']
+    #etflist = ['XLK','XLY', 'XLC', 'VCR', 'ITB', 'IYC', 'FDIS', 'XRT', 'FXD']
+    etflist = ['XLK']
     # etflist = ['CHIQ']
     date = '2020-03-16'
     for etfname in etflist:

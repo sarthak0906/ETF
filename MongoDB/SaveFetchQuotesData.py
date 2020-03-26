@@ -57,6 +57,11 @@ class MongoDailyOpenCloseData(MongoTradesQuotesData):
                 }
         CollectionName.insert_one(inserData)
 
+    def doesItemExsistInQuotesTradesMongoDb(self, s=None, date=None, CollectionName=None):
+        s= CollectionName.find({'Symbol':s,'dateForData':datetime.datetime.strptime(date,'%Y-%m-%d')}).count()
+        # Return False is list is empty, that mean symbol, date combination doesn't exsist and it needs to be downloaded
+        return False if s==0 else True
+
     def fetchDailyOpenCloseData(self, symbolList=None, date=None, CollectionName=None):
         query={'dateForData':datetime.datetime.strptime(date,'%Y-%m-%d'), 'Symbol': { '$in': symbolList }}
         #explain=(CollectionName.find(query).explain())

@@ -1,8 +1,8 @@
 from pymongo import ASCENDING, DESCENDING
 from pymongo import MongoClient
 
-connection = MongoClient('localhost', 27017)
-db = connection.ETF_db
+connectionLocal = MongoClient('localhost', 27017)
+db = connectionLocal.ETF_db
 
 # Quotes Pipeline
 quotesCollection = db.QuotesData

@@ -17,7 +17,7 @@ etflist=etflist[etflist.index('IBB'):]
 print(etflist)
 print(len(etflist))
 # etflist = ['XLK','XLY', 'XLC', 'VCR', 'ITB', 'IYC', 'FDIS', 'XRT', 'FXD']
-#etflist = ['IBB']
+etflist = ['XLK','VGT','IYW','FTEC']
 date = '2020-03-17'
 
 for etfname in etflist:
@@ -31,8 +31,10 @@ for etfname in etflist:
             continue
         else:
             data.reset_index(inplace=True)
-            SaveCalculatedArbitrage().insertIntoCollection(etfname, datetime.now().date().strftime('%Y-%m-%d'),
-                                                       data.to_dict(orient='records'))
+            SaveCalculatedArbitrage().insertIntoCollection(ETFName=etfname, 
+                                                        dateWhenAnalysisRan=datetime.now().date(),
+                                                        data=data.to_dict(orient='records'),
+                                                        dateofAnalysis=datetime.strptime(date, '%Y-%m-%d'))
             
     except Exception as e:
         etfwhichfailed.append(etfname)

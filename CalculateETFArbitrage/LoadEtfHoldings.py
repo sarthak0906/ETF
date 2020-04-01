@@ -1,12 +1,13 @@
 from mongoengine import *
 from datetime import datetime
-import logging
-from HoldingsDataScripts.ETFMongo import ETF
 import pandas as pd
 
+import logging
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
-logging.basicConfig(filename="LoadEtfs.log", format='%(asctime)s %(message)s')
+logging.basicConfig(filename="LoadEtfs.log", format='%(asctime)s %(message)s', filemode='w')
+
+from HoldingsDataScripts.ETFMongo import ETF
 
 # from MongoDB.Schemas import connection
 
@@ -19,8 +20,12 @@ class LoadHoldingsdata(object):
         try:
             holdings = self.getHoldingsDatafromDB(etfname, fundholdingsdate)
             holdings['TickerWeight'] = holdings['TickerWeight'] / 100
-            # Assign cashvalueweight 
-            self.cashvalueweight = holdings[holdings['TickerSymbol'] == 'CASH'].get('TickerWeight').item()
+            # Assign cashvalueweight
+            try:
+                self.cashvalueweight = holdings[holdings['TickerSymbol'] == 'CASH'].get('TickerWeight').item()
+            except:
+                self.cashvalueweight = 0
+                pass
 
             # Assign Weight %
             self.weights = dict(zip(holdings.TickerSymbol, holdings.TickerWeight))
@@ -28,7 +33,10 @@ class LoadHoldingsdata(object):
             # Assign symbols
             symbols = holdings['TickerSymbol'].tolist()
             symbols.append(etfname)
-            symbols.remove('CASH')
+            try:
+                symbols.remove('CASH')
+            except:
+                pass
             self.symbols = symbols
             log.info("Data Successfully Loaded")
             return self

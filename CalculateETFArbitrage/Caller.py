@@ -13,11 +13,11 @@ import csv
 
 etfwhichfailed=[]
 etflist = list(pd.read_csv("NonChineseETFs.csv").columns.values)
-etflist=etflist[etflist.index('IBB'):]
+# etflist=etflist[etflist.index('IBB'):]
 print(etflist)
 print(len(etflist))
 # etflist = ['XLK','XLY', 'XLC', 'VCR', 'ITB', 'IYC', 'FDIS', 'XRT', 'FXD']
-etflist = ['XLK','VGT','IYW','FTEC']
+# etflist = ['PBS','RTL','WDRW','XLK','VGT','IYW','FTEC']
 date = '2020-03-17'
 
 for etfname in etflist:
@@ -31,10 +31,11 @@ for etfname in etflist:
             continue
         else:
             data.reset_index(inplace=True)
-            SaveCalculatedArbitrage().insertIntoCollection(ETFName=etfname, 
-                                                        dateWhenAnalysisRan=datetime.now().date(),
-                                                        data=data.to_dict(orient='records'),
-                                                        dateofAnalysis=datetime.strptime(date, '%Y-%m-%d'))
+            SaveCalculatedArbitrage().insertIntoCollection(ETFName=etfname,
+                                                           dateOfAnalysis=datetime.strptime(date, '%Y-%m-%d'),
+                                                           data=data.to_dict(orient='records'),
+                                                           dateWhenAnalysisRan=datetime.now()
+                                                           )
             
     except Exception as e:
         etfwhichfailed.append(etfname)
@@ -42,6 +43,7 @@ for etfname in etflist:
         print(e)
         traceback.print_exc()
         continue
+RelevantHoldings().write_to_csv(etfwhichfailed,"etfwhichfailed.csv")
 
 print(etflist)
 print(etfwhichfailed)

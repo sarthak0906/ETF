@@ -46,7 +46,8 @@ class FetchPolygonData(object):
 			self.symbolStatus[symbol]['batchSize'] += 1
 		# Creating an efficient storage object with PolygonResponseStorage for returning
 		_ = self.insertIntoCollection(symbol=symbol, datetosave=self.date, savedata=responseData,CollectionName=self.CollectionName, batchSize=self.symbolStatus[symbol]['batchSize'])
-		
+		print("Pagination Request = {}".format(PaginationRequest))
+		# if not PaginationRequest and PaginationRequest==
 		if PaginationRequest:
 			return PaginationRequest 
 		else:
@@ -60,7 +61,7 @@ class FetchPolygonData(object):
 		ThreadingResults = CPUBonundThreading(self.__extractDataFromResponse, responses)
 		PaginationRequest=[paginationUrl for paginationUrl in ThreadingResults if paginationUrl]
 		# Check if we need to do pagination for results, if Yes we do a recursion call to getDataFromPolygon
-		if len(PaginationRequest) > 0:
+		if len(PaginationRequest) > 0 and PaginationRequest[0]!=getUrls[0]:
 			_ = self.getQuotesDataFromPolygon(getUrls=PaginationRequest)
 		return True
 

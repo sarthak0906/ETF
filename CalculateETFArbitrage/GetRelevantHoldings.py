@@ -63,9 +63,9 @@ class RelevantHoldings():
         # print("Non-Chinese Holdings : \n")
         # print(self.NonChineseHoldings)
 
-    def write_to_csv(self, etflist):
+    def write_to_csv(self, etflist, filename="NonChineseETFs.csv"):
         # name of csv file
-        filename = "NonChineseETFs.csv"
+        filename = filename
         # writing to csv file
         with open(filename, 'w') as csvfile:
             csvwriter = csv.writer(csvfile)

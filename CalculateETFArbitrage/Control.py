@@ -67,6 +67,12 @@ class ArbitrageCalculation():
         ds['Flag'] = 0
         ds.loc[(ds['Arbitrage in $'] > ds['ETF Trading Spread in $']) & ds['ETF Trading Spread in $'] != 0, 'Flag'] = 111
 
+
+        holdingsChange = helperObj.EtfMover(df=tradePricesDFMinutes, columnName='Change%')
+        etfMoverholdings = helperObj.EtfMover(df=tradePricesDFMinutes.assign(**etfData.getETFWeights()).mul(tradePricesDFMinutes).dropna(axis=1), columnName='ETFMover%')
+
+        ds=pd.concat([ds,etfMoverholdings,holdingsChange],axis=1)
+        
         print(ds)
         
         return ds

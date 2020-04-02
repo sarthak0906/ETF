@@ -5,6 +5,7 @@ sys.path.append("..")  # Remove in production - KTZ
 import pandas as pd
 import logging
 from functools import reduce
+import datetime
 
 from PolygonTickData.Helper import Helper
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
@@ -32,7 +33,15 @@ class ArbitrageCalculation():
         allData.tradesDataDf['Time'] = allData.tradesDataDf['Time'].apply(lambda x: helperObj.getHumanTime(ts=x, divideby=1000))
         tradePricesDFMinutes = allData.tradesDataDf.groupby([allData.tradesDataDf['Time'], allData.tradesDataDf['Symbol']])['Trade Price']
         tradePricesDFMinutes = tradePricesDFMinutes.first().unstack(level=1)
+
         priceforNAVfilling = allData.openPriceData.set_index('Symbol').T.to_dict('records')[0]
+
+        marketStartTime = datetime.datetime.strptime('13:29:00', "%H:%M:%S").time()
+        marketEndTime = datetime.datetime.strptime('20:00:00', "%H:%M:%S").time()
+
+        mask = (tradePricesDFMinutes.index.time >= marketStartTime) & (tradePricesDFMinutes.index.time <= marketEndTime)
+        tradePricesDFMinutes=tradePricesDFMinutes[mask]
+        tradePricesDFMinutes=tradePricesDFMinutes.ffill(axis=0)
         tradePricesDFMinutes = tradePricesDFMinutes.fillna(priceforNAVfilling)
 
         etfprice = tradePricesDFMinutes[etfname]
@@ -41,33 +50,24 @@ class ArbitrageCalculation():
         etfpricechange = tradePricesDFMinutes[etfname]
         del tradePricesDFMinutes[etfname]
 
-        allData.quotesDataDf['Time'] = allData.quotesDataDf['Time'].apply(
-            lambda x: helperObj.getHumanTime(ts=x, divideby=1000000000))
+        allData.quotesDataDf['Time'] = allData.quotesDataDf['Time'].apply(lambda x: helperObj.getHumanTime(ts=x, divideby=1000000000))
+        allData.quotesDataDf['Time'] = allData.quotesDataDf['Time'].map(lambda x: x.replace(second=0))
         allData.quotesDataDf = allData.quotesDataDf[allData.quotesDataDf['Bid Size'] != 0]
         allData.quotesDataDf = allData.quotesDataDf[allData.quotesDataDf['Ask Size'] != 0]
         allData.quotesDataDf['Total Bid Ask Size'] = allData.quotesDataDf['Ask Size'] + allData.quotesDataDf['Bid Size']
         allData.quotesDataDf['Spread'] = allData.quotesDataDf['Ask Price'] - allData.quotesDataDf['Bid Price']
         allData.quotesDataDf['MidPrice'] = (allData.quotesDataDf['Ask Price'] + allData.quotesDataDf['Bid Price']) / 2
-        allData.quotesDataDf = allData.quotesDataDf.groupby(
-            [allData.quotesDataDf['Time'].dt.hour, allData.quotesDataDf['Time'].dt.minute], group_keys=False).apply(
-            helperObj.vwap)
-        allData.quotesDataDf['Time'] = allData.quotesDataDf['Time'].map(lambda x: x.replace(second=0))
-        quotesSpreadsMinutes = allData.quotesDataDf.groupby('Time')['vwap'].mean()
+        quotesSpreadsMinutes = allData.quotesDataDf.groupby('Time')['Spread'].mean()
 
-        netassetvaluereturn = tradePricesDFMinutes.assign(**etfData.getETFWeights()).mul(tradePricesDFMinutes).sum(
-            axis=1)
-
+        netassetvaluereturn = tradePricesDFMinutes.assign(**etfData.getETFWeights()).mul(tradePricesDFMinutes).sum(axis=1)
         ds = pd.concat([etfprice, etfpricechange, netassetvaluereturn, quotesSpreadsMinutes], axis=1).dropna()
         ds.columns = ['ETF Price', 'ETF Change Price %', 'Net Asset Value Change%', 'ETF Trading Spread in $']
         ds['Arbitrage in $'] = (ds['ETF Change Price %'] - ds['Net Asset Value Change%']) * ds['ETF Price'] / 100
-        ds['Arbitrage in $'] = abs(ds['Arbitrage in $'])
+        #ds['Arbitrage in $'] = ds['Arbitrage in $']
         ds['Flag'] = 0
-        ds.loc[
-            (ds['Arbitrage in $'] > ds['ETF Trading Spread in $']) & ds['ETF Trading Spread in $'] != 0, 'Flag'] = 111
-        print(ds)
+        ds.loc[(ds['Arbitrage in $'] > ds['ETF Trading Spread in $']) & ds['ETF Trading Spread in $'] != 0, 'Flag'] = 111
 
-        #tradePricesDFMinutes.to_csv("TradePrices.csv")
-        #quotesSpreadsMinutes.to_csv("QuotesPrices.csv")
+        print(ds)
         
         return ds
 

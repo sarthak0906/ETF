@@ -17,7 +17,7 @@ etflist = list(pd.read_csv("NonChineseETFs.csv").columns.values)
 print(etflist)
 print(len(etflist))
 # etflist = ['XLK','XLY', 'XLC', 'VCR', 'ITB', 'IYC', 'FDIS', 'XRT', 'FXD']
-# etflist = ['PBS','RTL','WDRW','XLK','VGT','IYW','FTEC']
+etflist = ['XLK','VGT','IYW','FTEC']
 date = '2020-03-17'
 
 for etfname in etflist:

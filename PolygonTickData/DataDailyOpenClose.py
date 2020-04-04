@@ -55,7 +55,7 @@ class DailyOpenCloseData(object):
 				# Failure if any holding gave an issue
 				return False
 			# Success if holdings were scrapped success
-			return True
+		return True
 
 	def fetchData(self):
 		return self.dailyopencloseObj.fetchDailyOpenCloseData(symbolList=self.symbols, date=self.date, CollectionName=self.collectionName)

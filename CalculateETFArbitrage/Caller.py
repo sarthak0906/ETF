@@ -18,6 +18,7 @@ print(etflist)
 print(len(etflist))
 # etflist = ['XLK','XLY', 'XLC', 'VCR', 'ITB', 'IYC', 'FDIS', 'XRT', 'FXD']
 etflist = ['XLK','VGT','IYW','FTEC']
+etflist = ['IYW']
 date = '2020-03-17'
 
 for etfname in etflist:

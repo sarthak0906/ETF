@@ -2,11 +2,15 @@
 import sys
 from time import perf_counter
 t1_start = perf_counter()
-sys.path.extend(['/home/piyush/Desktop/etf/ETFAnalysis', '/home/piyush/Desktop/etf/ETFAnalysis/ETFsList_Scripts',
-                 '/home/piyush/Desktop/etf/ETFAnalysis/HoldingsDataScripts',
-                 '/home/piyush/Desktop/etf/ETFAnalysis/CommonServices'])
+# For Piyush system
+sys.path.extend(['/home/piyush/Desktop/etf1903', '/home/piyush/Desktop/etf1903/ETFsList_Scripts',
+                 '/home/piyush/Desktop/etf1903/HoldingsDataScripts',
+                 '/home/piyush/Desktop/etf1903/CommonServices',
+                 '/home/piyush/Desktop/etf1903/CalculateETFArbitrage'])
+# For Production env
 sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_Scripts',
-                 '/home/ubuntu/ETFAnalysis/HoldingsDataScripts', '/home/ubuntu/ETFAnalysis/CommonServices'])
+                 '/home/ubuntu/ETFAnalysis/HoldingsDataScripts', '/home/ubuntu/ETFAnalysis/CommonServices',
+                 '/home/ubuntu/ETFAnalysis/CalculateETFArbitrage'])
 # Use absolute import paths
 import CommonServices.WebdriverServices as serv
 from ETFsList_Scripts.Download523TickersList import Download523TickersList
@@ -38,7 +42,7 @@ def startCronJobForETFHoldings():
 
     # For each ETF download all holdings and save to DB
     for etf in ETFListDF['Symbol'].tolist():
-    # for etf in ['EMTY']:
+    # for etf in ['XLK','XLY']:
         print("Processing for {} etf".format(etf))
         logger.debug("Processing for {} etf".format(etf))
         try:

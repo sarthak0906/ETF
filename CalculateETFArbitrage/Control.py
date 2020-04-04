@@ -6,6 +6,7 @@ import pandas as pd
 import logging
 from functools import reduce
 import datetime
+import numpy as np
 
 from PolygonTickData.Helper import Helper
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
@@ -63,9 +64,14 @@ class ArbitrageCalculation():
         ds = pd.concat([etfprice, etfpricechange, netassetvaluereturn, quotesSpreadsMinutes], axis=1).dropna()
         ds.columns = ['ETF Price', 'ETF Change Price %', 'Net Asset Value Change%', 'ETF Trading Spread in $']
         ds['Arbitrage in $'] = (ds['ETF Change Price %'] - ds['Net Asset Value Change%']) * ds['ETF Price'] / 100
-        #ds['Arbitrage in $'] = ds['Arbitrage in $']
         ds['Flag'] = 0
-        ds.loc[(ds['Arbitrage in $'] > ds['ETF Trading Spread in $']) & ds['ETF Trading Spread in $'] != 0, 'Flag'] = 111
+        ds.loc[(abs(ds['Arbitrage in $']) > ds['ETF Trading Spread in $']) & ds['ETF Trading Spread in $'] != 0, 'Flag'] = 111
+        ds['Flag'] = ds['Flag'] * np.sign(ds['Arbitrage in $'])
+
+        holdingsChange = helperObj.EtfMover(df=tradePricesDFMinutes, columnName='Change%')
+        etfMoverholdings = helperObj.EtfMover(df=tradePricesDFMinutes.assign(**etfData.getETFWeights()).mul(tradePricesDFMinutes).dropna(axis=1), columnName='ETFMover%')
+
+        ds=pd.concat([ds,etfMoverholdings,holdingsChange],axis=1)
 
         print(ds)
         

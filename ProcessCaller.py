@@ -51,8 +51,8 @@ def startCronJobForETFHoldings():
                 PullandCleanData().readfilesandclean(etf, ETFListDF)
 
         except FileNotFoundError:
-            continue
             logger.error("Today's File/Folder Not Found...")
+            continue
         except Exception as e:
             logger.exception(e)
             continue

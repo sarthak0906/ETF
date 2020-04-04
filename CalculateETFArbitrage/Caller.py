@@ -12,13 +12,10 @@ import csv
 
 
 etfwhichfailed=[]
-etflist = list(pd.read_csv("NonChineseETFs.csv").columns.values)
-# etflist=etflist[etflist.index('IBB'):]
+etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
 print(etflist)
 print(len(etflist))
-# etflist = ['XLK','XLY', 'XLC', 'VCR', 'ITB', 'IYC', 'FDIS', 'XRT', 'FXD']
-etflist = ['XLK','VGT','IYW','FTEC']
-date = '2020-03-17'
+date = '2020-03-04'
 
 for etfname in etflist:
     try:
@@ -43,7 +40,8 @@ for etfname in etflist:
         print(e)
         traceback.print_exc()
         continue
-RelevantHoldings().write_to_csv(etfwhichfailed,"etfwhichfailed.csv")
+if len(etfwhichfailed)>0:
+    RelevantHoldings().write_to_csv(etfwhichfailed,"etfwhichfailed.csv")
 
 print(etflist)
 print(etfwhichfailed)

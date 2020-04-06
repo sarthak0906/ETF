@@ -1,7 +1,7 @@
 from mongoengine import *
 from datetime import datetime
 import pandas as pd
-
+import getpass
 # import logging
 #
 # log = logging.getLogger()
@@ -61,9 +61,13 @@ class LoadHoldingsdata(object):
 
     def getHoldingsDatafromDB(self, etfname, fundholdingsdate):
         try:
-            # connect('ETF_db', alias='ETF_db')
-            # Connecting to ETF_db on AWS EC2 Production Server
-            connect('ETF_db', alias='ETF_db', host='52.91.26.227', port=27017)
+            # Production username = ubuntu
+            if getpass.getuser() == 'ubuntu':
+                # Connect to localhost server for Production
+                connect('ETF_db', alias='ETF_db')
+            else:
+                # Connecting to ETF_db on AWS EC2 Production Server
+                connect('ETF_db', alias='ETF_db', host='52.91.26.227', port=27017)
             etfdata = ETF.objects(ETFTicker=etfname, FundHoldingsDate__lte=fundholdingsdate).order_by(
                 '-FundHoldingsDate').first()
             print(etfdata)
@@ -81,9 +85,13 @@ class LoadHoldingsdata(object):
 
     def getHoldingsDataForAllETFfromDB(self, etfname):
         try:
-            # connect('ETF_db', alias='ETF_db')
-            # Connecting to ETF_db on AWS EC2 Production Server
-            connect('ETF_db', alias='ETF_db', host='52.91.26.227', port=27017)
+            # Production username = ubuntu
+            if getpass.getuser() == 'ubuntu':
+                # Connect to localhost server for Production
+                connect('ETF_db', alias='ETF_db')
+            else:
+                # Connecting to ETF_db on AWS EC2 Production Server
+                connect('ETF_db', alias='ETF_db', host='52.91.26.227', port=27017)
             etfdata = ETF.objects(ETFTicker=etfname).order_by('-FundHoldingsDate').first()
             print(etfdata.ETFTicker)
             holdingsdatadf = pd.DataFrame(etfdata.to_mongo().to_dict()['holdings'])

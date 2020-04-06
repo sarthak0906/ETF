@@ -2,12 +2,25 @@ from mongoengine import *
 from datetime import datetime
 import pandas as pd
 
+# import logging
+#
+# log = logging.getLogger()
+# log.setLevel(logging.DEBUG)
+# logging.basicConfig(filename="LoadEtfs.log", format='%(asctime)s %(message)s', filemode='w')
 import logging
-log = logging.getLogger()
-log.setLevel(logging.DEBUG)
-logging.basicConfig(filename="LoadEtfs.log", format='%(asctime)s %(message)s', filemode='w')
+import os
+path = os.path.join(os.getcwd(), "Logs/")
+if not os.path.exists(path):
+    os.makedirs(path)
+filename = path + "ArbCalcLog.log"
+handler = logging.FileHandler(filename)
+logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logger.addHandler(handler)
 
 from HoldingsDataScripts.ETFMongo import ETF
+
 
 # from MongoDB.Schemas import connection
 
@@ -16,6 +29,7 @@ class LoadHoldingsdata(object):
         self.cashvalueweight = None
         self.weights = None
         self.symbols = None
+
     def LoadHoldingsAndClean(self, etfname, fundholdingsdate):
         try:
             holdings = self.getHoldingsDatafromDB(etfname, fundholdingsdate)
@@ -38,11 +52,12 @@ class LoadHoldingsdata(object):
             except:
                 pass
             self.symbols = symbols
-            log.info("Data Successfully Loaded")
+            logger.debug("Data Successfully Loaded")
             return self
         except Exception as e:
-            log.error("Data Not Loaded")
-            logging.critical(e, exc_info=True)
+            logger.error("Data Not Loaded")
+            # logger.critical(e, exc_info=True)
+            logger.exception(e)
 
     def getHoldingsDatafromDB(self, etfname, fundholdingsdate):
         try:
@@ -60,7 +75,8 @@ class LoadHoldingsdata(object):
         except Exception as e:
             print("Can't Fetch Fund Holdings Data")
             print(e)
-            logging.critical(e, exc_info=True)
+            logger.exception(e)
+            # logger.critical(e, exc_info=True)
             disconnect('ETF_db')
 
     def getHoldingsDataForAllETFfromDB(self, etfname):
@@ -77,6 +93,7 @@ class LoadHoldingsdata(object):
         except Exception as e:
             print("Can't Fetch Fund Holdings Data for all ETFs")
             print(e)
+            logger.exception(e)
             disconnect('ETF_db')
 
     def getETFWeights(self):
@@ -87,5 +104,3 @@ class LoadHoldingsdata(object):
 
     def getSymbols(self):
         return self.symbols
-
-

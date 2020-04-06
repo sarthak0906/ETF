@@ -1,5 +1,6 @@
 import sys  # Remove in production - KTZ
 import traceback
+
 # For Piyush System
 sys.path.extend(['/home/piyush/Desktop/etf1903', '/home/piyush/Desktop/etf1903/ETFsList_Scripts',
                  '/home/piyush/Desktop/etf1903/HoldingsDataScripts',
@@ -17,23 +18,33 @@ from datetime import timedelta
 from CalculateETFArbitrage.Control import ArbitrageCalculation
 from MongoDB.SaveArbitrageCalcs import SaveCalculatedArbitrage
 from CalculateETFArbitrage.GetRelevantHoldings import RelevantHoldings
-import csv
+import logging
+import os
+path = os.path.join(os.getcwd(), "Logs/")
+if not os.path.exists(path):
+    os.makedirs(path)
+filename = path + "ArbCalcLog.log"
+handler = logging.FileHandler(filename)
+logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.ERROR)
+logger.addHandler(handler)
 
 etfwhichfailed = []
 etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
-# etflist = ['XLK','BNKU', 'NUGT', 'BNKD', 'NRGO', 'CWEB', 'JNUG', 'NRGU', 'NRGD', 'VMOT']
-# etflist = ['NUGT', 'CWEB', 'JNUG']
 print(etflist)
 print(len(etflist))
-date = (datetime.now()-timedelta(days = 1)).strftime("%Y-%m-%d")
+date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
 for etfname in etflist:
     try:
         print("Doing Analysis for ETF= " + etfname)
+        logger.debug("Doing Analysis for ETF= " + etfname)
         data = ArbitrageCalculation().calculateArbitrage(etfname, date)
 
         if data is None:
             print("Holding Belong to some other Exchange, No data was found")
+            logger.debug("Holding Belong to some other Exchange, No data was found for {}".format(etfname))
             etfwhichfailed.append(etfname)
             continue
         else:
@@ -49,6 +60,7 @@ for etfname in etflist:
         print("exception in {} etf, not crawled".format(etfname))
         print(e)
         traceback.print_exc()
+        logger.exception(e)
         continue
 if len(etfwhichfailed) > 0:
     RelevantHoldings().write_to_csv(etfwhichfailed, "etfwhichfailed.csv")

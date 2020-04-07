@@ -10,6 +10,17 @@ from CommonServices.MultiProcessingTasks import CPUBonundThreading
 from MongoDB.SaveFetchQuotesData import MongoTradesQuotesData
 
 import logging
+import os
+path = os.path.join(os.getcwd(), "Logs/")
+if not os.path.exists(path):
+    os.makedirs(path)
+filename = path + "ArbCalcLog.log"
+handler = logging.FileHandler(filename)
+logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
+
 import asyncio
 import datetime
 import pandas as pd
@@ -39,6 +50,7 @@ class FetchPolygonData(object):
 		responseData = [dict(item, **{'Symbol':symbol}) for item in response['results']]
 		lastUnixTimeStamp = self.helperObj.getLastTimeStamp(response)
 		print("Fetched till time for ="+str(self.helperObj.getHumanTime(lastUnixTimeStamp)))
+		logger.info("Fetched till time for = {}".format(str(self.helperObj.getHumanTime(lastUnixTimeStamp))))
 		if self.helperObj.checkTimeStampForPagination(lastUnixTimeStamp, self.extractDataTillTime):
 			# Create new urls for pagination request
 			PaginationRequest=self.PolygonMethod(date=self.date, symbol=symbol, startTS=str(lastUnixTimeStamp),
@@ -47,11 +59,13 @@ class FetchPolygonData(object):
 		# Creating an efficient storage object with PolygonResponseStorage for returning
 		_ = self.insertIntoCollection(symbol=symbol, datetosave=self.date, savedata=responseData,CollectionName=self.CollectionName, batchSize=self.symbolStatus[symbol]['batchSize'])
 		print("Pagination Request = {}".format(PaginationRequest))
+		logger.info("Pagination Request = {}".format(PaginationRequest))
 		# if not PaginationRequest and PaginationRequest==
 		if PaginationRequest:
 			return PaginationRequest 
 		else:
 			print("No Pagination Required for = " + symbol)
+			logger.info("No Pagination Required for = {}".format(symbol))
 			return None
 
 	def getQuotesDataFromPolygon(self, getUrls=None):

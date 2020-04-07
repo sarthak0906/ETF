@@ -30,7 +30,7 @@ filename = path + datetime.now().strftime("%Y%m%d") + "-HoldingsDataLogs.log"
 handler = logging.FileHandler(filename)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.DEBUG)
 logger.addHandler(handler)
 
 

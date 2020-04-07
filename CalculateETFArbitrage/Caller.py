@@ -27,19 +27,19 @@ filename = path + "ArbCalcLog.log"
 handler = logging.FileHandler(filename)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w')
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 etfwhichfailed = []
 etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
 print(etflist)
 print(len(etflist))
-date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-
+# date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+date = '2020-04-03'
 for etfname in etflist:
     try:
         print("Doing Analysis for ETF= " + etfname)
-        logger.debug("Doing Analysis for ETF= " + etfname)
+        logger.debug("Doing Analysis for ETF= {}".format(etfname))
         data = ArbitrageCalculation().calculateArbitrage(etfname, date)
 
         if data is None:

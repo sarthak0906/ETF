@@ -34,7 +34,8 @@ tradespipeline =[
     'data':{'$push':{
     'Symbol':'$data.Symbol',
     'Time':'$data.t',
-    'Trade Price':'$data.vw',
+    'High Price':'$data.h',
+    'Low Price':'$data.l',
     'Trade Size':'$data.v',
     'Number of Trades':'$data.n',
         }}

@@ -32,10 +32,11 @@ logger.addHandler(handler)
 
 etfwhichfailed = []
 etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
+# etflist = ['SMH','VPU']
 print(etflist)
 print(len(etflist))
-# date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-date = '2020-04-06'
+date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+# date = '2020-04-01'
 for etfname in etflist:
     try:
         print("Doing Analysis for ETF= " + etfname)

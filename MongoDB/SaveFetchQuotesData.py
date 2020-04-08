@@ -48,7 +48,6 @@ class MongoDailyOpenCloseData(MongoTradesQuotesData):
                 'dateWhenDataWasFetched': datetime.datetime.today(),
                 'Open Price':savedata['o'],
                 'Volume':savedata['v'],
-                'Volume Price':savedata['vw'],
                 'Close':savedata['c'],
                 'High':savedata['h'],
                 'Low':savedata['l'],

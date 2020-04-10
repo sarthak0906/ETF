@@ -67,7 +67,7 @@ class LoadHoldingsdata(object):
                 connect('ETF_db', alias='ETF_db')
             else:
                 # Connecting to ETF_db on AWS EC2 Production Server
-                connect('ETF_db', alias='ETF_db', host='3.84.199.21', port=27017)
+                connect('ETF_db', alias='ETF_db', host='52.90.110.245', port=27017)
             etfdata = ETF.objects(ETFTicker=etfname, FundHoldingsDate__lte=fundholdingsdate).order_by(
                 '-FundHoldingsDate').first()
             print(etfdata)
@@ -91,7 +91,7 @@ class LoadHoldingsdata(object):
                 connect('ETF_db', alias='ETF_db')
             else:
                 # Connecting to ETF_db on AWS EC2 Production Server
-                connect('ETF_db', alias='ETF_db', host='3.84.199.21', port=27017)
+                connect('ETF_db', alias='ETF_db', host='52.90.110.245', port=27017)
             etfdata = ETF.objects(ETFTicker=etfname).order_by('-FundHoldingsDate').first()
             print(etfdata.ETFTicker)
             holdingsdatadf = pd.DataFrame(etfdata.to_mongo().to_dict()['holdings'])

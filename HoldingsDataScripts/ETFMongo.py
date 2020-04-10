@@ -4,7 +4,8 @@ from HoldingsDataScripts.HoldingsMongo import Holdings
 import logging
 from pymongo import monitoring
 
-log = logging.getLogger("EventLogger")
+# log = logging.getLogger("EventLogger")
+log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
 

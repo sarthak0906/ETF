@@ -29,7 +29,8 @@ filename2 = path + datetime.now().strftime("%Y%m%d") + "-ArbErrorLog.log"
 handler = logging.FileHandler(filename)
 handler2 = logging.FileHandler(filename2)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w')
-logger = logging.getLogger("EventLogger")
+# logger = logging.getLogger("EventLogger")
+logger = logging.getLogger(__name__)
 logger2 = logging.getLogger("ArbErrorLogger")
 logger.setLevel(logging.DEBUG)
 logger2.setLevel(logging.ERROR)
@@ -41,8 +42,8 @@ etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
 # etflist = ['SMH','VPU']
 print(etflist)
 print(len(etflist))
-date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-# date = '2020-04-01'
+# date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+date = '2020-04-07'
 for etfname in etflist:
     try:
         print("Doing Analysis for ETF= " + etfname)

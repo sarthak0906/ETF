@@ -12,12 +12,18 @@ import os
 path = os.path.join(os.getcwd(), "Logs/")
 if not os.path.exists(path):
     os.makedirs(path)
-filename = path + "ArbCalcLog.log"
+
+filename = path + datetime.now().strftime("%Y%m%d") + "-ArbEventLog.log"
+filename2 = path + datetime.now().strftime("%Y%m%d") + "-ArbErrorLog.log"
 handler = logging.FileHandler(filename)
+handler2 = logging.FileHandler(filename2)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w')
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("EventLogger")
+logger2 = logging.getLogger("ArbErrorLogger")
 logger.setLevel(logging.DEBUG)
+logger2.setLevel(logging.ERROR)
 logger.addHandler(handler)
+logger2.addHandler(handler2)
 
 from HoldingsDataScripts.ETFMongo import ETF
 
@@ -57,7 +63,9 @@ class LoadHoldingsdata(object):
         except Exception as e:
             logger.error("Data Not Loaded")
             # logger.critical(e, exc_info=True)
+            logger2.error("Data Not Loaded")
             logger.exception(e)
+            logger2.exception(e)
 
     def getHoldingsDatafromDB(self, etfname, fundholdingsdate):
         try:
@@ -80,6 +88,7 @@ class LoadHoldingsdata(object):
             print("Can't Fetch Fund Holdings Data")
             print(e)
             logger.exception(e)
+            logger2.exception(e)
             # logger.critical(e, exc_info=True)
             disconnect('ETF_db')
 
@@ -102,6 +111,7 @@ class LoadHoldingsdata(object):
             print("Can't Fetch Fund Holdings Data for all ETFs")
             print(e)
             logger.exception(e)
+            logger2.exception(e)
             disconnect('ETF_db')
 
     def getETFWeights(self):

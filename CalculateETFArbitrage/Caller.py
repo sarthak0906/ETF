@@ -23,12 +23,18 @@ import os
 path = os.path.join(os.getcwd(), "Logs/")
 if not os.path.exists(path):
     os.makedirs(path)
-filename = path + "ArbCalcLog.log"
+
+filename = path + datetime.now().strftime("%Y%m%d") + "-ArbEventLog.log"
+filename2 = path + datetime.now().strftime("%Y%m%d") + "-ArbErrorLog.log"
 handler = logging.FileHandler(filename)
+handler2 = logging.FileHandler(filename2)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w')
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("EventLogger")
+logger2 = logging.getLogger("ArbErrorLogger")
 logger.setLevel(logging.DEBUG)
+logger2.setLevel(logging.ERROR)
 logger.addHandler(handler)
+logger2.addHandler(handler2)
 
 etfwhichfailed = []
 etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
@@ -62,6 +68,7 @@ for etfname in etflist:
         print(e)
         traceback.print_exc()
         logger.exception(e)
+        logger2.exception(e)
         continue
 if len(etfwhichfailed) > 0:
     RelevantHoldings().write_to_csv(etfwhichfailed, "etfwhichfailed.csv")

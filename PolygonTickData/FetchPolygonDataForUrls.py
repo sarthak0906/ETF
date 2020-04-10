@@ -8,14 +8,15 @@ from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 from CommonServices.ThreadingRequests import IOBoundThreading
 from CommonServices.MultiProcessingTasks import CPUBonundThreading
 from MongoDB.SaveFetchQuotesData import MongoTradesQuotesData
-
+from datetime import datetime
 import logging
 import os
 
 path = os.path.join(os.getcwd(), "Logs/")
 if not os.path.exists(path):
     os.makedirs(path)
-filename = path + "ArbCalcLog.log"
+
+filename = path + datetime.now().strftime("%Y%m%d") + "-ArbEventLog.log"
 handler = logging.FileHandler(filename)
 logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w')
 logger = logging.getLogger(__name__)

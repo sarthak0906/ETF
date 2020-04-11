@@ -44,8 +44,8 @@ etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
 print("List of working ETFs:")
 print(etflist)
 print(len(etflist))
-date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-# date = '2020-04-09'
+# date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+date = '2020-03-31'
 
 # CHECK ARBITRAGE COLLECTION FOR ETFs ALREADY PRESENT.
 arb_db_data = FetchArbitrage().fetch_arbitrage_data(date)
@@ -53,10 +53,13 @@ arb_db_data_etflist = [arbdata['ETFName'] for arbdata in arb_db_data]
 arb_db_data_etflist = list(set(arb_db_data_etflist))
 print("List of ETFs whose arbitrage calculation is present in DB:")
 print(arb_db_data_etflist)
+print(len(arb_db_data_etflist))
 
 # REMOVE THE ETFs, FROM WORKING ETF LIST, WHOSE ARBITRAGE HAS ALREADY BEEN CALCULATED.
 print("Updated etflist:")
-etflist = list(set(etflist).union(set(arb_db_data_etflist)) - set(etflist).intersection(set(arb_db_data_etflist)))
+unionset = set(etflist).union(set(arb_db_data_etflist))
+intersectionset = set(etflist).intersection(set(arb_db_data_etflist))
+etflist = list(unionset.difference(intersectionset))
 print(etflist)
 print(len(etflist))
 

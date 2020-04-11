@@ -44,8 +44,8 @@ etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
 print("List of working ETFs:")
 print(etflist)
 print(len(etflist))
-# date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-date = '2020-03-31'
+date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+# date = '2020-03-31'
 
 # CHECK ARBITRAGE COLLECTION FOR ETFs ALREADY PRESENT.
 arb_db_data = FetchArbitrage().fetch_arbitrage_data(date)

@@ -32,7 +32,7 @@ class DataApi(object):
 	def gatherTradeData(self):
 		ob = AssembleData(symbols=self.etfData.getSymbols(), date=self.date)
 		tradesDataDf = ob.getData(CollectionName=tradeCollection, pipeline=tradespipeline, tradeDataFlag=True)
-		tradesDataDf['Trade Price'] = tradesDataDf['High Price'] + tradesDataDf['Low Price'] / 2
+		tradesDataDf['Trade Price'] = (tradesDataDf['High Price'] + tradesDataDf['Low Price']) / 2
 		return tradesDataDf    
 
 	def gatherQuotesData(self):

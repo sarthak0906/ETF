@@ -7,18 +7,18 @@ db = connectionLocal.ETF_db
 # Quotes Pipeline
 quotesCollection = db.QuotesData
 quotesCollection.create_index([("dateForData", DESCENDING), ("symbol", ASCENDING)])
-quotespipeline =[
-{'$match':  ''},
-{'$unwind': '$data'},
-{'$group': {
-    '_id':'$_id',
-    'data':{'$push':{
-    'Symbol':'$data.Symbol',
-    'Time':'$data.t',
-    'Bid Price':'$data.p',
-    'Bid Size':'$data.s',
-    'Ask Price':'$data.P',
-    'Ask Size':'$data.S',
+quotespipeline = [
+    {'$match': ''},
+    {'$unwind': '$data'},
+    {'$group': {
+        '_id': '$_id',
+        'data': {'$push': {
+            'Symbol': '$data.Symbol',
+            'Time': '$data.t',
+            'Bid Price': '$data.p',
+            'Bid Size': '$data.s',
+            'Ask Price': '$data.P',
+            'Ask Size': '$data.S',
         }}
     }}
 ]
@@ -26,29 +26,28 @@ quotespipeline =[
 # Trades Pipeline
 tradeCollection = db.TradesData
 tradeCollection.create_index([("dateForData", DESCENDING), ("symbol", ASCENDING)])
-tradespipeline =[
-{'$match':  ''},
-{'$unwind': '$data'},
-{'$group': {
-    '_id':'$_id',
-    'data':{'$push':{
-    'Symbol':'$data.Symbol',
-    'Time':'$data.t',
-    'High Price':'$data.h',
-    'Low Price':'$data.l',
-    'Trade Size':'$data.v',
-    'Number of Trades':'$data.n',
+tradespipeline = [
+    {'$match': ''},
+    {'$unwind': '$data'},
+    {'$group': {
+        '_id': '$_id',
+        'data': {'$push': {
+            'Symbol': '$data.Symbol',
+            'Time': '$data.t',
+            'High Price': '$data.h',
+            'Low Price': '$data.l',
+            'Trade Size': '$data.v',
+            'Number of Trades': '$data.n',
         }}
     }}
 ]
 
 # Daily Open Close Collection
-dailyopencloseCollection=db.DailyOpenCloseCollection
-dailyopencloseCollection.create_index([("dateForData", DESCENDING), ("Symbol", ASCENDING)])
+dailyopencloseCollection = db.DailyOpenCloseCollection
+dailyopencloseCollection.create_index([("dateForData", DESCENDING), ("Symbol", ASCENDING)], unique=True)
 
 # Arbitrage
 arbitragecollection = db.ArbitrageCollection
-arbitragecollection.create_index([("dateOfAnalysis", DESCENDING), ("ETFName", ASCENDING)])
+arbitragecollection.create_index([("dateOfAnalysis", DESCENDING), ("ETFName", ASCENDING)], unique=True)
 
 connectionLocal.close()
-

@@ -40,10 +40,10 @@ logger2.addHandler(handler2)
 
 etfwhichfailed = []
 # MAKE A LIST OF WORKING ETFs.
-etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
+workinglist = list(pd.read_csv("WorkingETFs.csv").columns.values)
 print("List of working ETFs:")
-print(etflist)
-print(len(etflist))
+print(workinglist)
+print(len(workinglist))
 date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 # date = '2020-03-31'
 
@@ -57,9 +57,9 @@ print(len(arb_db_data_etflist))
 
 # REMOVE THE ETFs, FROM WORKING ETF LIST, WHOSE ARBITRAGE HAS ALREADY BEEN CALCULATED.
 print("Updated etflist:")
-unionset = set(etflist).union(set(arb_db_data_etflist))
-intersectionset = set(etflist).intersection(set(arb_db_data_etflist))
-etflist = list(unionset.difference(intersectionset))
+workingset = set(workinglist)
+doneset = set(arb_db_data_etflist)
+etflist = list(workingset.difference(doneset))
 print(etflist)
 print(len(etflist))
 

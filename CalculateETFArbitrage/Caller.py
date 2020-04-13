@@ -45,8 +45,8 @@ workinglist = ['FTEC']
 print("List of working ETFs:")
 print(workinglist)
 print(len(workinglist))
-# date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-date = '2020-04-03'
+date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+# date = '2020-04-03'
 
 # CHECK ARBITRAGE COLLECTION FOR ETFs ALREADY PRESENT.
 arb_db_data = FetchArbitrage().fetch_arbitrage_data(date)

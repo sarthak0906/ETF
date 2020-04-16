@@ -41,12 +41,11 @@ logger2.addHandler(handler2)
 etfwhichfailed = []
 # MAKE A LIST OF WORKING ETFs.
 workinglist = list(pd.read_csv("WorkingETFs.csv").columns.values)
-workinglist = ['FTEC']
 print("List of working ETFs:")
 print(workinglist)
 print(len(workinglist))
-# date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
-date = '2020-04-03'
+date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+# date = '2020-04-03'
 
 # CHECK ARBITRAGE COLLECTION FOR ETFs ALREADY PRESENT.
 arb_db_data = FetchArbitrage().fetch_arbitrage_data(date)

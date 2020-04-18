@@ -42,7 +42,7 @@ def startCronJobForETFHoldings():
 
     # For each ETF download all holdings and save to DB
     for etf in ETFListDF['Symbol'].tolist():
-    # for etf in ['XLK','XLY']:
+    # for etf in ['DIET']:
         print("Processing for {} etf".format(etf))
         logger.debug("Processing for {} etf".format(etf))
         try:

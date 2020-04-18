@@ -1,15 +1,18 @@
-from CommonServices.WebdriverServices import masterclass
-from mongoengine import *
-import pandas as pd
-from datetime import datetime
 import logging
-import time
-from CommonServices.EmailService import EmailSender
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 import os
+import time
+from datetime import datetime
+
+import pandas as pd
+from mongoengine import *
+from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
+from CommonServices.EmailService import EmailSender
+from CommonServices.WebdriverServices import masterclass
 
 path = os.path.join(os.getcwd(), "Logs/HoldingsScraperLogs/")
 
@@ -95,6 +98,20 @@ class DownloadsEtfHoldingsData(masterclass):
                 # if successfully downloaded or data already exists, no retries needed
                 retries = -1
                 return DateCheck
+            except NoSuchElementException as nse:
+                print("NoSuchElementException Exception in DownloadHolding.py for {}".format(etfname))
+                print(nse)
+                try:
+                    el = self.driver.find_element_by_xpath(
+                        '//input[@type="submit" and @value="Download Detailed ETF Holdings and Analytics"]')
+                    el.click()  # clicks download button
+                    time.sleep(3)
+                    retries = -1
+                except Exception as e2:
+                    logger.exception("Cannot find 'Download' button on ETFdb.com - Exception in DownloadHolding.py")
+                    logger.info("Retrying once more")
+                retries -= 1
+                pass
             except Exception as e:
                 print("Exception in DownloadHolding.py for {}".format(etfname))
                 print(e)

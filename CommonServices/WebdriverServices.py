@@ -42,7 +42,7 @@ class masterclass:
             pass
 
         e = self.driver.find_element(By.ID, "user_login")
-        e.send_keys("etfanalysis2")
+        e.send_keys("etfanalysis3")
         e = self.driver.find_element(By.ID, "password")
         e.send_keys("etfapp2020")
         e = self.driver.find_element(By.ID, "login-button")

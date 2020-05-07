@@ -5,3 +5,11 @@
 .FormInput {	
   margin-right: 25px;	
 } 
+
+.justify-content-begin {
+  float: left;
+}
+
+.justify-content-end {
+  float: right;
+}

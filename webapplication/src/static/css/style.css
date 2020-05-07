@@ -8,5 +8,6 @@ h1, p {
 
 .TableContainer {	
   width: 100%;	
+  overflow: hidden;
   overflow-x: scroll;	
 } 

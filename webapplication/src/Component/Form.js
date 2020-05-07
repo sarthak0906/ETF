@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button'
 import InputGroup from 'react-bootstrap/InputGroup'
 import DatePicker from "react-datepicker";
 import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
 import '../static/css/NavStyle.css';
 import "react-datepicker/dist/react-datepicker.css";
  
@@ -36,25 +37,49 @@ function Former(props) {
   }
 
   return (
-    <Navbar className="bg-light justify-content-end">
-      <Form inline className="Form">
-        <Form.Group onChange={select}>
-            <Form.Label className="FormLabel">Stock Select</Form.Label>
-            <Form.Control className="FormInput" as="select">
-              <option>XLK</option>
-              <option>FTEC</option>
-            </Form.Control>
-          </Form.Group>
-          <DatePicker
-            className="FormInput"
-            selected={startDate}
-            onChange={changeDate}
-          />
-          <Button variant="primary" onClick={submit}>
-            Submit
-          </Button>
-      </Form>
-    </Navbar>
+    <Nav className="bg-light justify-content-between">
+      <Navbar  className="bg-light">
+        <Nav>
+          <Nav.Item>
+            <Nav.Link href="/ETF-Analysis">ETF-Analysis</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="/ETF-Comparison" eventKey="ETF-Comparison">ETF-Comparison</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="/ETF-Description" eventKey="ETF-Description">ETF-Description</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="/Historical" eventKey="Historical">Historical</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="/Live-Arbitrage" eventKey="Live-Arbitrage">Live-Arbitrage</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link href="/Machine-Learning" eventKey="Machine-Learning">Machine-Learning</Nav.Link>
+          </Nav.Item>
+        </Nav>
+      </Navbar>
+      <Navbar className="bg-light">
+        <Form inline >
+          <Form.Group onChange={select}>
+              <Form.Label className="FormLabel">Stock Select</Form.Label>
+              <Form.Control className="FormInput" as="select">
+                <option>XLK</option>
+                <option>FTEC</option>
+              </Form.Control>
+            </Form.Group>
+            <DatePicker
+              className="FormInput"
+              selected={startDate}
+              onChange={changeDate}
+            />
+            <Button variant="primary" onClick={submit}>
+              Submit
+            </Button>
+        </Form>
+      </Navbar>
+    </Nav>
   )
 }
 

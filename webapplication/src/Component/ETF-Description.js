@@ -32,8 +32,10 @@ const Description = (props) => {
             </Col>
           </Row>
       </Container>
->
-e) =>{
+);
+}
+
+const RenderTable = (file) =>{
     console.log("File is ");
     console.log(file);
     if (file === ""){

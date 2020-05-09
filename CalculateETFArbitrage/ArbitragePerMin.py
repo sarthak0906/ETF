@@ -16,6 +16,20 @@ import pandas as pd
 from CommonServices.ThreadingRequests import IOBoundThreading
 from CommonServices.MultiProcessingTasks import CPUBonundThreading
 from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
+from CommonServices.RetryDecor import retry
+import logging
+import os
+path = os.path.join(os.getcwd(), "Logs/")
+if not os.path.exists(path):
+    os.makedirs(path)
+
+filename = path + datetime.datetime.now().strftime("%Y%m%d") + "-ArbPerMinLog.log"
+handler = logging.FileHandler(filename)
+logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='a')
+# logger = logging.getLogger("EventLogger")
+logger = logging.getLogger("ArbPerMinLogger")
+logger.setLevel(logging.DEBUG)
+logger.addHandler(handler)
 
 class tradestruct():
     def calc_pct_chg(self, priceT, priceT_1):
@@ -53,7 +67,7 @@ class LiveArbitragePerMinute():
 
 
 ##############################################################################
-
+    @retry(exceptions=Exception, total_tries=2, initial_wait=0.5, backoff_factor=1, logger=logger)
     def getDataFromPolygon(self, methodToBeCalled=None, getUrls=None):
         # Calling IO Bound Threading to fetch data for URLS
         if methodToBeCalled == None or getUrls == None:

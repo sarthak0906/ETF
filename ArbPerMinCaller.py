@@ -1,4 +1,5 @@
 import sys, traceback
+
 # For Piyush System
 sys.path.extend(['/home/piyush/Desktop/etf1903', '/home/piyush/Desktop/etf1903/ETFsList_Scripts',
                  '/home/piyush/Desktop/etf1903/HoldingsDataScripts',
@@ -10,17 +11,19 @@ sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_
                  '/home/ubuntu/ETFAnalysis/CalculateETFArbitrage'])
 sys.path.append("..")  # Remove in production - KTZ
 from CalculateETFArbitrage.ArbitragePerMin import LiveArbitragePerMinute
+from MongoDB.SaveArbitrageCalcs import SaveCalculatedArbitrage
 import datetime
 import time
 import logging
 import os
+
 path = os.path.join(os.getcwd(), "Logs/")
 if not os.path.exists(path):
     os.makedirs(path)
 
 filename = path + datetime.datetime.now().strftime("%Y%m%d") + "-ArbPerMinLog.log"
 handler = logging.FileHandler(filename)
-logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w')
+logging.basicConfig(filename=filename, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='a')
 # logger = logging.getLogger("EventLogger")
 logger = logging.getLogger("ArbPerMinLogger")
 logger.setLevel(logging.DEBUG)
@@ -36,6 +39,16 @@ try:
         print("ResultDF : ")
         print(resultdf)
         logger.debug("{} : PRINTED RESULT DF".format(datetime.datetime.now()))
+        for idx in resultdf.index:
+            DateTimeOfArbitrage = datetime.datetime.now()
+            ETFName = idx
+            Arbitrage = resultdf.loc[idx, 'arbitrage']
+            Spread = resultdf.loc[idx, 'Spread']
+            SaveCalculatedArbitrage().insertIntoPerMinCollection(DateTimeOfArbitrage=DateTimeOfArbitrage,
+                                                               ETFName=ETFName,
+                                                               Arbitrage=Arbitrage, Spread=Spread)
+
+        logger.debug("{} : SAVED RESULT DF".format(datetime.datetime.now()))
         print(dt - datetime.datetime.now())
         while datetime.datetime.now() < dt:
             time.sleep(1)

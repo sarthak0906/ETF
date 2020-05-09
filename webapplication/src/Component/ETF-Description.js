@@ -1,6 +1,9 @@
 import React, {useState } from 'react';
 import AppTable from './Table.js';
 import '../static/css/Description.css';
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 // Importng Datasets
 import * as XLK16 from '../Data/XLK-16.json';
@@ -10,24 +13,27 @@ import * as FTEC16 from '../Data/FTEC-16.json';
 
 const Description = (props) => {
     // const [file, setFile] = useState("");
-    const [data, setData] = useState({});
 
     var table = RenderTable(props.file);
 
     return (
-        <div className="Container">
-            <h4> ETF-Description </h4>
-            <div className="TableContainer"> 
-            {
-            (props.file) 
-            ? table : ""
-            }
-            </div>
-        </div>
-    );
-}
-
-const RenderTable = (file) =>{
+      <Container>
+          <h4> ETF-Description </h4>
+          <Row>
+            <Col>
+              <h6> This is the side for Descriptionof the selected ETF</h6>
+            </Col>
+            <Col>
+              <h6> This is the side for Descriptionof the selected ETF</h6>
+              {
+              (props.file) 
+                ? table : ""
+              }
+            </Col>
+          </Row>
+      </Container>
+>
+e) =>{
     console.log("File is ");
     console.log(file);
     if (file === ""){

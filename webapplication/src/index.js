@@ -16,8 +16,12 @@ import './static/css/style.css';
 const App = () => {
   const [startDate, setDate] = useState(new Date(2020, 3, 16));
   const [file, setFile] = useState("");
+  const [ETF, setETF] = useState("");
 
   const SubmitFn = (stock, date) => {
+    setETF(stock);
+    console.alert(date);
+    setDate(date);
     setFile( stock + "-" + date);
   }
 

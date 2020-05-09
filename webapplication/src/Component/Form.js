@@ -30,14 +30,13 @@ function Former(props) {
 
   // Submit funtion to send state to parent to render 
   const submit = () => {
-    props.submitFn(stock, startDate.getDate());
+    props.submitFn(stock, startDate.getDate() + '-' + startDate.getMonth() + '-' + startDate.getFullYear());
   }
 
   // handler for select input method
   const select = (event) => {
     setStock(event.target.value);
   }
-
 
   return (
     <Nav className="bg-light justify-content-between">

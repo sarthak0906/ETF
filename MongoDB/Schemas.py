@@ -50,4 +50,9 @@ dailyopencloseCollection.create_index([("dateForData", DESCENDING), ("Symbol", A
 arbitragecollection = db.ArbitrageCollection
 arbitragecollection.create_index([("dateOfAnalysis", DESCENDING), ("ETFName", ASCENDING)], unique=True)
 
+# Arbitrage Per Minute
+arbitrage_per_min = db.ArbitragePerMin
+arbitrage_per_min.create_index([('DateTimeOfArbitrage', DESCENDING)])
+arbitrage_per_min.create_index([('ETFName', ASCENDING)])
+
 connectionLocal.close()

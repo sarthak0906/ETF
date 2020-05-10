@@ -15,7 +15,7 @@ class PolgonDataCreateURLS(object):
 		
 	def PolygonLastTrades(self,symbol):
 		# Make use of Tickers
-		requesturl='https://api.polygon.io/v1/last/stocks/'+symbol
+		requesturl='https://api.polygon.io/v1/last/stocks/'+symbol+'?apiKey=M_PKVL_rqHZI7VM9ZYO_hwPiConz5rIklx893F'
 		return requesturl
 
 	def PolygonHistoricQuotes(self, date=None, symbol=None,startTS=None,endTS=None,limitresult=10, aggregateBy=None):

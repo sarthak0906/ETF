@@ -1,0 +1,7 @@
+2020-05-10 20:17:32,391 - root - DEBUG - Command createIndexes with request id 1952127914 started on server ('18.213.229.80', 27017)
+2020-05-10 20:17:32,664 - root - DEBUG - Command createIndexes with request id 1952127914 on server ('18.213.229.80', 27017) succeeded in 272421 microseconds
+2020-05-10 20:17:32,703 - root - DEBUG - Command find with request id 531584432 started on server ('18.213.229.80', 27017)
+2020-05-10 20:17:32,987 - root - DEBUG - Command find with request id 531584432 on server ('18.213.229.80', 27017) succeeded in 282844 microseconds
+2020-05-10 20:17:33,188 - root - DEBUG - Command endSessions with request id 1125049441 started on server ('18.213.229.80', 27017)
+2020-05-10 20:17:33,473 - root - DEBUG - Command endSessions with request id 1125049441 on server ('18.213.229.80', 27017) succeeded in 284739 microseconds
+2020-05-10 20:17:33,620 - werkzeug - INFO - 127.0.0.1 - - [10/May/2020 20:17:33] "GET /Description/PSCM/16-3-2020 HTTP/1.1" 200 -

@@ -32,7 +32,7 @@ const Description = (props) => {
             </Col>
           </Row>
       </Container>
-    );
+    )
 }
 
 const RenderTable = (file) =>{
@@ -54,6 +54,6 @@ const RenderTable = (file) =>{
       return <AppTable data={FTEC17.data} />
     }
     return ;
-}
+  }
 
 export default Description;

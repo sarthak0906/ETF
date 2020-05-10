@@ -4,7 +4,7 @@ import sys, traceback
 sys.path.extend(['/home/piyush/Desktop/etf1903', '/home/piyush/Desktop/etf1903/ETFsList_Scripts',
                  '/home/piyush/Desktop/etf1903/HoldingsDataScripts',
                  '/home/piyush/Desktop/etf1903/CommonServices',
-                 '/home/piyush/Desktop/etf1903/CalculateETFArbitrage'])
+                 '/home/piyush/Desktop/etf1903/CalculateETFArbitrage','/home/piyush/Desktop/etf1903/ETFLiveAnalysis'])
 # For Production env
 sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_Scripts',
                  '/home/ubuntu/ETFAnalysis/HoldingsDataScripts', '/home/ubuntu/ETFAnalysis/CommonServices',
@@ -47,14 +47,6 @@ class tradestruct():
 class LiveArbitragePerMinute():
     def __init__(self):
         self.tradedict = {}
-    # def maketickerlists(self):
-    #     self.etflist = list(pd.read_csv("/home/piyush/Desktop/etf1903/CalculateETFArbitrage/WorkingETFs.csv").columns.values)
-    #     self.tickerlist = list(pd.read_csv("/home/piyush/Desktop/etf1903/tickerlist.csv").columns.values)
-    #     self.tickerlistStr = ','.join([str(elem) for elem in self.tickerlist])
-    #     print(self.tickerlistStr)
-    #     f = open('/home/piyush/Desktop/etf1903/etf-hold.json', 'r')
-    #     self.etfdict = json.load(f)
-    #     self.tradedict = {}
 
     def PolygonLastQuotes(self, symbol):
         # Make use of Tickers
@@ -64,7 +56,6 @@ class LiveArbitragePerMinute():
     def makeurllists(self):
         self.lastquotesurls = [self.PolygonLastQuotes(etf) for etf in self.etflist]
         self.lasttradeurls = [PolgonDataCreateURLS().PolygonLastTrades(ticker.replace("AM.", "")) for ticker in self.tickerlist]
-
 
 ##############################################################################
     @retry(exceptions=Exception, total_tries=2, initial_wait=0.5, backoff_factor=1, logger=logger)
@@ -111,43 +102,37 @@ class LiveArbitragePerMinute():
 
     def calcArbitrage(self):
         self.getDataFromPolygon(self.extractTradesDataFromResponses,self.lasttradeurls)
-        self.tradedf = pd.DataFrame(columns=['symbol', 'priceT', 'priceT_1', 'price_pct_chg'])
-        for key, value in self.tradedict.items():
-            valdict = value.__dict__
-            self.tradedf = self.tradedf.append(valdict,ignore_index=True)
+        start = time.time()
+        self.tradedf = pd.DataFrame([value.__dict__ for key, value in self.tradedict.items()])
         self.arbdict = {}
         self.tradedf.set_index('symbol', inplace=True)
         for etf in self.etfdict:
             for etfname, holdingdata in etf.items():
                 try:
-                    df = None
-                    summation = 0
                     # ETF Price Change % calculation
                     etfchange = self.tradedf.loc[etfname, 'price_pct_chg']
                     # NAV change % Calculation
-                    for holdings in holdingdata:
-                        df = pd.DataFrame(holdings)
-                    df.set_index('symbol', inplace=True)
-                    for sym in df.index:
-                        prod = (df.loc[sym, 'weight']) * (self.tradedf.loc[sym, 'price_pct_chg'])
-                        summation = summation + prod
-                    # summation = NAV change %
+                    holdingsdf = pd.DataFrame(*[holdings for holdings in holdingdata])
+                    holdingsdf.set_index('symbol', inplace=True)
+                    nav = sum([holdingsdf.loc[sym,'weight']*self.tradedf.loc[sym, 'price_pct_chg'] for sym in holdingsdf.index])
+                    # nav = NAV change %
                     etfprice = self.tradedf.loc[etfname, 'priceT']
-                    arbitrage = ((etfchange - summation) * etfprice) / 100
+                    arbitrage = ((etfchange - nav) * etfprice) / 100
                     self.arbdict.update({etfname: arbitrage})
                 except Exception as e:
-                    # print(e)
-                    # traceback.print_exc(file=sys.stdout)
+                    print(e)
+                    traceback.print_exc(file=sys.stdout)
                     pass
+        end = time.time()
+        print("Calculation time: {}".format(end - start))
         return self.arbdict
 
     def main(self):
         self.etflist = list(
-            pd.read_csv("CalculateETFArbitrage/WorkingETFs.csv").columns.values)
-        self.tickerlist = list(pd.read_csv("CalculateETFArbitrage/tickerlist.csv").columns.values)
+            pd.read_csv("WorkingETFs.csv").columns.values)
+        self.tickerlist = list(pd.read_csv("tickerlist.csv").columns.values)
         self.tickerlistStr = ','.join([str(elem) for elem in self.tickerlist])
-        # print(self.tickerlistStr)
-        f = open('CalculateETFArbitrage/etf-hold.json', 'r')
+        f = open('etf-hold.json', 'r')
         self.etfdict = json.load(f)
 
         self.makeurllists()
@@ -160,16 +145,3 @@ class LiveArbitragePerMinute():
             arbDF = pd.DataFrame.from_dict(arbitdict, orient='index',columns=['arbitrage'])
             mergeDF = arbDF.merge(spreadDF, left_index=True, right_index=True)
             yield mergeDF
-
-
-# livarb = LiveArbitragePerMinute()
-# # livarb.maketickerlists()
-# # livarb.makeurllists()
-# while True:
-#     dt = datetime.datetime.now() + datetime.timedelta(minutes=1)
-#     resultgen = livarb.main()
-#     print("ResultDF : ")
-#     print(next(resultgen))
-#     print(dt - datetime.datetime.now())
-#     while datetime.datetime.now() < dt:
-#         time.sleep(1)

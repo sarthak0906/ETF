@@ -8,7 +8,9 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import '../static/css/NavStyle.css';
 import "react-datepicker/dist/react-datepicker.css";
- 
+import { Link } from 'react-router-dom';
+
+
 // CSS Modules, react-datepicker-cssmodules.css
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
@@ -43,22 +45,22 @@ function Former(props) {
       <Navbar  className="bg-light">
         <Nav>
           <Nav.Item>
-            <Nav.Link href="/ETF-Analysis">ETF-Analysis</Nav.Link>
+            <Nav.Link as={Link} to="/ETF-Analysis">ETF-Analysis</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href="/ETF-Comparison" eventKey="ETF-Comparison">ETF-Comparison</Nav.Link>
+            <Nav.Link as={Link} to="/ETF-Comparison" eventKey="ETF-Comparison">ETF-Comparison</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href="/ETF-Description" eventKey="ETF-Description">ETF-Description</Nav.Link>
+            <Nav.Link as={Link} to="/ETF-Description" eventKey="ETF-Description">ETF-Description</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href="/Historical" eventKey="Historical">Historical</Nav.Link>
+            <Nav.Link as={Link} to="/Historical" eventKey="Historical">Historical</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href="/Live-Arbitrage" eventKey="Live-Arbitrage">Live-Arbitrage</Nav.Link>
+            <Nav.Link as={Link} to="/Live-Arbitrage" eventKey="Live-Arbitrage">Live-Arbitrage</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link href="/Machine-Learning" eventKey="Machine-Learning">Machine-Learning</Nav.Link>
+            <Nav.Link as={Link} to="/Machine-Learning" eventKey="Machine-Learning">Machine-Learning</Nav.Link>
           </Nav.Item>
         </Nav>
       </Navbar>

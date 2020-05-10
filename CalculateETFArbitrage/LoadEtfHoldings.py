@@ -93,7 +93,7 @@ class LoadHoldingsdata(object):
             # logger.critical(e, exc_info=True)
             disconnect('ETF_db')
 
-    def getETFDescriptionfromDB(self, etfname, fundholdingsdate):
+    def getAllETFData(self, etfname, fundholdingsdate):
         try:
             # Production username = ubuntu
             if getpass.getuser() == 'ubuntu':
@@ -104,13 +104,8 @@ class LoadHoldingsdata(object):
                 connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
             etfdata = ETF.objects(ETFTicker=etfname, FundHoldingsDate__lte=fundholdingsdate).order_by(
                 '-FundHoldingsDate').first()
-            print(etfdata)
-            holdingsdatadf = pd.DataFrame(etfdata.to_mongo().to_dict())
-            print(str(etfdata.FundHoldingsDate))
             disconnect('ETF_db')
-            del holdingsdatadf['_id']
-            del holdingsdatadf['holdings']
-            return holdingsdatadf
+            return etfdata
 
         except Exception as e:
             print("Can't Fetch Fund Holdings Data")

@@ -36,23 +36,24 @@ const Description = (props) => {
 }
 
 const RenderTable = (file) =>{
-  console.log(file);
-  if (file === ""){
+    console.log("File is ");
+    console.log(file);
+    if (file === ""){
+      return ;
+    }
+    if (file === "XLK-16"){
+      return <AppTable data={XLK16.data} />
+    }
+    if (file === "XLK-17"){
+      return <AppTable data={XLK17.data} />
+    }
+    if (file === "FTEC-16"){
+      return <AppTable data={FTEC16.data} />
+    }
+    if (file === "FTEC-17"){
+      return <AppTable data={FTEC17.data} />
+    }
     return ;
   }
-  if (file === "XLK-16"){
-    return <AppTable data={XLK16.data} />
-  }
-  if (file === "XLK-17"){
-    return <AppTable data={XLK17.data} />
-  }
-  if (file === "FTEC-16"){
-    return <AppTable data={FTEC16.data} />
-  }
-  if (file === "FTEC-17"){
-    return <AppTable data={FTEC17.data} />
-  }
-  return ;
-}
 
 export default Description;

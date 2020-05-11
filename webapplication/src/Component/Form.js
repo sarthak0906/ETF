@@ -32,7 +32,7 @@ function Former(props) {
 
   // Submit funtion to send state to parent to render 
   const submit = () => {
-    props.submitFn(stock, startDate.getDate() + '-' + startDate.getMonth() + '-' + startDate.getFullYear());
+    props.submitFn(stock, startDate.getFullYear() + '' + startDate.getMonth() + '' + startDate.getDate());
   }
 
   // handler for select input method

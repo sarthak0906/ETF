@@ -11,7 +11,6 @@ sys.path.append("..")
 # Import packages
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 
-
 app = Flask(__name__)
 
 CORS(app)
@@ -27,7 +26,7 @@ def SendETFHoldingsData(ETFName, date):
         ETFDataObject = etfdata.to_mongo().to_dict()
         
         # Holdings Data foe etf
-        holdingsDatObject = pd.DataFrame(ETFDataObject['holdings']).to_json(orient='index')
+        holdingsDatObject = pd.DataFrame(ETFDataObject['holdings']).set_index('TickerSymbol').to_json(orient='index')
         
         # ETF Description data
         # List of columns we don't need

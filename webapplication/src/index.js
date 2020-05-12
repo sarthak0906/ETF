@@ -22,7 +22,7 @@ const App = () => {
     setETF(stock);
     setDate(date);
     setFile( stock + "-" + date);
-    console.log(file);
+    console.log(date);
   }
 
   return (

@@ -62,7 +62,7 @@ const RenderRow = (props) =>{
   else {
     return(
       <tr>
-        <td></td>
+        <td className="Main">{props.k}</td>
         {
           Object.keys(props.data).map((key, i) => (
             <td>{props.data[key]}</td>

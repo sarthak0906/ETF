@@ -95,16 +95,8 @@ class LoadHoldingsdata(object):
 
     def getAllETFData(self, etfname, fundholdingsdate):
         try:
-            # Production username = ubuntu
-            if getpass.getuser() == 'ubuntu':
-                # Connect to localhost server for Production
-                connect('ETF_db', alias='ETF_db')
-            else:
-                # Connecting to ETF_db on AWS EC2 Production Server
-                connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
             etfdata = ETF.objects(ETFTicker=etfname, FundHoldingsDate__lte=fundholdingsdate).order_by(
                 '-FundHoldingsDate').first()
-            disconnect('ETF_db')
             return etfdata
 
         except Exception as e:

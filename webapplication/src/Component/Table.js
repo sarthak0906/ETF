@@ -2,68 +2,77 @@ import React from 'react';
 import Table from 'react-bootstrap/Table'
 import '../static/css/TableStyle.css'
 
-class AppTable extends React.Component {    
-  constructor(props){
-    super(props);
-    console.log(props);
-    //binding functions to the Component
-    this.getHeader = this.getHeader.bind(this);
-    this.getRowsData = this.getRowsData.bind(this);
-    this.getKeys = this.getKeys.bind(this);
+const AppTable = (props) => {
+  // getting all te keys to the json data to diectly fetch the data later
+  const getKeys = function(someJSON){
+    return Object.keys(someJSON);
   }
 
-  // ComponentDidMout(){
-  //   this.props.
-  // }
-  
-  // getting all te keys to the json data to diectly fetch the data later
-  getKeys = function(){
-    return Object.keys(this.props.data[0]);
-  }
+  const MainKeys = getKeys(props.data);
   
   // getting the headings for the heading of the table
-  getHeader = function(){
-    var keys = this.getKeys();
+  const getHeader = function(){
+    var keys = (getKeys(props.data[MainKeys[0]]) !== []) ? getKeys(props.data[MainKeys[0]]) : [];
+    keys.unshift("");
+    console.log(keys);
     return keys.map((key, index)=>{
+      // console.log(key);
       return <th key={key}>{key.toUpperCase()}</th>
     })
   }
   
   // getting data for each of the rows
-  getRowsData = function(){
-    var items = this.props.data;
-    console.log(items[0])
-    var keys = this.getKeys();
-    return items.map((row, index)=>{
-      return <tr key={index}><RenderRow key={index} data={row} keys={keys}/></tr>
-    })
+  const getRowsData = function(){
+    var keys = (typeof(props.data[MainKeys[0]]) == Object ) ? getKeys(props.data[MainKeys[0]]) : [];
+    return MainKeys.map((Key1, index) => {
+      var row = (typeof(props.data[Key1]) == Object) ? props.data[Key1].values() : props.data[Key1];
+      return <RenderRow k={Key1} data={row} />
+    }) 
+    // var items = props.data;
+    // var keys = getKeys();
+    // return items.map((row, index)=>{
+    //   return <tr key={index}><RenderRow key={index} data={row} keys={keys}/></tr>
+    // })
   }
   
-  render() {
-      return (
-        <div>
-          <Table striped bordered hover variant="dark">
-          <thead className="TableHead">
-            <tr>{this.getHeader()}</tr>
-          </thead>
-          <tbody>
-            {this.getRowsData()}
-          </tbody>
-          </Table>
-        </div>          
-      );
-  }
+  return (
+    <div>
+      <Table striped bordered hover variant="dark">
+      <thead className="TableHead">
+        <tr>{getHeader()}</tr>
+      </thead>
+      <tbody>
+        {getRowsData()}
+      </tbody>
+      </Table>
+    </div>          
+  );
 }
 
 // functional Component to render one row at a time
 const RenderRow = (props) =>{
-  return props.keys.map((key, index)=>{
-    if (key === "Time"){
-      return <td key={props.data[index]} className="TableTime">{props.data[key]}</td>
-    }
-    return <td key={props.data[index]}>{
-      (typeof(props.data[key]) === "number") ? Math.round(props.data[key] * 1000)/1000 : (props.data[key])
-    }</td>
+  if (Array.isArray(props.data)){
+    return( 
+      <tr>
+        <td className="Main">{props.k}</td>
+        <td>{props.data}</td>
+      </tr>
+    )
+  }
+  else {
+    return(
+      <tr>
+        <td className="Main">{props.k}</td>
+        {
+          Object.keys(props.data).map((key, i) => (
+            <td>{props.data[key]}</td>
+          ))
+        }
+      </tr>
+    );
+  }
+  return props.data.map((element) => {
+    return <td>{(typeof(element) == "number") ? Math.round(element * 1000) / 1000 : element}</td> 
   })
 }
 

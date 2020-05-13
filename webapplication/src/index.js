@@ -22,6 +22,7 @@ const App = () => {
     setETF(stock);
     setDate(date);
     setFile( stock + "-" + date);
+    console.log(date);
   }
 
   return (
@@ -36,7 +37,7 @@ const App = () => {
       {/* <Route exact path="/" render={} /> */}
       <Route path="/ETF-Analysis" render={Analysis} />
       <Route path="/ETF-Comparison" render={Comparison} />
-      <Route path="/ETF-Description" render={() => <Description startDate ={startDate} ETF={ETF} submitFn={SubmitFn} />} />
+      <Route path="/ETF-Description" render={() => <Description file={file} startDate ={startDate} ETF={ETF} submitFn={SubmitFn} />} />
       <Route path="/Historical" render={Historical} />
       <Route path="/Live-Arbitrage" render={Live_Arbitrage} />
       <Route path="/Machine-Learning" render={ML} />

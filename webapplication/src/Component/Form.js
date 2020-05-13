@@ -23,16 +23,27 @@ function Former(props) {
 
   // handling date change as well as checking if date lies between 16-17 as data provided has only that
   const changeDate = (date) => {
-    let d1 = new Date(2020,3,16);
-    let d2 = new Date(2020,3,17);
-    if (date.getTime() >= d1.getTime() && date.getTime() <= d2.getTime()){
+    // let d1 = new Date(2020,3,16);
+    // let d2 = new Date(2020,3,17);
+    // if (date.getTime() >= d1.getTime() && date.getTime() <= d2.getTime()){
       setDate(date);
-    }
+    // }
   }
 
   // Submit funtion to send state to parent to render 
   const submit = () => {
-    props.submitFn(stock, startDate.getDate() + '-' + startDate.getMonth() + '-' + startDate.getFullYear());
+    if (startDate.getMonth() < 9){
+      if (startDate.getDate() < 10){
+        props.submitFn(stock, startDate.getFullYear() + '0' + (startDate.getMonth()+1) + '0' + startDate.getDate());
+      }
+      props.submitFn(stock, startDate.getFullYear() + '0' + (startDate.getMonth()+1) + '' + startDate.getDate());
+    }
+    else {
+      if (startDate.getDate() < 10){
+        props.submitFn(stock, startDate.getFullYear() + '' + (startDate.getMonth()+1) + '0' + startDate.getDate());
+      }
+      props.submitFn(stock, startDate.getFullYear() + '' + (startDate.getMonth()+1) + '' + startDate.getDate());
+    }
   }
 
   // handler for select input method

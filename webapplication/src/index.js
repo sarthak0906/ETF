@@ -21,8 +21,9 @@ const App = () => {
   const SubmitFn = (stock, date) => {
     setETF(stock);
     setDate(date);
+    // console.log(date);
+    // console.log(stock)
     setFile( stock + "-" + date);
-    console.log(date);
   }
 
   return (

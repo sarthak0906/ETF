@@ -6,68 +6,120 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-const Description = (props) => {
+class Description extends React.Component {
+  constructor(props){
+    super(props);
+    console.log(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      DescriptionData : {},
+      HoldingsData : {},
+      DescriptionTableData : "",
+      HoldingsTableData : "",
+    }
+    var descurl = `/ETfDescription/EtfData/${props.ETF}/${props.startDate}`;
+    var holdingsurls = `/ETfDescription/Holdings/${props.ETF}/${props.startDate}`;
+
+  }
+
+  componentDidMount() {
+    this.setState({
+        error: null,
+        isLoaded: false,
+        DescriptionData : {},
+        HoldingsData : {},
+        DescriptionTableData : ""
+    });
+  }
+
+  async UNSAFE_componentWillReceiveProps() {
+    console.log(this.props);
+    console.log(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`);
+    fetch(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`)
+    // fetch(`http://localhost:5000/ETfDescription/EtfData/PSCM/20200417`)
+      .then(res =>{console.log(res.clone().json()); return res.clone().json()})
+      .then(
+        async (result) => {
+            await this.setState({isLoaded : true, DescriptionData: result});
+            console.log(this.state.DescriptionData);
+            await this.setState({DescriptionTableData : <DescriptionTableData data={this.state.DescriptionData} />});
+            // var DescriptionTableData =  ;
+            // console.log(DescriptionTableData);
+        },
+        async (error) => {
+          await this.setState({isLoaded : false, error : error});
+        }
+      )
+    fetch(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`)
+    // fetch(`http://localhost:5000/ETfDescription/Holdings/PSCM/20200417`)
+      .then(res => { console.log(res.ok); return res.clone().json()})
+      .then(
+        async (result) => {
+          await this.setState({isLoaded : true, HoldingsData: result});
+          await this.setState({HoldingsTableData : <HoldingsTableData data={this.state.HoldingsData} />});
+          console.log(this.state.HoldingsData);
+        },
+        async (error) => {
+          await this.setState({isLoaded : false, error : error});
+        }
+      )
+  }
+  
+  render () {
+    return (
+      <Container>
+        <h4> ETF-Description </h4>
+        <Row>
+          <Col>
+            {
+              this.state.DescriptionTableData 
+            }
+          </Col>
+          <Col>
+            {
+              this.state.HoldingsTableData
+            }
+          </Col>
+        </Row>
+      </Container>
+    )
+  }
+}
+
+const DescriptionTableData = (props) => {
   console.log(props);
-  var descurl = `/ETfDescription/EtfData/${props.ETF}/${props.startDate}`;
-  // var descurl = `/ETfDescription/EtfData/${props.ETF}/20200517`;
-  var DescriptionTable = DescriptionTableData(descurl);
-
-  var holdingsurls = `/ETfDescription/Holdings/${props.ETF}/${props.startDate}`;
-  // var holdingsurls = `/ETfDescription/Holdings/${props.ETF}/20200517`;
-  var HoldingsTable = HoldingsTableData(holdingsurls);
-
   return (
-    <Container>
-      <h4> ETF-Description </h4>
-      <Row>
-        <Col>
-          <h6> This is the side for Descriptionof the selected ETF</h6>
-          {
-          (props.file) 
-            ? DescriptionTable : ""
-          }
-        </Col>
-        <Col>
-          <h6> This is the side for Descriptionof the selected ETF</h6>
-          {
-          (props.file) 
-            ? HoldingsTable : ""
-          }
-        </Col>
-      </Row>
-    </Container>
+      <div>
+        <AppTable data={props.data} />
+      </div>
   )
 }
 
-
-const DescriptionTableData = (url) => {
-     console.log(url);
-     fetch(url).then(res => res.json()).then(df => {
-       console.log(df);
-       return (
-        <div>
-          <AppTable data={df} />
-        </div>
-      )
-      })
-  }
-
-  const HoldingsTableData = (url) => {
-     console.log(url);
-     fetch(url).then(res => res.json()).then(df => {
-       console.log(df);
-       return (
-        <div>
-          <AppTable data={df} />
-          <PieChart data={df} element={"TickerWeight"} />
-        </div>
-      )
-      })
-  }
-
-
+const HoldingsTableData = (props) => {
+  console.log(props.data);
+    return (
+      <div>
+        <AppTable data={props.data} />
+        <PieChart data={props.data} element={"TickerWeight"} />
+      </div>
+    )
+}
 
 export default Description;
 
+// import React, { Component } from 'react';
 
+// class Description extends Component {
+//   constructor(props) {
+//     console.log(props);
 
+//     this.state = {
+//       error : null,
+//       ETFData : null,
+//       Holdings : null
+//     }
+//   }
+
+//   componentWillReceiveProps()
+// }

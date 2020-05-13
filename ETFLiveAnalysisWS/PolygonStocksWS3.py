@@ -36,9 +36,9 @@ def on_message(ws, message):
         loop.run_until_complete(PerMinDataOperations().do_insert(dataAM))
         # PerMinDataOperations().insertDataPerMin(data)
         print("Aggregates-Minute Inserted")
-    if dataQ:
-        PerMinDataOperations().insertQuotesLive(dataQ)
-        print("Quotes Inserted")
+    # if dataQ:
+    #     PerMinDataOperations().insertQuotesLive(dataQ)
+    #     print("Quotes Inserted")
 
     end = time.time()
     print("Done in {}".format(end-start))
@@ -60,11 +60,12 @@ def on_open(ws):
     # Subscribe to ticker data
     tickerlist = list(pd.read_csv("/home/piyush/Desktop/etf1903/ETFLiveAnalysisWS/tickerlist.csv").columns.values)
     tickerlistStr = ','.join([''.join(['AM.', str(elem)]) for elem in tickerlist])
-    etflist = list(pd.read_csv("/home/piyush/Desktop/etf1903/ETFLiveAnalysisWS/WorkingETFs.csv").columns.values)
-    quotestickerlistStr = ','.join([''.join(['Q.', str(elem)]) for elem in etflist])
-    subs_list = ','.join([tickerlistStr,quotestickerlistStr])
-    print(subs_list)
-    subscription_data = {"action": "subscribe", "params": subs_list}
+    # etflist = list(pd.read_csv("/home/piyush/Desktop/etf1903/ETFLiveAnalysisWS/WorkingETFs.csv").columns.values)
+    # quotestickerlistStr = ','.join([''.join(['Q.', str(elem)]) for elem in etflist])
+    # subs_list = ','.join([tickerlistStr,quotestickerlistStr])
+    # print(subs_list)
+    print(tickerlistStr)
+    subscription_data = {"action": "subscribe", "params": tickerlistStr}
     ws.send(json.dumps(subscription_data))
 
 

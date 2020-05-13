@@ -58,9 +58,9 @@ def on_close(ws):
 def on_open(ws):
     ws.send('{"action":"auth","params":"M_PKVL_rqHZI7VM9ZYO_hwPiConz5rIklx893F"}')
     # Subscribe to ticker data
-    tickerlist = list(pd.read_csv("/home/piyush/Desktop/etf1903/ETFLiveAnalysisWS/tickerlist.csv").columns.values)
+    tickerlist = list(pd.read_csv("tickerlist.csv").columns.values)
     tickerlistStr = ','.join([''.join(['AM.', str(elem)]) for elem in tickerlist])
-    # etflist = list(pd.read_csv("/home/piyush/Desktop/etf1903/ETFLiveAnalysisWS/WorkingETFs.csv").columns.values)
+    # etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
     # quotestickerlistStr = ','.join([''.join(['Q.', str(elem)]) for elem in etflist])
     # subs_list = ','.join([tickerlistStr,quotestickerlistStr])
     # print(subs_list)

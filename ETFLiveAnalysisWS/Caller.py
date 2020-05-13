@@ -27,7 +27,7 @@ while True:
         arbDF = pd.DataFrame.from_dict(obj.calcArbitrage(), orient='index',columns=['Arbitrage'])
         endts = int((datetime.datetime.now().replace(tzinfo=datetime.timezone.utc).timestamp())*1000)
         startts = int((datetime.datetime.now() - datetime.timedelta(minutes=1)).replace(tzinfo=datetime.timezone.utc).timestamp()*1000)
-        etflist = list(pd.read_csv("/home/piyush/Desktop/etf1903/ETFLiveAnalysisWS/WorkingETFs.csv").columns.values)
+        etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
         spread_list = []
         for etf in etflist:
             startl = time.time()

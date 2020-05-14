@@ -36,8 +36,8 @@ class Description extends React.Component {
   async UNSAFE_componentWillReceiveProps() {
     console.log(this.props);
     console.log(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`);
-    fetch(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`)
-    // fetch(`http://localhost:5000/ETfDescription/EtfData/PSCM/20200417`)
+    // fetch(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`)
+    fetch(`http://localhost:5000/ETfDescription/EtfData/PSCM/20200417`)
       .then(res =>{console.log(res.clone().json()); return res.clone().json()})
       .then(
         async (result) => {
@@ -51,8 +51,8 @@ class Description extends React.Component {
           await this.setState({isLoaded : false, error : error});
         }
       )
-    fetch(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`)
-    // fetch(`http://localhost:5000/ETfDescription/Holdings/PSCM/20200417`)
+    // fetch(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`)
+    fetch(`http://localhost:5000/ETfDescription/Holdings/PSCM/20200417`)
       .then(res => { console.log(res.ok); return res.clone().json()})
       .then(
         async (result) => {

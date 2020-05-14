@@ -50,30 +50,30 @@ function Former(props) {
   }
 
   return (
-    <Nav className="bg-light justify-content-between">
-      <Navbar  className="bg-light">
+    <Nav className="bg-dark justify-content-between nav">
+      <Navbar  className="bg-dark">
         <Nav>
           <Nav.Item>
-            <Nav.Link as={Link} to="/ETF-Analysis">ETF-Analysis</Nav.Link>
+            <Nav.Link style={{color: 'white'}} as={Link} to="/ETF-Analysis">ETF-Analysis</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link} to="/ETF-Comparison" eventKey="ETF-Comparison">ETF-Comparison</Nav.Link>
+            <Nav.Link style={{color: 'white'}} as={Link} to="/ETF-Comparison" eventKey="ETF-Comparison">ETF-Comparison</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link} to="/ETF-Description" eventKey="ETF-Description">ETF-Description</Nav.Link>
+            <Nav.Link style={{color: 'white'}} as={Link} to="/ETF-Description" eventKey="ETF-Description">ETF-Description</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link} to="/Historical" eventKey="Historical">Historical</Nav.Link>
+            <Nav.Link style={{color: 'white'}} as={Link} to="/Historical" eventKey="Historical">Historical</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link} to="/Live-Arbitrage" eventKey="Live-Arbitrage">Live-Arbitrage</Nav.Link>
+            <Nav.Link style={{color: 'white'}} as={Link} to="/Live-Arbitrage" eventKey="Live-Arbitrage">Live-Arbitrage</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link} to="/Machine-Learning" eventKey="Machine-Learning">Machine-Learning</Nav.Link>
+            <Nav.Link style={{color: 'white'}} as={Link} to="/Machine-Learning" eventKey="Machine-Learning">Machine-Learning</Nav.Link>
           </Nav.Item>
         </Nav>
       </Navbar>
-      <Navbar className="bg-light">
+      <Navbar className="bg-dark">
         <Form inline >
             <Form.Group onChange={select}>
               <Form.Label className="FormLabel">Stock Select</Form.Label>

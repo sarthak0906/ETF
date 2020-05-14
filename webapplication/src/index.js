@@ -13,17 +13,37 @@ import ML from './Component/Machine-Learning';
 
 // StylesSheets
 import './static/css/style.css';
-const App = () => {
-  const [startDate, setDate] = useState(new Date(2020, 3, 16));
+
+const YesterdayDate = () => {
+  var d = new Date(Date.now() - 86400000);
+
+  if (d.getMonth() < 9){
+    if (d.getDate() < 10){
+      return (d.getFullYear() + '0' + (d.getMonth()+1) + '0' + d.getDate());
+    }
+    return (d.getFullYear() + '0' + (d.getMonth()+1) + '' + d.getDate());
+  }
+  else {
+    if (d.getDate() < 10){
+      return (d.getFullYear() + '' + (d.getMonth()+1) + '0' + d.getDate());
+    }
+    return (d.getFullYear() + '' + (d.getMonth()+1) + '' + d.getDate());
+  }
+}
+
+const App = (props) => {
+  const [startDate, setDate] = useState(YesterdayDate());
   const [file, setFile] = useState("");
   const [ETF, setETF] = useState("");
 
-  const SubmitFn = (stock, date) => {
-    setETF(stock);
-    setDate(date);
-    // console.log(date);
-    // console.log(stock)
-    setFile( stock + "-" + date);
+  const SubmitFn = async (stock, date) => {
+    await setETF(stock);
+    await setDate(date);
+    console.log(date);
+    console.log(ETF);
+    let a = stock + '-'  +date;
+    await setFile(a);
+    console.log(file);
   }
 
   return (

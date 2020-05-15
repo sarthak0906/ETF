@@ -20,7 +20,6 @@ try:
 except ImportError:
     import _thread as thread
 import time
-from PolygonTickData.Helper import Helper
 from MongoDB.PerMinDataOperations import PerMinDataOperations
 import asyncio
 
@@ -29,6 +28,7 @@ def on_message(ws, message):
     start = time.time()
     responses = ujson.loads(message)
     # print(responses)
+
     dataQ = [response for response in responses if response['ev'] == 'Q']
     dataAM = [response for response in responses if response['ev'] == 'AM']
     if dataAM:
@@ -36,9 +36,9 @@ def on_message(ws, message):
         loop.run_until_complete(PerMinDataOperations().do_insert(dataAM))
         # PerMinDataOperations().insertDataPerMin(data)
         print("Aggregates-Minute Inserted")
-    # if dataQ:
-    #     PerMinDataOperations().insertQuotesLive(dataQ)
-    #     print("Quotes Inserted")
+    if dataQ:
+        PerMinDataOperations().insertQuotesLive(dataQ)
+        print("Quotes Inserted")
 
     end = time.time()
     print("Done in {}".format(end-start))
@@ -60,12 +60,12 @@ def on_open(ws):
     # Subscribe to ticker data
     tickerlist = list(pd.read_csv("tickerlist.csv").columns.values)
     tickerlistStr = ','.join([''.join(['AM.', str(elem)]) for elem in tickerlist])
-    # etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
-    # quotestickerlistStr = ','.join([''.join(['Q.', str(elem)]) for elem in etflist])
-    # subs_list = ','.join([tickerlistStr,quotestickerlistStr])
-    # print(subs_list)
+    etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
+    quotestickerlistStr = ','.join([''.join(['Q.', str(elem)]) for elem in etflist])
+    subs_list = ','.join([tickerlistStr,quotestickerlistStr])
+    print(subs_list)
     print(tickerlistStr)
-    subscription_data = {"action": "subscribe", "params": tickerlistStr}
+    subscription_data = {"action": "subscribe", "params": subs_list}
     ws.send(json.dumps(subscription_data))
 
 

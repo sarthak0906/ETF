@@ -56,7 +56,7 @@ class ArbPerMin():
         self.trade_dict = {}
 
     def calcArbitrage(self):
-        dt = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M")
+        dt = (datetime.datetime.now()).strftime("%Y-%m-%d %H:%M")
         print(dt)
         start = time.time()
         try:

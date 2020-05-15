@@ -5,6 +5,7 @@ import '../static/css/Description.css';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+// import Scrollable from 'hide-scrollbar-react';
 
 class Description extends React.Component {
   constructor(props){
@@ -27,34 +28,48 @@ class Description extends React.Component {
         HoldingsData : {},
         DescriptionTableData : ""
     });
+    fetch(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`)
+    .then(res =>{console.log(res.clone().json()); return res.clone().json()})
+    .then(
+      async (result) => {
+          await this.setState({isLoaded : true, DescriptionData: result});
+          await this.setState({DescriptionTableData : <DescriptionTableData data={this.state.DescriptionData} />});
+      },
+      async (error) => {
+        await this.setState({isLoaded : false, error : error});
+      }
+    )
+  fetch(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`)
+    .then(res => { return res.clone().json()})
+    .then(
+      async (result) => {
+        await this.setState({isLoaded : true, HoldingsData: result});
+        await this.setState({HoldingsTableData : <HoldingsTableData data={this.state.HoldingsData} />});
+      },
+      async (error) => {
+        await this.setState({isLoaded : false, error : error});
+      }
+    )
   }
 
   async UNSAFE_componentWillReceiveProps(props) {
-    console.log(this.props)
-    console.log(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`);
     fetch(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`)
-    // fetch(`http://localhost:5000/ETfDescription/EtfData/PSCM/20200417`)
       .then(res =>{console.log(res.clone().json()); return res.clone().json()})
       .then(
         async (result) => {
             await this.setState({isLoaded : true, DescriptionData: result});
-            console.log(this.state.DescriptionData);
             await this.setState({DescriptionTableData : <DescriptionTableData data={this.state.DescriptionData} />});
-            // var DescriptionTableData =  ;
-            // console.log(DescriptionTableData);
         },
         async (error) => {
           await this.setState({isLoaded : false, error : error});
         }
       )
     fetch(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`)
-    // fetch(`http://localhost:5000/ETfDescription/Holdings/PSCM/20200417`)
-      .then(res => { console.log(res.ok); return res.clone().json()})
+      .then(res => { return res.clone().json()})
       .then(
         async (result) => {
           await this.setState({isLoaded : true, HoldingsData: result});
           await this.setState({HoldingsTableData : <HoldingsTableData data={this.state.HoldingsData} />});
-          console.log(this.state.HoldingsData);
         },
         async (error) => {
           await this.setState({isLoaded : false, error : error});
@@ -66,6 +81,8 @@ class Description extends React.Component {
     return (
       <Container className="Container">
         <h4> ETF-Description </h4>
+        <h5> {this.props.ETF} </h5>
+        <h4> <strong>{this.state.DescriptionData.AnnualDividendRate}</strong>  {this.state.DescriptionData.AnnualDividendYield} </h4>
         <Row>
           <Col>
             {
@@ -84,38 +101,26 @@ class Description extends React.Component {
 }
 
 const DescriptionTableData = (props) => {
-  console.log(props);
+  // console.log(props);
+  // <Scrollable>
   return (
-      <div>
+      <div className="DescriptionTable">
         <AppTable data={props.data} />
       </div>
   )
+  // </Scrollable>
 }
 
 const HoldingsTableData = (props) => {
-  console.log(props.data);
+  // console.log(props.data);
+  // <Scrollable>
     return (
-      <div>
-        <AppTable data={props.data} />
-        <PieChart data={props.data} element={"TickerWeight"} />
-      </div>
+        <div className="DescriptionTable">
+          <PieChart data={props.data} element={"TickerWeight"} />
+          <AppTable data={props.data} />
+        </div>
     )
+    // </Scrollable>
 }
 
 export default Description;
-
-// import React, { Component } from 'react';
-
-// class Description extends Component {
-//   constructor(props) {
-//     console.log(props);
-
-//     this.state = {
-//       error : null,
-//       ETFData : null,
-//       Holdings : null
-//     }
-//   }
-
-//   componentWillReceiveProps()
-// }

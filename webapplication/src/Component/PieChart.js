@@ -53,7 +53,7 @@ export default class Example extends PureComponent {
             activeIndex: 0,
             COLORS : ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
         };
-        console.log(props);
+        // console.log(props);
     }
 
     async componentDidMount (){
@@ -73,7 +73,7 @@ export default class Example extends PureComponent {
     
     render() {
         return (
-        <PieChart width={400} height={400}>
+        <PieChart width={400} height={350}>
             <Pie
             activeIndex={this.state.activeIndex}
             activeShape={renderActiveShape}
@@ -86,9 +86,9 @@ export default class Example extends PureComponent {
             dataKey="value"
             onMouseEnter={this.onPieEnter}
             >
-                {
-                    this.state.data.map((entry, index) => <Cell fill={this.state.COLORS[index % this.state.COLORS.length]}/>)
-                }
+              {
+                  this.state.data.map((entry, index) => <Cell key={index} fill={this.state.COLORS[index % this.state.COLORS.length]}/>)
+              }
             </Pie>
         </PieChart>
         );

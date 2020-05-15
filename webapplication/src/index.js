@@ -34,16 +34,16 @@ const YesterdayDate = () => {
 const App = (props) => {
   const [startDate, setDate] = useState(YesterdayDate());
   const [file, setFile] = useState("");
-  const [ETF, setETF] = useState("");
+  const [ETF, setETF] = useState("XLK");
 
   const SubmitFn = async (stock, date) => {
     await setETF(stock);
     await setDate(date);
-    console.log(date);
-    console.log(ETF);
+    // console.log(date);
+    // console.log(ETF);
     let a = stock + '-'  +date;
     await setFile(a);
-    console.log(file);
+    // console.log(file);
   }
 
   return (
@@ -56,7 +56,7 @@ const App = (props) => {
         </div>
       </div>
       {/* <Route exact path="/" render={} /> */}
-      <Route path="/ETF-Analysis" render={Analysis} />
+      {/* <Route path="/ETF-Analysis" render={Analysis} /> */}
       <Route path="/ETF-Comparison" render={Comparison} />
       <Route path="/ETF-Description" render={() => <Description file={file} startDate ={startDate} ETF={ETF} submitFn={SubmitFn} />} />
       <Route path="/Historical" render={Historical} />

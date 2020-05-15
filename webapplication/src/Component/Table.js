@@ -2,6 +2,29 @@ import React from 'react';
 import Table from 'react-bootstrap/Table'
 import '../static/css/TableStyle.css'
 
+var stringConstructor = "test".constructor;
+var arrayConstructor = [].constructor;
+var objectConstructor = ({}).constructor;
+
+function whatIsIt(object) {
+  if (object === null) {
+    return "null";
+  }
+  if (object === undefined) {
+    return "undefined";
+  }
+  if (object.constructor === stringConstructor) {
+    return "String";
+  }
+  if (object.constructor === arrayConstructor) {
+    return "Array";
+  }
+  if (object.constructor === objectConstructor) {
+    return "Object";
+  }
+  return "don't know";
+}
+
 const AppTable = (props) => {
   // getting all te keys to the json data to diectly fetch the data later
   const getKeys = function(someJSON){
@@ -12,7 +35,8 @@ const AppTable = (props) => {
   
   // getting the headings for the heading of the table
   const getHeader = function(){
-    var keys = (getKeys(props.data[MainKeys[0]]) !== []) ? getKeys(props.data[MainKeys[0]]) : [];
+    console.log(whatIsIt(props.data[MainKeys[0]]));
+    var keys = (whatIsIt(props.data[MainKeys[0]]) == "Object") ? getKeys(props.data[MainKeys[0]]) : [];
     keys.unshift("");
     console.log(keys);
     return keys.map((key, index)=>{
@@ -23,9 +47,10 @@ const AppTable = (props) => {
   
   // getting data for each of the rows
   const getRowsData = function(){
-    var keys = (typeof(props.data[MainKeys[0]]) == Object ) ? getKeys(props.data[MainKeys[0]]) : [];
+    var keys = (whatIsIt(props.data[MainKeys[0]]) != "Object") ? getKeys(props.data[MainKeys[0]]) : [];
     return MainKeys.map((Key1, index) => {
       var row = (typeof(props.data[Key1]) == Object) ? props.data[Key1].values() : props.data[Key1];
+      console.log(row);
       return <RenderRow k={Key1} data={row} />
     }) 
     // var items = props.data;
@@ -51,7 +76,7 @@ const AppTable = (props) => {
 
 // functional Component to render one row at a time
 const RenderRow = (props) =>{
-  if (Array.isArray(props.data)){
+  if (whatIsIt(props.data) != "Object"){
     return( 
       <tr>
         <td className="Main">{props.k}</td>

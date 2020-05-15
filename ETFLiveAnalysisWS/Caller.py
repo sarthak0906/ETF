@@ -1,3 +1,14 @@
+import sys, traceback
+# For Piyush System
+sys.path.extend(['/home/piyush/Desktop/etf1903', '/home/piyush/Desktop/etf1903/ETFsList_Scripts',
+                 '/home/piyush/Desktop/etf1903/HoldingsDataScripts',
+                 '/home/piyush/Desktop/etf1903/CommonServices',
+                 '/home/piyush/Desktop/etf1903/CalculateETFArbitrage','/home/piyush/Desktop/etf1903/ETFLiveAnalysis'])
+# For Production env
+sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_Scripts',
+                 '/home/ubuntu/ETFAnalysis/HoldingsDataScripts', '/home/ubuntu/ETFAnalysis/CommonServices',
+                 '/home/ubuntu/ETFAnalysis/CalculateETFArbitrage'])
+sys.path.append("..")  # Remove in production - KTZ
 import datetime
 import time
 import schedule

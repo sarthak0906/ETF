@@ -17,7 +17,7 @@ import pandas as pd
 import numpy as np
 from ETFLiveAnalysisWS.CalculatePerMinArb import ArbPerMin
 from MongoDB.PerMinDataOperations import PerMinDataOperations
-from PolygonTickData.Helper import Helper
+from MongoDB.SaveArbitrageCalcs import SaveCalculatedArbitrage
 
 class PerMinAnalysis():
     def handleQuotesResponse(self, result):
@@ -32,7 +32,7 @@ class PerMinAnalysis():
         # ETF Arbitrage Calculation
         #######################################################
         startarb = time.time()
-        arbDF = pd.DataFrame.from_dict(obj.calcArbitrage(), orient='index', columns=['Arbitrage'])
+        arbDF = pd.DataFrame.from_dict(obj.calcArbitrage(tickerlist), orient='index', columns=['Arbitrage'])
         endarb = time.time()
         print("Arbitrage time: {}".format(endarb - startarb))
         #######################################################
@@ -70,6 +70,9 @@ class PerMinAnalysis():
         mergeDF = arbDF.merge(spreadDF, how='outer', left_index=True, right_index=True)
         print("Merged DF:")
         print(mergeDF)
+        mergeDF.reset_index(inplace=True)
+        mergeDF.rename(columns={"index":"Symbol"}, inplace=True)
+        SaveCalculatedArbitrage().insertIntoPerMinCollection(end_ts=end_dt_ts, ArbitrageData=mergeDF.to_dict(orient='records'))
         endtime = time.time()
         print("One whole Cycle time : {}".format(endtime - starttime))
         #######################################################
@@ -113,9 +116,10 @@ class PerMinAnalysis():
 
 if __name__=='__main__':
     # Object life to be maintained throughout the day while market is open
+    tickerlist = list(pd.read_csv("tickerlist.csv").columns.values)
     ArbCalcObj = ArbPerMin()
     PerMinAnlysObj = PerMinAnalysis()
-    schedule.every(1).minutes.do(PerMinAnlysObj.PerMinAnalysisCycle, ArbCalcObj)
+    schedule.every().minute.at(":10").do(PerMinAnlysObj.PerMinAnalysisCycle, ArbCalcObj)
     while True:
         # Checks whether a scheduled task
         # is pending to run or not

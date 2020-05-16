@@ -47,91 +47,59 @@ const renderActiveShape = (props) => {
 
 
 export default class Example extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {data: [],
-            activeIndex: 0,
-            COLORS : ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
-        };
-        // console.log(props);
-    }
+  constructor(props) {
+      super(props);
+      this.state = {data: [],
+          activeIndex: 0,
+          COLORS     : ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
+      };
+  }
 
-    async componentDidMount (){
-        this.setState({data: []});
-        for (let key in this.props.data){
-            await this.setState({
-                data : [...this.state.data, {'name': key, 'value': this.props.data[key][this.props.element]}]
-            })
-        }
+  async componentDidUpdate(prevProps) {
+    if((this.props.data !== prevProps.data)){
+      await this.setState({data : []});
+      for (let key in this.props.data){
+        await this.setState({
+            data : [...this.state.data, {'name': key, 'value': this.props.data[key][this.props.element]}]
+        })
+      }
     }
-    
-    onPieEnter = (data, index) => {
-        this.setState({
-            activeIndex: index,
-        });
-    };
-    
-    render() {
-        return (
-        <PieChart width={400} height={350}>
-            <Pie
-            activeIndex={this.state.activeIndex}
-            activeShape={renderActiveShape}
-            data={this.state.data}
-            cx={200}
-            cy={200}
-            innerRadius={25}
-            outerRadius={90}
-            fill="#8884d8"
-            dataKey="value"
-            onMouseEnter={this.onPieEnter}
-            >
-              {
-                  this.state.data.map((entry, index) => <Cell key={index} fill={this.state.COLORS[index % this.state.COLORS.length]}/>)
-              }
-            </Pie>
-        </PieChart>
-        );
+  }
+
+  async componentDidMount (){
+    for (let key in this.props.data){
+      await this.setState({
+          data : [...this.state.data, {'name': key, 'value': this.props.data[key][this.props.element]}]
+      })
     }
+  }
+  
+  onPieEnter = (data, index) => {
+    this.setState({
+      activeIndex: index,
+    });
+  };
+  
+  render() {
+    return (
+      <PieChart width={400} height={350}>
+        <Pie
+        activeIndex={this.state.activeIndex}
+        activeShape={renderActiveShape}
+        data={this.state.data}
+        cx={200}
+        cy={200}
+        innerRadius={25}
+        outerRadius={90}
+        fill="#8884d8"
+        dataKey="value"
+        onMouseEnter={this.onPieEnter}
+        >
+          {
+              this.state.data.map((entry, index) => <Cell key={index} fill={this.state.COLORS[index % this.state.COLORS.length]}/>)
+          }
+        </Pie>
+      </PieChart>
+    );
+  }
 }
-
-// import React, { useEffect, useState } from 'react';
-// import {
-//   PieChart, Pie, Cell,
-// } from 'recharts';
-
-// class pieChart = (props) => {
-    
-//     const [data, setData] = useState([]);
-
-//     useEffect(() => {
-//         // var df = [];
-//         Object.keys(props.data).map((key) => {
-//             setData(data.concat({'name': key, 'value': props.data.key[props.element]}));
-//         })
-//     //     for (let key in props.data){
-//     //         let item = ;
-//     //         setData(data.concat(item));
-//     //     }
-//     });
-
-//     return (
-//         <PieChart width={400} height={400}>
-//             <Pie
-//             data={data}
-//             cx={200}
-//             cy={200}
-//             labelLine={false}
-//             outerRadius={80}
-//             fill="#8884d8"
-//             dataKey="value"
-//             >
-//             {
-//                 data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-//             }
-//             </Pie>
-//         </PieChart>
-//     );
-// }
-
-// export default pieChart;

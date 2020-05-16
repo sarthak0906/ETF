@@ -24,7 +24,7 @@ class PerMinAnalysis():
         try:
             return (result['sym'], (result['ap'] - result['bp']))
         except:
-            return (result['sym'],None)
+            return (result['sym'],0)
 
     def PerMinAnalysisCycle(self, obj):
         starttime = time.time()
@@ -52,6 +52,9 @@ class PerMinAnalysis():
         startspread = time.time()
         QuotesResults = PerMinDataOperations().FetchQuotesLiveDataForSpread(startts, end_dt_ts)
         spread_list = [self.handleQuotesResponse(result) for result in QuotesResults]
+        etfs_in_spread_list = [item[0] for item in spread_list]
+        # For ETFs with no Quotes Live Data, Spread = 0
+        [spread_list.append((etf, 0)) for etf in etflist if etf not in etfs_in_spread_list]
         spreadDF = pd.DataFrame(spread_list, columns=['symbol', 'Spread'])
         if not spreadDF.empty:
             spreadDF = spreadDF.groupby(['symbol']).mean()
@@ -81,6 +84,7 @@ class PerMinAnalysis():
 if __name__=='__main__':
     # Below 3 Objects' life to be maintained throughout the day while market is open
     tickerlist = list(pd.read_csv("tickerlist.csv").columns.values)
+    etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
     ArbCalcObj = ArbPerMin()
     PerMinAnlysObj = PerMinAnalysis()
     schedule.every().minute.at(":10").do(PerMinAnlysObj.PerMinAnalysisCycle, ArbCalcObj)

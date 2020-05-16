@@ -77,52 +77,14 @@ class PerMinAnalysis():
         print("One whole Cycle time : {}".format(endtime - starttime))
         #######################################################
 
-# obj = ArbPerMin()
-# while True:
-#     starttime = time.time()
-#     dt = datetime.datetime.now() + datetime.timedelta(minutes=1)
-#     startarb = time.time()
-#     arbDF = pd.DataFrame.from_dict(obj.calcArbitrage(), orient='index',columns=['Arbitrage'])
-#     endarb = time.time()
-#     print("Arbitrage time: {}".format(endarb-startarb))
-#     # UTC Timestamps below.
-#     end_dt = datetime.datetime.now().replace(second=0, microsecond=0) - datetime.timedelta(hours=20)
-#     end_dt_ts = int(end_dt.timestamp()*1000)
-#     start_dt = end_dt - datetime.timedelta(minutes=1)
-#     startts = int(start_dt.timestamp()*1000)
-#
-#     startspread =time.time()
-#     etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
-#
-#     QuotesResults = PerMinDataOperations().FetchQuotesLiveDataForSpread(startts, end_dt_ts)
-#     spread_list = [(result['sym'], (result['ap']-result['bp'])) for result in QuotesResults]
-#     spreadDF = pd.DataFrame(spread_list, columns=['symbol','Spread'])
-#     if not spreadDF.empty:
-#         spreadDF = spreadDF.groupby(['symbol']).mean()
-#     endspread = time.time()
-#     print("Spread Time: {}".format(endspread-startspread))
-#
-#     print("Arb DF:")
-#     print(arbDF)
-#     print("Spread DF:")
-#     print(spreadDF)
-#     mergeDF = arbDF.merge(spreadDF, how='outer',left_index=True, right_index=True)
-#     print("Merged DF:")
-#     print(mergeDF)
-#     endtime = time.time()
-#     print("One whole Cycle time : {}".format(endtime-starttime))
-#     while datetime.datetime.now() < dt:
-#         time.sleep(1)
-
+# Execution part. To be same from wherever PerMinAnalysisCycle() is called.
 if __name__=='__main__':
-    # Object life to be maintained throughout the day while market is open
+    # Below 3 Objects' life to be maintained throughout the day while market is open
     tickerlist = list(pd.read_csv("tickerlist.csv").columns.values)
     ArbCalcObj = ArbPerMin()
     PerMinAnlysObj = PerMinAnalysis()
     schedule.every().minute.at(":10").do(PerMinAnlysObj.PerMinAnalysisCycle, ArbCalcObj)
     while True:
-        # Checks whether a scheduled task
-        # is pending to run or not
         schedule.run_pending()
         time.sleep(1)
 

@@ -11,9 +11,6 @@ import math
 
 sys.path.append("..")
 
-# Import packages
-from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
-
 app = Flask(__name__)
 
 CORS(app)
@@ -23,6 +20,11 @@ CORS(app)
 # Production Server
 connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
  
+############################################
+# Load ETF Holdings Data and Description
+############################################
+
+from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 @app.route('/ETfDescription/<ETFName>/<date>')
 @app.route('/ETfDescription/Holdings/<ETFName>/<date>')
 @app.route('/ETfDescription/EtfData/<ETFName>/<date>')
@@ -61,6 +63,20 @@ def SendETFHoldingsData(ETFName, date):
         print("Issue in Flask app while fetching ETF Description Data")
         print(e)
         return str(e)
+
+
+############################################
+# Load Past Arbitrage Past Data
+############################################
+from FlaskAPI.Components.ETFArbitrage.ETFArbitrageMain import RetrieveETFArbitrageData
+@app.route('/PastArbitrageData/<ETFName>/<date>')
+def FetchPastArbitrageData(ETFName, date):
+    data = RetrieveETFArbitrageData(ETFName, date)
+    data.index=data.index.astype(str)
+    data=data.to_dict('index')
+    print(data)
+    return data
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

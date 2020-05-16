@@ -44,9 +44,7 @@ function Former(props) {
 
   // handler for select input method
   const select = async (event) => {
-    // console.log(event.target.value);
     await setStock(event.target.value);
-    // console.log(stock);
   }
 
   return (
@@ -54,16 +52,13 @@ function Former(props) {
       <Navbar  className="bg-dark">
         <Nav>
           <Nav.Item>
-            <Nav.Link style={{color: 'white'}} as={Link} to="/ETF-Analysis">ETF-Analysis</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
             <Nav.Link style={{color: 'white'}} as={Link} to="/ETF-Comparison" eventKey="ETF-Comparison">ETF-Comparison</Nav.Link>
           </Nav.Item>
           <Nav.Item>
             <Nav.Link style={{color: 'white'}} as={Link} to="/ETF-Description" eventKey="ETF-Description">ETF-Description</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link style={{color: 'white'}} as={Link} to="/Historical" eventKey="Historical">Historical</Nav.Link>
+            <Nav.Link style={{color: 'white'}} as={Link} to="/HistoricalArbitrage" eventKey="Historical">Historical Arbitrage</Nav.Link>
           </Nav.Item>
           <Nav.Item>
             <Nav.Link style={{color: 'white'}} as={Link} to="/Live-Arbitrage" eventKey="Live-Arbitrage">Live-Arbitrage</Nav.Link>
@@ -97,7 +92,7 @@ function Former(props) {
 
 const FormSelect = (arr) => {
   return arr.map((element, index) => { 
-    return <option>{element}</option>
+    return <option key={index}>{element}</option>
   })
 }
 

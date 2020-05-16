@@ -58,7 +58,7 @@ function Former(props) {
             <Nav.Link style={{color: 'white'}} as={Link} to="/ETF-Description" eventKey="ETF-Description">ETF-Description</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link style={{color: 'white'}} as={Link} to="/Historical" eventKey="Historical">Historical</Nav.Link>
+            <Nav.Link style={{color: 'white'}} as={Link} to="/HistoricalArbitrage" eventKey="Historical">Historical Arbitrage</Nav.Link>
           </Nav.Item>
           <Nav.Item>
             <Nav.Link style={{color: 'white'}} as={Link} to="/Live-Arbitrage" eventKey="Live-Arbitrage">Live-Arbitrage</Nav.Link>

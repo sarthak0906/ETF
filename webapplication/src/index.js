@@ -5,7 +5,7 @@ import Former from './Component/Form.js';
 import Analysis from './Component/ETF-Analysis';
 import Comparison from './Component/ETF-Comparison';
 import Description from './Component/ETF-Description';
-import Historical from './Component/Historical-Arbitrage';
+import HistoricalArbitrage from './Component/Historical-Arbitrage';
 import Live_Arbitrage from './Component/Live-Arbitrage';
 import ML from './Component/Machine-Learning';
 
@@ -59,7 +59,7 @@ const App = (props) => {
       {/* <Route path="/ETF-Analysis" render={Analysis} /> */}
       <Route path="/ETF-Comparison" render={Comparison} />
       <Route path="/ETF-Description" render={() => <Description file={file} startDate ={startDate} ETF={ETF} submitFn={SubmitFn} />} />
-      <Route path="/Historical" render={Historical} />
+      <Route path="/HistoricalArbitrage" render={HistoricalArbitrage} />
       <Route path="/Live-Arbitrage" render={Live_Arbitrage} />
       <Route path="/Machine-Learning" render={ML} />
     </ Router>

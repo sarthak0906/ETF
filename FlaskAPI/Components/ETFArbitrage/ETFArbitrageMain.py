@@ -22,7 +22,7 @@ MomentumsignalsColumns = ['ADX Trend','AROONOSC Trend','Momentum Indicator','CMO
 
 CandlesignalsColumns = ['Hammer Pat','InvertedHammer Pat','DragonFlyDoji Pat','PiercingLine Pat','MorningStar Pat','MorningStarDoji Pat','3WhiteSoldiers Pat',
 						'HanginMan Pat','Shooting Pat','GraveStone Pat','DarkCloud Pat','EveningStar Pat','EveningDoji Pat','3BlackCrows Pat','AbandonedBaby Pat',
-						'AbandonedBaby Pat','Engulfing Pat','Harami Pat','IndecisionSpinningTop Pat','IndecisionDoji Pat','3LineStrike Pat']
+						'Engulfing Pat','Harami Pat','IndecisionSpinningTop Pat','IndecisionDoji Pat','3LineStrike Pat']
 
 MajorUnderlyingMovers=['ETFMover%1','ETFMover%2', 'ETFMover%3', 'ETFMover%4', 'ETFMover%5', 'ETFMover%6','ETFMover%7', 'ETFMover%8', 'ETFMover%9', 'ETFMover%10', 
 						'Change%1','Change%2', 'Change%3', 'Change%4', 'Change%5', 'Change%6', 'Change%7','Change%8', 'Change%9', 'Change%10']
@@ -67,7 +67,7 @@ def RetrieveETFArbitrageData(etfname, date):
 
 		columnsneeded=['ETF Trading Spread in $','Arbitrage in $','Magnitude of Arbitrage','Flag']
 		#columnsneeded=columnsneeded+MomentumsignalsColumns+CandlesignalsColumns+MajorUnderlyingMovers
-		columnsneeded=columnsneeded+CandlesignalsColumns+MajorUnderlyingMovers
+		columnsneeded=columnsneeded+MajorUnderlyingMovers
 
 		etfOverBought = df.loc[df['Flag']== 111.0]
 		if etfOverBought.shape[0]!=0:

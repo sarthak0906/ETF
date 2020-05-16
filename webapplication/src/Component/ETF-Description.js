@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React from 'react';
 import PieChart from './PieChart';
 import AppTable from './Table.js';
 import '../static/css/Description.css';
@@ -79,7 +79,7 @@ class Description extends React.Component {
   
   render () {
     return (
-      <Container className="Container">
+      <Container fluid>
         <h4> ETF-Description </h4>
         <h5> {this.props.ETF} </h5>
         <h4> <strong>{this.state.DescriptionData.AnnualDividendRate}</strong>  {this.state.DescriptionData.AnnualDividendYield} </h4>
@@ -95,7 +95,7 @@ class Description extends React.Component {
             }
           </Col>
         </Row>
-      </Container>
+     </Container>
     )
   }
 }

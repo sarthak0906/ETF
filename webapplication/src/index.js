@@ -59,7 +59,7 @@ const App = (props) => {
       {/* <Route path="/ETF-Analysis" render={Analysis} /> */}
       <Route path="/ETF-Comparison" render={Comparison} />
       <Route path="/ETF-Description" render={() => <Description file={file} startDate ={startDate} ETF={ETF} submitFn={SubmitFn} />} />
-      <Route path="/HistoricalArbitrage" render={HistoricalArbitrage} />
+      <Route path="/HistoricalArbitrage" render={() => <HistoricalArbitrage startDate ={startDate} ETF={ETF} submitFn={SubmitFn} />} />
       <Route path="/Live-Arbitrage" render={Live_Arbitrage} />
       <Route path="/Machine-Learning" render={ML} />
     </ Router>

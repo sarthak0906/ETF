@@ -8,6 +8,8 @@ import pandas as pd
 from mongoengine import connect
 import numpy as np
 import math
+import ast
+
 
 sys.path.append("..")
 
@@ -69,14 +71,49 @@ def SendETFHoldingsData(ETFName, date):
 # Load Past Arbitrage Past Data
 ############################################
 from FlaskAPI.Components.ETFArbitrage.ETFArbitrageMain import RetrieveETFArbitrageData
+
+# Divide Columnt into movers and the price by which they are moving
+etmoverslist=['ETFMover%1', 'ETFMover%2', 'ETFMover%3', 'ETFMover%4', 'ETFMover%5',
+   'ETFMover%6', 'ETFMover%7', 'ETFMover%8', 'ETFMover%9', 'ETFMover%10',
+   'Change%1', 'Change%2', 'Change%3', 'Change%4', 'Change%5', 'Change%6',
+   'Change%7', 'Change%8', 'Change%9', 'Change%10']
+
 @app.route('/PastArbitrageData/<ETFName>/<date>')
 def FetchPastArbitrageData(ETFName, date):
-    data = RetrieveETFArbitrageData(ETFName, date)
-    data.index=data.index.astype(str)
-    data=data.to_dict('index')
-    print(data)
-    return data
 
+    ColumnsForDisplay=['ETF Trading Spread in $','Arbitrage in $','Magnitude of Arbitrage','Signal',
+                        'ETFMover%1_ticker','ETFMover%2_ticker',
+                        'Change%1_ticker', 'Change%2_ticker',
+                        'T','T+1']
+
+    # Retreive data for Components
+    data = RetrieveETFArbitrageData(ETFName, date)
+    
+    # Seperate ETF Movers and the percentage of movement
+    for movers in etmoverslist:
+        def getTickerReturnFromMovers(x):
+            #x = ast.literal_eval(x)
+            return x[0],float(x[1])
+        newcolnames = [movers+'_ticker',movers+'_value']
+        data[movers]=data[movers].apply(getTickerReturnFromMovers)
+        data[newcolnames]=pd.DataFrame(data[movers].tolist(), index=data.index) 
+        del data[movers]
+
+    # Time Manpulation
+    data.index =  data.index.time
+    data.index=data.index.astype(str)
+
+    # Round of DataFrame 
+    data=data.round(3)
+
+    # Replace Values in Pandas DataFrame
+    data.rename(columns={'Flag':'Signal'}, inplace=True)
+    data['Signal'] = data['Signal'].map({'111.0': 'Sell', '-111.0': 'Buy'})
+    
+    # Columns needed to display
+    data=data[ColumnsForDisplay]
+    data=data.to_json(orient='index')
+    return data
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

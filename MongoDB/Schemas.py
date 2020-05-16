@@ -60,19 +60,11 @@ arbitrage_per_min = db.ArbitragePerMin
 arbitrage_per_min.create_index([('DateTimeOfArbitrage', DESCENDING)])
 arbitrage_per_min.create_index([('ETFName', ASCENDING)])
 
+# Trade Aggregate Minute for all Tickers.
+# Cursor for pulling data (PyMongo Cursor)
 trade_per_min_WS = db.TradePerMinWS
-# trade_per_min_WS.create_index([("end_ts", DESCENDING), ("symbol", ASCENDING)], unique=True)
-# trade_per_min_WS.create_index([('end_ts', DESCENDING)])
-# trade_per_min_WS.create_index([('symbol', ASCENDING)])
-
+# Cursor for insert action into TradePerMinWS (AsyncIOMotorCursor)
 trade_per_min_WS_motor = motor_db.TradePerMinWS
-
-# async def create_index_for_motorcolls(coll, indexterm, order=ASCENDING):
-#     await coll.create_index([indexterm,order])
-# loop1 = asyncio.get_event_loop()
-# task1 = asyncio.ensure_future(create_index_for_motorcolls(trade_per_min_WS_motor,'sym',ASCENDING))
-# task2 = asyncio.ensure_future(create_index_for_motorcolls(trade_per_min_WS_motor,'e',DESCENDING))
-# loop1.run_until_complete(task1,task2)
 
 quotesWS_collection = db.QuotesLiveData
 

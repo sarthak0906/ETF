@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PieChart from './PieChart';
 import AppTable from './Table.js';
 import '../static/css/Description.css';
@@ -52,6 +52,7 @@ class Description extends React.Component {
     this.fetchData();
   }
 
+  /* Please make use of componentDidUpdate here, look at implementation in Historical-Arbitrage - KTZ */
   async UNSAFE_componentWillReceiveProps(props) {
     this.fetchData();
   }
@@ -64,6 +65,7 @@ class Description extends React.Component {
         <h4> <strong>{this.state.DescriptionData.AnnualDividendRate}</strong>  {this.state.DescriptionData.AnnualDividendYield} </h4>
         <br />
         <Row>
+          {/* Please give column length here like xs & md - KTZ */}
           <Col>
           <h6><strong>ETF Description</strong></h6>
             {
@@ -76,6 +78,8 @@ class Description extends React.Component {
               this.state.HoldingsTableData
             }
           </Col>
+
+        {/* We don't need a pie chart, but a table of the etf list - KTZ */}
           <Col>
             <SPDR submitFn={this.props.submitFn}/>
           </Col>
@@ -106,6 +110,7 @@ const HoldingsTableData = (props) => {
       </Button>
       <br />
       <br />
+    {/* Please give a heading on top of the modal - KTZ */}
       <Modal show={showPie} onHide={handleClose}>
         <Modal.Body>
           <PieChart data={props.data} element={"TickerWeight"} />

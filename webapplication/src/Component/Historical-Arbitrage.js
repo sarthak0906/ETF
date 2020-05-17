@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-// eslint-disable-next-line
-import React, {useState } from 'react';
-=======
 import React from 'react';
 import axios from 'axios';
 import AppTable from './Table.js';
@@ -10,15 +6,14 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import StockDesriptionHeader from './StockDesriptionHeader';
 import TimeSeriesChart from './TimeSeriesChart';
->>>>>>> 9a9abb392cd4d22cb417ea9ad7f30f6ffd880e45
 
 
 class HistoricalArbitrage extends React.Component{
-	
-	state ={
-		etfArbitrageData : {},
-  		etfArbitrageTableData : "",
-    	 timeseriesdata : [
+	constructor(props){
+    super(props);
+    this.state ={
+		etfArbitrageTableData : '',
+		 timeseriesdata : [
 		  { value: 14, time: 1503617297689 },
 		  { value: 15, time: 1503616962277 },
 		  { value: 15, time: 1503616882654 },
@@ -26,17 +21,18 @@ class HistoricalArbitrage extends React.Component{
 		  { value: 15, time: 1503611308914 },
 		]
 	}
-
-
-    
+    this.fetchData = this.fetchData.bind(this);
+  }
 
 	componentDidMount() {
-  		axios.get('http://localhost:5000/PastArbitrageData/XLK/20200504').then(res =>{
-  			console.log("Component Load to get ETF Data");
-  			this.setState({etfArbitrageData: res});
-  			this.setState({etfArbitrageTableData: <AppTable data={this.state.etfArbitrageData.data}/>});
-  		});
+		this.fetchData()
   	}
+  	
+  	// Use isnstead of unsafe to update
+  	componentDidUpdate(prevProps) {
+	    this.fetchData()
+	}
+	
 
   	render(){
 		console.log(this.state.etfArbitrageTableData);
@@ -52,11 +48,30 @@ class HistoricalArbitrage extends React.Component{
 	          <Col xs={12} md={5}>
 	          	<h4>ETF Mover</h4>
 	          	<TimeSeriesChart chartData={this.state.timeseriesdata} />
+	          	<ul>
+	          		<li>Top Movers</li>
+	          		<li>Profit and loss</li>
+	          		<li>Confidence in signals</li>
+	          		<li>Filter by Magnitude Of arbitrage(Left Side to play with)</li>
+	          		<li>GIve example of days where arbitrage was not that bad</li>
+	          		<li>Give Buy/Sell Signal on the chart, CHange time series data</li>
+	          		<li>Update with change in ticker</li>
+	          		<li>For holidays and weekends data not available</li>
+	          		<li>Make table smaller and scrollable</li>
+	          		<li>Scatter plot of arbitrgae and return</li>
+	          	</ul>
 	          </Col>
 	        </Row>
          </Container>
   		)
   	}
+
+	fetchData(url){
+		axios.get(`http://localhost:5000/PastArbitrageData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
+  			 this.setState({etfArbitrageTableData : <AppTable data={res.data}/>});
+   		});
+  	}
+
 }
 
 

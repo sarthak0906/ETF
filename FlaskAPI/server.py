@@ -80,7 +80,6 @@ etmoverslist=['ETFMover%1', 'ETFMover%2', 'ETFMover%3', 'ETFMover%4', 'ETFMover%
 
 @app.route('/PastArbitrageData/<ETFName>/<date>')
 def FetchPastArbitrageData(ETFName, date):
-
     ColumnsForDisplay=['ETF Trading Spread in $','Arbitrage in $','Magnitude of Arbitrage','Over Bought/Sold Signal',
                         'ETFMOVER1','ETFMOVER2',
                         'MOVER1', 'MOVER2',
@@ -88,6 +87,10 @@ def FetchPastArbitrageData(ETFName, date):
 
     # Retreive data for Components
     data = RetrieveETFArbitrageData(ETFName, date)
+    # Check if data doesn't exsist
+    if data.empty:
+        print("No Data Exist")
+    
     
     # Seperate ETF Movers and the percentage of movement
     for movers in etmoverslist:

@@ -2,10 +2,12 @@ import React, {useState, useEffect } from 'react';
 import PieChart from './PieChart';
 import AppTable from './Table.js';
 import '../static/css/Description.css';
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-// import Scrollable from 'hide-scrollbar-react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import SPDR from './Sector-SPDR';
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button';
 
 class Description extends React.Component {
   constructor(props){
@@ -18,18 +20,12 @@ class Description extends React.Component {
       DescriptionTableData : "",
       HoldingsTableData : "",
     }
+    this.fetchData = this.fetchData.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({
-        error: null,
-        isLoaded: false,
-        DescriptionData : {},
-        HoldingsData : {},
-        DescriptionTableData : ""
-    });
+  fetchData() {
     fetch(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`)
-    .then(res =>{console.log(res.clone().json()); return res.clone().json()})
+    .then(res =>{return res.clone().json()})
     .then(
       async (result) => {
           await this.setState({isLoaded : true, DescriptionData: result});
@@ -52,47 +48,36 @@ class Description extends React.Component {
     )
   }
 
+  componentDidMount() {
+    this.fetchData();
+  }
+
   async UNSAFE_componentWillReceiveProps(props) {
-    fetch(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`)
-      .then(res =>{console.log(res.clone().json()); return res.clone().json()})
-      .then(
-        async (result) => {
-            await this.setState({isLoaded : true, DescriptionData: result});
-            await this.setState({DescriptionTableData : <DescriptionTableData data={this.state.DescriptionData} />});
-        },
-        async (error) => {
-          await this.setState({isLoaded : false, error : error});
-        }
-      )
-    fetch(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`)
-      .then(res => { return res.clone().json()})
-      .then(
-        async (result) => {
-          await this.setState({isLoaded : true, HoldingsData: result});
-          await this.setState({HoldingsTableData : <HoldingsTableData data={this.state.HoldingsData} />});
-        },
-        async (error) => {
-          await this.setState({isLoaded : false, error : error});
-        }
-      )
+    this.fetchData();
   }
   
   render () {
     return (
-      <Container className="Container">
+      <Container fluid>
         <h4> ETF-Description </h4>
         <h5> {this.props.ETF} </h5>
         <h4> <strong>{this.state.DescriptionData.AnnualDividendRate}</strong>  {this.state.DescriptionData.AnnualDividendYield} </h4>
+        <br />
         <Row>
           <Col>
+          <h6><strong>ETF Description</strong></h6>
             {
               this.state.DescriptionTableData 
             }
           </Col>
           <Col>
+          <h6><strong>ETF Holdings Data</strong></h6>
             {
               this.state.HoldingsTableData
             }
+          </Col>
+          <Col>
+            <SPDR submitFn={this.props.submitFn}/>
           </Col>
         </Row>
       </Container>
@@ -101,26 +86,34 @@ class Description extends React.Component {
 }
 
 const DescriptionTableData = (props) => {
-  // console.log(props);
-  // <Scrollable>
   return (
-      <div className="DescriptionTable">
-        <AppTable data={props.data} />
-      </div>
+    <div className="DescriptionTable">
+      <AppTable data={props.data} />
+    </div>
   )
-  // </Scrollable>
 }
 
 const HoldingsTableData = (props) => {
-  // console.log(props.data);
-  // <Scrollable>
-    return (
-        <div className="DescriptionTable">
+  const [showPie, setPie] = useState(false);
+
+  const handleClose = () => setPie(false);
+  const handleShow = () => setPie(true);
+
+  return (
+    <div className="DescriptionTable">
+      <Button variant="primary" onClick={handleShow}>
+        Holdings Piechart
+      </Button>
+      <br />
+      <br />
+      <Modal show={showPie} onHide={handleClose}>
+        <Modal.Body>
           <PieChart data={props.data} element={"TickerWeight"} />
-          <AppTable data={props.data} />
-        </div>
-    )
-    // </Scrollable>
+        </Modal.Body>
+      </Modal>
+      <AppTable data={props.data} />
+    </div>
+  )
 }
 
 export default Description;

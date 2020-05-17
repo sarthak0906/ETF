@@ -36,7 +36,7 @@ const AppTable = (props) => {
   // getting the headings for the heading of the table
   const getHeader = function(){
     // console.log(whatIsIt(props.data[MainKeys[0]]));
-    var keys = (whatIsIt(props.data[MainKeys[0]]) == "Object") ? getKeys(props.data[MainKeys[0]]) : [];
+    var keys = (whatIsIt(props.data[MainKeys[0]]) === "Object") ? getKeys(props.data[MainKeys[0]]) : [];
     keys.unshift("");
     // console.log(keys);
     return keys.map((key, index)=>{
@@ -47,7 +47,7 @@ const AppTable = (props) => {
   
   // getting data for each of the rows
   const getRowsData = function(){
-    var keys = (whatIsIt(props.data[MainKeys[0]]) != "Object") ? getKeys(props.data[MainKeys[0]]) : [];
+    // var keys = (whatIsIt(props.data[MainKeys[0]]) != "Object") ? getKeys(props.data[MainKeys[0]]) : [];
     return MainKeys.map((Key1, index) => {
       var row = (typeof(props.data[Key1]) == Object) ? props.data[Key1].values() : props.data[Key1];
       // console.log(row);
@@ -71,7 +71,7 @@ const AppTable = (props) => {
 
 // functional Component to render one row at a time
 const RenderRow = (props) =>{
-  if (whatIsIt(props.data) != "Object"){
+  if (whatIsIt(props.data) !== "Object"){
     return( 
       <tr>
         <td className="Main">{props.k}</td>
@@ -91,9 +91,6 @@ const RenderRow = (props) =>{
       </tr>
     );
   }
-  return props.data.map((element, index) => {
-    return <td key={index}>{(typeof(element) == "number") ? Math.round(element * 1000) / 1000 : element}</td> 
-  })
 }
 
 export default AppTable

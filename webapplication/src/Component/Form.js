@@ -29,15 +29,15 @@ function Former(props) {
   const submit = () => {
     if (startDate.getMonth() < 9){
       if (startDate.getDate() < 10){
-        props.submitFn(stock, startDate.getFullYear() + '0' + (startDate.getMonth()+1) + '0' + startDate.getDate());
+        this.props.submitFn(stock, startDate.getFullYear() + '0' + (startDate.getMonth()+1) + '0' + startDate.getDate());
       }
-      props.submitFn(stock, startDate.getFullYear() + '0' + (startDate.getMonth()+1) + '' + startDate.getDate());
+      this.props.submitFn(stock, startDate.getFullYear() + '0' + (startDate.getMonth()+1) + '' + startDate.getDate());
     }
     else {
       if (startDate.getDate() < 10){
-        props.submitFn(stock, startDate.getFullYear() + '' + (startDate.getMonth()+1) + '0' + startDate.getDate());
+        this.props.submitFn(stock, startDate.getFullYear() + '' + (startDate.getMonth()+1) + '0' + startDate.getDate());
       }
-      props.submitFn(stock, startDate.getFullYear() + '' + (startDate.getMonth()+1) + '' + startDate.getDate());
+      this.props.submitFn(stock, startDate.getFullYear() + '' + (startDate.getMonth()+1) + '' + startDate.getDate());
     }
   }
 

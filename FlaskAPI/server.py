@@ -86,7 +86,8 @@ def FetchPastArbitrageData(ETFName, date):
                         'T','T+1']
 
     # Retreive data for Components
-    data = RetrieveETFArbitrageData(ETFName, date)
+    data, pricedf = RetrieveETFArbitrageData(ETFName, date)
+    print(pricedf)
     # Check if data doesn't exsist
     if data.empty:
         print("No Data Exist")

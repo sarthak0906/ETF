@@ -34,12 +34,11 @@ def RetrieveETFArbitrageData(etfname, date):
 	print(date)
 	
 	s=arbitragecollection.find({'ETFName':etfname,'dateOfAnalysis':datetime.datetime.strptime(date,'%Y%m%d')})
-	print(s)
 	allData = pd.DataFrame()
+	pricedf = pd.DataFrame()
 	magnitude = 0
 
 	for i in s:
-		print(type(i))
 		dateOfAnalysis=i['dateOfAnalysis']
 		year=dateOfAnalysis.year
 		# Load Prices Data
@@ -62,8 +61,6 @@ def RetrieveETFArbitrageData(etfname, date):
 		# Build Signals
 		df=MomentumSignals(df,tp=10)
 		df=PatternSignals(df)
-
-		print("ETF Name ="+ etfname)
 
 		columnsneeded=['ETF Trading Spread in $','Arbitrage in $','Magnitude of Arbitrage','Flag']
 		#columnsneeded=columnsneeded+MomentumsignalsColumns+CandlesignalsColumns+MajorUnderlyingMovers
@@ -100,4 +97,4 @@ def RetrieveETFArbitrageData(etfname, date):
 		allData = allData.append(sellPositions)
 		allData = allData.append(buyPositions)
 	print(allData)
-	return allData
+	return allData, pricedf

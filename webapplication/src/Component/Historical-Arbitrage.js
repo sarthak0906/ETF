@@ -29,8 +29,18 @@ class HistoricalArbitrage extends React.Component{
   	}
   	
   	// Use isnstead of unsafe to update
-  	componentDidUpdate(prevProps) {
+  	componentDidUpdate(prevProps,prevState) {
+  		const condition1=this.props.ETF !== prevProps.ETF;
+  		const condition2=this.props.startDate !== prevProps.startDate;
+  		console.log("componentDidUpdate called");
+  		console.log(condition1);
+  		console.log(condition2);
+  		console.log(prevProps);
+  		console.log(this.props);
+
+  		if (condition1 && condition2) {
 	    this.fetchData()
+		}
 	}
 	
 

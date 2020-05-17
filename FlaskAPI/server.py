@@ -81,9 +81,9 @@ etmoverslist=['ETFMover%1', 'ETFMover%2', 'ETFMover%3', 'ETFMover%4', 'ETFMover%
 @app.route('/PastArbitrageData/<ETFName>/<date>')
 def FetchPastArbitrageData(ETFName, date):
 
-    ColumnsForDisplay=['ETF Trading Spread in $','Arbitrage in $','Magnitude of Arbitrage','Signal',
-                        'ETFMover%1_ticker','ETFMover%2_ticker',
-                        'Change%1_ticker', 'Change%2_ticker',
+    ColumnsForDisplay=['ETF Trading Spread in $','Arbitrage in $','Magnitude of Arbitrage','Over Bought/Sold Signal',
+                        'ETFMOVER1','ETFMOVER2',
+                        'MOVER1', 'MOVER2',
                         'T','T+1']
 
     # Retreive data for Components
@@ -99,6 +99,9 @@ def FetchPastArbitrageData(ETFName, date):
         data[newcolnames]=pd.DataFrame(data[movers].tolist(), index=data.index) 
         del data[movers]
 
+    # Sort the data frame on time since Sell and Buy are concatenated one after other
+    data=data.sort_index()
+
     # Time Manpulation
     data.index =  data.index.time
     data.index=data.index.astype(str)
@@ -107,8 +110,13 @@ def FetchPastArbitrageData(ETFName, date):
     data=data.round(3)
 
     # Replace Values in Pandas DataFrame
-    data.rename(columns={'Flag':'Signal'}, inplace=True)
-    data['Signal'] = data['Signal'].map({'111.0': 'Sell', '-111.0': 'Buy'})
+    data.rename(columns={'Flag':'Over Bought/Sold Signal',
+        'ETFMover%1_ticker':'ETFMOVER1',
+        'ETFMover%2_ticker':'ETFMOVER2',
+        'Change%1_ticker':'MOVER1',
+        'Change%2_ticker':'MOVER2'}, inplace=True)
+
+    data['Over Bought/Sold Signal'] = data['Over Bought/Sold Signal'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
     
     # Columns needed to display
     data=data[ColumnsForDisplay]

@@ -12,12 +12,9 @@ class SaveCalculatedArbitrage():
                      }
         arbitragecollection.insert_one(inserData)
 
-    def  insertIntoPerMinCollection(self, DateTimeOfArbitrage=None, ETFName=None, Arbitrage=None,
-                                   Spread=None):
-        print("Saving {} etf into Arbitrage Per Min Collection...".format(ETFName))
-        inserData = {'DateTimeOfArbitrage': DateTimeOfArbitrage,
-                     'ETFName': ETFName,
-                     'Arbitrage': Arbitrage,
-                     'Spread': Spread
+    def  insertIntoPerMinCollection(self, end_ts=None, ArbitrageData=None):
+        print("Saving in Arbitrage Per Min Collection for {}".format(end_ts))
+        inserData = {'Timestamp': end_ts,
+                     'ArbitrageData': ArbitrageData
                      }
         arbitrage_per_min.insert_one(inserData)

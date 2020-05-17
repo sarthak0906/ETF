@@ -17,14 +17,14 @@ import pandas as pd
 import numpy as np
 from ETFLiveAnalysisWS.CalculatePerMinArb import ArbPerMin
 from MongoDB.PerMinDataOperations import PerMinDataOperations
-from PolygonTickData.Helper import Helper
+from MongoDB.SaveArbitrageCalcs import SaveCalculatedArbitrage
 
 class PerMinAnalysis():
     def handleQuotesResponse(self, result):
         try:
             return (result['sym'], (result['ap'] - result['bp']))
         except:
-            return (result['sym'],None)
+            return (result['sym'],0)
 
     def PerMinAnalysisCycle(self, obj):
         starttime = time.time()
@@ -32,7 +32,7 @@ class PerMinAnalysis():
         # ETF Arbitrage Calculation
         #######################################################
         startarb = time.time()
-        arbDF = pd.DataFrame.from_dict(obj.calcArbitrage(), orient='index', columns=['Arbitrage'])
+        arbDF = pd.DataFrame.from_dict(obj.calcArbitrage(tickerlist), orient='index', columns=['Arbitrage'])
         endarb = time.time()
         print("Arbitrage time: {}".format(endarb - startarb))
         #######################################################
@@ -52,6 +52,9 @@ class PerMinAnalysis():
         startspread = time.time()
         QuotesResults = PerMinDataOperations().FetchQuotesLiveDataForSpread(startts, end_dt_ts)
         spread_list = [self.handleQuotesResponse(result) for result in QuotesResults]
+        etfs_in_spread_list = [item[0] for item in spread_list]
+        # For ETFs with no Quotes Live Data, Spread = 0
+        [spread_list.append((etf, 0)) for etf in etflist if etf not in etfs_in_spread_list]
         spreadDF = pd.DataFrame(spread_list, columns=['symbol', 'Spread'])
         if not spreadDF.empty:
             spreadDF = spreadDF.groupby(['symbol']).mean()
@@ -70,55 +73,22 @@ class PerMinAnalysis():
         mergeDF = arbDF.merge(spreadDF, how='outer', left_index=True, right_index=True)
         print("Merged DF:")
         print(mergeDF)
+        mergeDF.reset_index(inplace=True)
+        mergeDF.rename(columns={"index":"Symbol"}, inplace=True)
+        SaveCalculatedArbitrage().insertIntoPerMinCollection(end_ts=end_dt_ts, ArbitrageData=mergeDF.to_dict(orient='records'))
         endtime = time.time()
         print("One whole Cycle time : {}".format(endtime - starttime))
         #######################################################
 
-# obj = ArbPerMin()
-# while True:
-#     starttime = time.time()
-#     dt = datetime.datetime.now() + datetime.timedelta(minutes=1)
-#     startarb = time.time()
-#     arbDF = pd.DataFrame.from_dict(obj.calcArbitrage(), orient='index',columns=['Arbitrage'])
-#     endarb = time.time()
-#     print("Arbitrage time: {}".format(endarb-startarb))
-#     # UTC Timestamps below.
-#     end_dt = datetime.datetime.now().replace(second=0, microsecond=0) - datetime.timedelta(hours=20)
-#     end_dt_ts = int(end_dt.timestamp()*1000)
-#     start_dt = end_dt - datetime.timedelta(minutes=1)
-#     startts = int(start_dt.timestamp()*1000)
-#
-#     startspread =time.time()
-#     etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
-#
-#     QuotesResults = PerMinDataOperations().FetchQuotesLiveDataForSpread(startts, end_dt_ts)
-#     spread_list = [(result['sym'], (result['ap']-result['bp'])) for result in QuotesResults]
-#     spreadDF = pd.DataFrame(spread_list, columns=['symbol','Spread'])
-#     if not spreadDF.empty:
-#         spreadDF = spreadDF.groupby(['symbol']).mean()
-#     endspread = time.time()
-#     print("Spread Time: {}".format(endspread-startspread))
-#
-#     print("Arb DF:")
-#     print(arbDF)
-#     print("Spread DF:")
-#     print(spreadDF)
-#     mergeDF = arbDF.merge(spreadDF, how='outer',left_index=True, right_index=True)
-#     print("Merged DF:")
-#     print(mergeDF)
-#     endtime = time.time()
-#     print("One whole Cycle time : {}".format(endtime-starttime))
-#     while datetime.datetime.now() < dt:
-#         time.sleep(1)
-
+# Execution part. To be same from wherever PerMinAnalysisCycle() is called.
 if __name__=='__main__':
-    # Object life to be maintained throughout the day while market is open
+    # Below 3 Objects' life to be maintained throughout the day while market is open
+    tickerlist = list(pd.read_csv("tickerlist.csv").columns.values)
+    etflist = list(pd.read_csv("WorkingETFs.csv").columns.values)
     ArbCalcObj = ArbPerMin()
     PerMinAnlysObj = PerMinAnalysis()
-    schedule.every(1).minutes.do(PerMinAnlysObj.PerMinAnalysisCycle, ArbCalcObj)
+    schedule.every().minute.at(":10").do(PerMinAnlysObj.PerMinAnalysisCycle, ArbCalcObj)
     while True:
-        # Checks whether a scheduled task
-        # is pending to run or not
         schedule.run_pending()
         time.sleep(1)
 

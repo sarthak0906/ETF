@@ -8,11 +8,10 @@ import pandas as pd
 from mongoengine import connect
 import numpy as np
 import math
+import ast
+
 
 sys.path.append("..")
-
-# Import packages
-from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 
 app = Flask(__name__)
 
@@ -23,6 +22,11 @@ CORS(app)
 # Production Server
 connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
  
+############################################
+# Load ETF Holdings Data and Description
+############################################
+
+from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 @app.route('/ETfDescription/<ETFName>/<date>')
 @app.route('/ETfDescription/Holdings/<ETFName>/<date>')
 @app.route('/ETfDescription/EtfData/<ETFName>/<date>')
@@ -61,6 +65,63 @@ def SendETFHoldingsData(ETFName, date):
         print("Issue in Flask app while fetching ETF Description Data")
         print(e)
         return str(e)
+
+
+############################################
+# Load Past Arbitrage Past Data
+############################################
+from FlaskAPI.Components.ETFArbitrage.ETFArbitrageMain import RetrieveETFArbitrageData
+
+# Divide Columnt into movers and the price by which they are moving
+etmoverslist=['ETFMover%1', 'ETFMover%2', 'ETFMover%3', 'ETFMover%4', 'ETFMover%5',
+   'ETFMover%6', 'ETFMover%7', 'ETFMover%8', 'ETFMover%9', 'ETFMover%10',
+   'Change%1', 'Change%2', 'Change%3', 'Change%4', 'Change%5', 'Change%6',
+   'Change%7', 'Change%8', 'Change%9', 'Change%10']
+
+@app.route('/PastArbitrageData/<ETFName>/<date>')
+def FetchPastArbitrageData(ETFName, date):
+
+    ColumnsForDisplay=['ETF Trading Spread in $','Arbitrage in $','Magnitude of Arbitrage','Over Bought/Sold Signal',
+                        'ETFMOVER1','ETFMOVER2',
+                        'MOVER1', 'MOVER2',
+                        'T','T+1']
+
+    # Retreive data for Components
+    data = RetrieveETFArbitrageData(ETFName, date)
+    
+    # Seperate ETF Movers and the percentage of movement
+    for movers in etmoverslist:
+        def getTickerReturnFromMovers(x):
+            #x = ast.literal_eval(x)
+            return x[0],float(x[1])
+        newcolnames = [movers+'_ticker',movers+'_value']
+        data[movers]=data[movers].apply(getTickerReturnFromMovers)
+        data[newcolnames]=pd.DataFrame(data[movers].tolist(), index=data.index) 
+        del data[movers]
+
+    # Sort the data frame on time since Sell and Buy are concatenated one after other
+    data=data.sort_index()
+
+    # Time Manpulation
+    data.index =  data.index.time
+    data.index=data.index.astype(str)
+
+    # Round of DataFrame 
+    data=data.round(3)
+
+    # Replace Values in Pandas DataFrame
+    data.rename(columns={'Flag':'Over Bought/Sold Signal',
+        'ETFMover%1_ticker':'ETFMOVER1',
+        'ETFMover%2_ticker':'ETFMOVER2',
+        'Change%1_ticker':'MOVER1',
+        'Change%2_ticker':'MOVER2'}, inplace=True)
+
+    data['Over Bought/Sold Signal'] = data['Over Bought/Sold Signal'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
+    
+    # Columns needed to display
+    data=data[ColumnsForDisplay]
+    data=data.to_json(orient='index')
+    return data
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React from 'react';
 import PieChart from './PieChart';
 import AppTable from './Table.js';
 import '../static/css/Description.css';
@@ -80,7 +80,7 @@ class Description extends React.Component {
             <SPDR submitFn={this.props.submitFn}/>
           </Col>
         </Row>
-      </Container>
+     </Container>
     )
   }
 }

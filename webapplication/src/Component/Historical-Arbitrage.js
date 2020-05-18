@@ -10,25 +10,25 @@ import TimeSeriesChart from './TimeSeriesChart';
 
 class HistoricalArbitrage extends React.Component{
 	constructor(props){
-    super(props);
-    this.state ={
-		etfArbitrageTableData : '',
-		 timeseriesdata : [
-		  { value: 14, time: 1503617297689 },
-		  { value: 15, time: 1503616962277 },
-		  { value: 15, time: 1503616882654 },
-		  { value: 20, time: 1503613184594 },
-		  { value: 15, time: 1503611308914 },
-		]
+		super(props);
+		this.state ={
+			etfArbitrageTableData : '',
+			timeseriesdata : [
+			{ value: 14, time: 1503617297689 },
+			{ value: 15, time: 1503616962277 },
+			{ value: 15, time: 1503616882654 },
+			{ value: 20, time: 1503613184594 },
+			{ value: 15, time: 1503611308914 },
+			]
+		}
+		this.fetchData = this.fetchData.bind(this);
 	}
-    this.fetchData = this.fetchData.bind(this);
-  }
 
 	componentDidMount() {
 		this.fetchData()
   	}
   	
-  	// Use isnstead of unsafe to update
+  	// Use instead of unsafe to update
   	componentDidUpdate(prevProps,prevState) {
   		const condition1=this.props.ETF !== prevProps.ETF;
   		const condition2=this.props.startDate !== prevProps.startDate;
@@ -51,8 +51,7 @@ class HistoricalArbitrage extends React.Component{
 			<h4> Historical Arbitrage </h4>
 			<Row>
 	          <Col xs={12} md={7}>
-	            <StockDesriptionHeader startDate = {this.props.startDate} ETF={this.props.ETF}>
-				</StockDesriptionHeader>
+	            <StockDesriptionHeader startDate = {this.props.startDate} ETF={this.props.ETF} />
 		      {this.state.etfArbitrageTableData}
 	          </Col>
 	          <Col xs={12} md={5}>

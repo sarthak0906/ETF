@@ -10,52 +10,81 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
-const Description = (props) => {
-  const [DescriptionData, setDescriptionData] = useState({});
-  const [HoldingsData, setHoldingsData] = useState({});
 
-  function fetchData(url, setNewState){
-		axios.get(url).then(res =>{
-      setNewState(res);
-    });
+
+class Description extends React.Component{
+  
+  constructor(props){
+    super(props);
   }
 
-  useEffect(() => {
-    fetchData(`http://localhost:5000/ETfDescription/Holdings/${props.ETF}/${props.startDate}`, setHoldingsData);
-    fetchData(`http://localhost:5000/ETfDescription/EtfData/${props.ETF}/${props.startDate}`, setDescriptionData);
-  })
-  
-    return (
-      <Container fluid>
-        <h4> ETF-Description </h4>
-        <h5> {props.ETF} </h5>
-        <h4> <strong>{DescriptionData.AnnualDividendRate}</strong>  {DescriptionData.AnnualDividendYield} </h4>
-        <br />
-        <Row>
-          <Col xs={12} md={4}>
-            <h6><strong>ETF Description</strong></h6>
-            <div className="DescriptionTable">
-              {
-                (DescriptionData.data != null) ? <AppTable data={DescriptionData.data} /> : ""
-              }
-            </div>
-          </Col>
-          <Col xs={12} md={4}>
-          <h6><strong>ETF Holdings Data</strong></h6>
-            {
-              (HoldingsData.data != null) ? <HoldingsTableData data={HoldingsData.data} /> : ""
-            }
-          </Col>
-          <Col xs={12} md={4}>
-            <SPDR submitFn={props.submitFn}/>
-          </Col>
-        </Row>
-     </Container>
-    )
-}
-const HoldingsTableData = (props) => {
-  const [showPie, setPie] = useState(false);
+  state ={
+    DescriptionData :'',
+    HoldingsData :''
+  }
 
+  componentDidMount() {
+    this.fetchETFDescriptionData()
+    this.fetchHoldingsData()
+    }
+   
+  
+  componentDidUpdate(prevProps,prevState) {
+      const condition1=this.props.ETF !== prevProps.ETF;
+      const condition2=this.props.startDate !== prevProps.startDate;
+      if (condition1 || condition2) {
+        this.fetchETFDescriptionData()
+        this.fetchHoldingsData()
+    }
+  }
+
+  
+fetchETFDescriptionData(){
+    axios.get(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
+         this.setState({DescriptionData : res.data});
+      });
+    }
+
+  fetchHoldingsData(){
+    axios.get(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`).then(res =>{
+         this.setState({HoldingsData : res});
+      });
+  }
+
+  
+  render(){
+      return (
+        <Container fluid>
+          <h4> ETF-Description </h4>
+          <h5> {this.props.ETF} </h5>
+          <h4> <strong>{this.state.DescriptionData.AnnualDividendRate}</strong>  {this.state.DescriptionData.AnnualDividendYield} </h4>
+          <br />
+          <Row>
+            <Col xs={12} md={4}>
+              <h6><strong>ETF Description</strong></h6>
+              <div className="DescriptionTable">
+                {
+                  (this.state.DescriptionData != null) ? <AppTable data={this.state.DescriptionData} /> : ""
+                }
+              </div>
+            </Col>
+            <Col xs={12} md={4}>
+              <h6><strong>ETF Holdings Data</strong></h6>
+                {
+                  (this.state.HoldingsData.data != null) ? <this.HoldingsTableData data={this.state.HoldingsData.data} /> : ""
+                }
+            </Col>
+            <Col xs={12} md={4}>
+              <SPDR submitFn={this.props.submitFn}/>
+            </Col>
+          </Row>
+       </Container>
+      )
+    }
+
+
+  HoldingsTableData = (props) => {
+  const [showPie, setPie] = useState(false);
   const handleClose = () => setPie(false);
   const handleShow = () => setPie(true);
 
@@ -73,7 +102,10 @@ const HoldingsTableData = (props) => {
       </Modal>
       <AppTable data={props.data} />
     </div>
-  )
+    )
+  }
+
 }
+  
 
 export default Description;

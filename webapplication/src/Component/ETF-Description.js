@@ -23,7 +23,7 @@ const Description = (props) => {
   useEffect(() => {
     fetchData(`http://localhost:5000/ETfDescription/Holdings/${props.ETF}/${props.startDate}`, setHoldingsData);
     fetchData(`http://localhost:5000/ETfDescription/EtfData/${props.ETF}/${props.startDate}`, setDescriptionData);
-  })
+  }, [props]);
   
     return (
       <Container fluid>

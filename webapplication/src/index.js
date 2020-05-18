@@ -27,9 +27,9 @@ class App extends Component {
 			ETF:'XLK',
 	   		startDate:'20200511'
 		});
-  	}
+  }
 
-SubmitFn = (etfname, newdate) => {	
+  SubmitFn = (etfname, newdate) => {	
     console.log("Change ETF Name & Date");
     
     let ETFcopy = this.state.ETF;
@@ -40,12 +40,16 @@ SubmitFn = (etfname, newdate) => {
 
     console.log(etfname);
     console.log(newdate);
-    
-	this.setState({
-   		ETF:ETFcopy,
-   		startDate:startDatecopy
-   	});
-};
+      
+    this.setState({
+      ETF:ETFcopy,
+      startDate:startDatecopy
+    });
+  };
+
+  SubmitNewETF = (etfName) => {
+    this.setState({ETF: etfName});
+  }
 
 
   render(){
@@ -59,7 +63,7 @@ SubmitFn = (etfname, newdate) => {
         </div>
       </div>
       <Route path="/ETF-Comparison" render={Comparison} />
-      <Route path="/ETF-Description" render={() => <Description startDate={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitFn} />} />
+      <Route path="/ETF-Description" render={() => <Description startDate={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitNewETF} />} />
       <Route path="/HistoricalArbitrage" render={() => <HistoricalArbitrage startDate ={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitFn} />} />
       <Route path="/Live-Arbitrage" render={Live_Arbitrage} />
       <Route path="/Machine-Learning" render={ML} />

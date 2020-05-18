@@ -4,8 +4,14 @@ If ever faced with the exception:
 1. Check Username/Sender's Email and Password.
 2. Check google account for if the access to less secure apps is enabled in the account settings.
 """
-
+import os
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
 import smtplib
+import socket
+import traceback
 # the MIMEText class is used to create MIME objects of major type text
 from email.mime.text import MIMEText
 
@@ -14,29 +20,71 @@ from email.mime.multipart import MIMEMultipart
 
 
 class EmailSender():
-    def __init__(self, receivers, subject, body):
-        self.email_sender = 'ticketsoftware2020@gmail.com'
-        self.password = '9bg8!a41ph'
-        self.email_receivers = receivers
-        self.subject = subject
-        self.body = body
 
-    def sendemail(self):
+    def message(self, subject="Python Notification", text="", img=None, attachment=None):
+        # build message contents
+        msg = MIMEMultipart()
+        msg['Subject'] = subject  # add in the subject
+        msg.attach(MIMEText(text))  # add text contents
+
+        # check if we have anything given in the img parameter
+        if img is not None:
+            # if we do, we want to iterate through the images, so let's check that
+            # what we have is actually a list
+            if type(img) is not list:
+                img = [img]  # if it isn't a list, make it one
+            # now iterate through our list
+            for one_img in img:
+                img_data = open(one_img, 'rb').read()  # read the image binary data
+                # attach the image data to MIMEMultipart using MIMEImage, we add
+                # the given filename use os.basename
+                msg.attach(MIMEImage(img_data, name=os.path.basename(one_img)))
+
+        # we do the same for attachments as we did for images
+        if attachment is not None:
+            if type(attachment) is not list:
+                attachment = [attachment]  # if it isn't a list, make it one
+            with open(attachment, 'rb') as f:
+                # read in the attachment using MIMEApplication
+                file = MIMEApplication(
+                    f.read(),
+                    name=os.path.basename(attachment)
+                )
+            # here we edit the attached file metadata
+            file['Content-Disposition'] = f'attachment; filename="{os.path.basename(attachment)}"'
+            msg.attach(file)  # finally, add the attachment to our message object
+        return msg
+
+    def send(self, server='smtp-mail.outlook.com', port='587', msg=None, receivers='piyush888@gmail.com'):
+        # contain following in try-except in case of momentary network errors
         try:
-            msg = MIMEMultipart()  # used for define multipart message
-            msg['From'] = self.email_sender
-            msg['To'] = ", ".join(self.email_receivers)
-            msg['Subject'] = self.subject
+            # initialise connection to email server, the default is Outlook
+            smtp = smtplib.SMTP(server, port)
+            # this is the 'Extended Hello' command, essentially greeting our SMTP or ESMTP server
+            smtp.ehlo()
+            # this is the 'Start Transport Layer Security' command, tells the server we will
+            # be communicating with TLS encryption
+            smtp.starttls()
 
-            msg.attach(MIMEText(self.body,
-                                'plain'))  # attach body to the message, here email is plain so email type plain is used
-            text = msg.as_string()  # used for converting object into plain text string
+            # read email and password from file
+            # with open('../data/email.txt', 'r') as fp:
+            #     email = fp.read()
+            email = 'ticketsoftware2020@gmail.com'
+            # with open('../data/password.txt', 'r') as fp:
+            #     pwd = fp.read()
+            pwd = '9bg8!a41ph'
 
-            connection = smtplib.SMTP('smtp.gmail.com', 587)
-            connection.starttls()
-            connection.login(self.email_sender, self.password)
-            connection.sendmail(self.email_sender, self.email_receivers, text)
-            connection.quit()
-        except Exception as e:
-            print(e)
-            pass
+            # login to outlook server
+            smtp.login(email, pwd)
+            # send notification to self
+            smtp.sendmail(email, receivers, msg.as_string())
+            # disconnect from the server
+            print('Mail Sent')
+            smtp.quit()
+        except socket.gaierror:
+            print("Network connection error, email not sent.")
+
+if __name__=="__main__":
+    emailobj = EmailSender()
+    msg = emailobj.message(subject="Test Mail Subject", text="Test Mail Body")
+    emailobj.send(msg= msg)

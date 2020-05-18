@@ -1,5 +1,5 @@
 # Add paths to System PATH for the packages to be locatable by python
-import sys
+import sys, traceback
 from time import perf_counter
 t1_start = perf_counter()
 # For Piyush system
@@ -83,5 +83,7 @@ except Exception as e:
     logger.debug("Execution Time (E) {}".format(t1_stop - t1_start))
     print("Execution Time (NE) {}".format(t1_stop - t1_start))
     # receivers' address in a list (1 or more addresses), subject, body - exception message
-    EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception Occurred', e).sendemail()
+    emailobj = EmailSender()
+    msg = emailobj.message(subject="Exception Occurred", text="Exception Caught in ETFAnalysis/ProcessCaller.py {}".format(traceback.format_exc()))
+    emailobj.send(msg=msg, receivers=['piyush888@gmail.com', 'kshitizsharmav@gmail.com'])
     pass

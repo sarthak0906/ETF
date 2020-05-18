@@ -1,3 +1,5 @@
+import traceback
+
 import pandas as pd
 from datetime import datetime
 from mongoengine import *
@@ -114,8 +116,11 @@ class PullandCleanData:
         except Exception as e:
             logger.critical(e)
             logger.exception("Exception occurred in DataCleanFeed.py")
-            EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception in DataCleanFeed.py',
-                        e).sendemail()
+            emailobj = EmailSender()
+            msg = emailobj.message(subject="Exception Occurred",
+                                   text="Exception Caught in ETFAnalysis/HoldingsDataScripts/DataCleanFeed.py {}".format(
+                                       traceback.format_exc()))
+            emailobj.send(msg=msg, receivers=['piyush888@gmail.com', 'kshitizsharmav@gmail.com'])
             disconnect('ETF_db')
 
 

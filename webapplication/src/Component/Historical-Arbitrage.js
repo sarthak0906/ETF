@@ -38,8 +38,8 @@ class HistoricalArbitrage extends React.Component{
   		console.log(prevProps);
   		console.log(this.props);
 
-  		if (condition1 && condition2) {
-	    this.fetchData()
+  		if (condition1 || condition2) {
+		    this.fetchData()
 		}
 	}
 	

@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+import traceback
 from datetime import datetime
 
 import pandas as pd
@@ -120,6 +121,9 @@ class DownloadsEtfHoldingsData(masterclass):
                 retries -= 1
                 self.driver.quit()
                 # send email on every failure
-                EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception in DownloadHoldings.py',
-                            e).sendemail()
+                emailobj = EmailSender()
+                msg = emailobj.message(subject="Exception Occurred",
+                                       text="Exception Caught in ETFAnalysis/HoldingsDataScripts/DownloadHoldings.py {}".format(
+                                           traceback.format_exc()))
+                emailobj.send(msg=msg, receivers=['piyush888@gmail.com', 'kshitizsharmav@gmail.com'])
                 pass

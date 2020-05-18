@@ -1,3 +1,5 @@
+import traceback
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -50,6 +52,9 @@ class Download523TickersList(masterclass):
                 retries -= 1
                 self.driver.quit()
                 # send email on every failure
-                EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception in DownloadHoldings.py',
-                            e).sendemail()
+                emailobj = EmailSender()
+                msg = emailobj.message(subject="Exception Occurred",
+                                       text="Exception Caught in ETFAnalysis/ETFsList_Scripts/Download523TickersList.py {}".format(
+                                           traceback.format_exc()))
+                emailobj.send(msg=msg, receivers=['piyush888@gmail.com', 'kshitizsharmav@gmail.com'])
                 pass

@@ -2,6 +2,8 @@ import sys  # Remove in production - KTZ
 import traceback
 
 # For Piyush System
+from CommonServices.EmailService import EmailSender
+
 sys.path.extend(['/home/piyush/Desktop/etf1903', '/home/piyush/Desktop/etf1903/ETFsList_Scripts',
                  '/home/piyush/Desktop/etf1903/HoldingsDataScripts',
                  '/home/piyush/Desktop/etf1903/CommonServices',
@@ -90,6 +92,11 @@ for date in dates:
             traceback.print_exc()
             logger.exception(e)
             logger2.exception(e)
+            emailobj = EmailSender()
+            msg = emailobj.message(subject="Exception Occurred",
+                                   text="Exception Caught in ETFAnalysis/CalculateETFArbitrage/MultipleDatesCaller.py {}".format(
+                                       traceback.format_exc()))
+            emailobj.send(msg=msg, receivers=['piyush888@gmail.com', 'kshitizsharmav@gmail.com'])
             continue
     if len(etfwhichfailed) > 0:
         RelevantHoldings().write_to_csv(etfwhichfailed, "etfwhichfailed.csv")

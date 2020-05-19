@@ -14,11 +14,11 @@ class HistoricalArbitrage extends React.Component{
 		this.state ={
 			etfArbitrageTableData : '',
 			timeseriesdata : [
-			{ value: 14, time: 1503617297689 },
-			{ value: 15, time: 1503616962277 },
-			{ value: 15, time: 1503616882654 },
-			{ value: 20, time: 1503613184594 },
-			{ value: 15, time: 1503611308914 },
+			{ Close: 1106, Time: 1503617297689 },
+			{ Close: 1105, Time: 1503616962277 },
+			{ Close: 1120, Time: 1503616882654 },
+			{ Close: 1100, Time: 1503613184594 },
+			{ Close: 1110, Time: 1503611308914 },
 			]
 		}
 		this.fetchData = this.fetchData.bind(this);
@@ -32,12 +32,7 @@ class HistoricalArbitrage extends React.Component{
   	componentDidUpdate(prevProps,prevState) {
   		const condition1=this.props.ETF !== prevProps.ETF;
   		const condition2=this.props.startDate !== prevProps.startDate;
-  		console.log("componentDidUpdate called");
-  		console.log(condition1);
-  		console.log(condition2);
-  		console.log(prevProps);
-  		console.log(this.props);
-
+  		
   		if (condition1 || condition2) {
 		    this.fetchData()
 		}
@@ -45,7 +40,7 @@ class HistoricalArbitrage extends React.Component{
 	
 
   	render(){
-		console.log(this.state.etfArbitrageTableData);
+
   		return(
   		<Container fluid>
 			<h4> Historical Arbitrage </h4>
@@ -77,9 +72,10 @@ class HistoricalArbitrage extends React.Component{
 
 	fetchData(url){
 		axios.get(`http://localhost:5000/PastArbitrageData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
-  			 this.setState({etfArbitrageTableData : <AppTable data={res.data}/>});
+  			 this.setState({etfArbitrageTableData : <AppTable data={JSON.parse(res.data.etfhistoricaldata)}/>});
+
    		});
-  	}
+   	}
 
 }
 

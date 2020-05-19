@@ -57,8 +57,7 @@ arbitragecollection.create_index([("dateOfAnalysis", DESCENDING), ("ETFName", AS
 
 # Arbitrage Per Minute
 arbitrage_per_min = db.ArbitragePerMin
-arbitrage_per_min.create_index([('DateTimeOfArbitrage', DESCENDING)])
-arbitrage_per_min.create_index([('ETFName', ASCENDING)])
+arbitrage_per_min.create_index([('Timestamp', DESCENDING)])
 
 # Trade Aggregate Minute for all Tickers.
 # Cursor for pulling data (PyMongo Cursor)

@@ -1,3 +1,5 @@
+import traceback
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -60,5 +62,8 @@ class masterclass:
         except Exception as e:
             print("Not stored in DB")
             print(e)
-            EmailSender(['piyush888@gmail.com', 'kshitizsharmav@gmail.com'], 'Exception Occurred in savelisttodv func',
-                        e).sendemail()
+            emailobj = EmailSender()
+            msg = emailobj.message(subject="Exception Occurred",
+                                   text="Exception Caught in ETFAnalysis/CommonServices/WebdriverServices.py {}".format(
+                                       traceback.format_exc()))
+            emailobj.send(msg=msg, receivers=['piyush888@gmail.com', 'kshitizsharmav@gmail.com'])

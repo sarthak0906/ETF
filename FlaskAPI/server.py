@@ -9,7 +9,7 @@ from mongoengine import connect
 import numpy as np
 import math
 import ast
-
+import json
 
 sys.path.append("..")
 
@@ -20,11 +20,20 @@ CORS(app)
 # Production Local Server
 # connect('ETF_db', alias='ETF_db')
 # Production Server
-connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
+connection=connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
+
  
 ############################################
 # Load ETF Holdings Data and Description
 ############################################
+
+
+
+from FlaskAPI.Components.ETFDescription.helper import fetchETFsWithSameIssuer
+@app.route('/GetEtfWithSameIssuer/<ETFName>/<date>')
+def getETFWithSameIssuer(ETFName,date):
+    etfswithsameIssuer = fetchETFsWithSameIssuer(connection,date,issuername)
+
 
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 @app.route('/ETfDescription/<ETFName>/<date>')
@@ -48,8 +57,11 @@ def SendETFHoldingsData(ETFName, date):
         ETFDataObject=pd.DataFrame(ETFDataObject,index=[0])
         ETFDataObject=ETFDataObject.replace(np.nan, 'nan', regex=True)
         ETFDataObject= ETFDataObject.loc[0].to_dict()
-        # Remove 'NaN' from the data
         
+        # ETFListWithSameIssuer
+        etfswithsameIssuer=fetchETFsWithSameIssuer(connection,date,Issuer=ETFDataObject['Issuer'])
+        if len(etfswithsameIssuer)==0:
+            etfswithsameIssuer=['No other etf was found for issuer']
         
         # Send back response depending on type of request
         if 'EtfData' in req:
@@ -87,7 +99,7 @@ def FetchPastArbitrageData(ETFName, date):
 
     # Retreive data for Components
     data, pricedf = RetrieveETFArbitrageData(ETFName, date)
-    print(pricedf)
+    
     # Check if data doesn't exsist
     if data.empty:
         print("No Data Exist")
@@ -122,10 +134,17 @@ def FetchPastArbitrageData(ETFName, date):
 
     data['Over Bought/Sold Signal'] = data['Over Bought/Sold Signal'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
     
+    
+    # Get the price dataframe
+    allData={}
+    
+    allData['etfPrices'] = pricedf[['Time','Close']].to_json(orient='records')
+    
     # Columns needed to display
     data=data[ColumnsForDisplay]
-    data=data.to_json(orient='index')
-    return data
+    allData['etfhistoricaldata']=data.to_json(orient='index')
+    print(allData)
+    return json.dumps(allData)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

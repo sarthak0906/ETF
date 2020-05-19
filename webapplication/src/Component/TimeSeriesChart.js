@@ -11,37 +11,35 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  LineChart, 
+  Line
 } from 'recharts'
 
+
+
 const TimeSeriesChart = ({ chartData }) => (
-  <ResponsiveContainer width = '95%' height = {500} >
-    <ScatterChart>
-      <XAxis
-        dataKey = 'time'
-        domain = {['auto', 'auto']}
-        name = 'Time'
-        tickFormatter = {(unixTime) => moment(unixTime).format('HH:mm Do')}
-        type = 'number'
-      />
-      <YAxis dataKey = 'value' name = 'Value' />
 
-      <Scatter
-        data = {chartData}
-        line = {{ stroke: '#8884d8' }}
-        lineJointType = 'monotoneX'
-        lineType = 'joint'
-        name = 'Values'
-      />
+  <LineChart
+    data={chartData}>
+    <XAxis
+      dataKey='Time'
+      scale='time'
+      type='number'
+      
+    />
+    <YAxis/>
+    <Line type='linear'
+      dataKey={"Close"}
+    />
+</LineChart>
 
-    </ScatterChart>
-  </ResponsiveContainer>
 )
 
 TimeSeriesChart.propTypes = {
   chartData: PropTypes.arrayOf(
     PropTypes.shape({
-      time: PropTypes.number,
-      value: PropTypes.number
+      Time: PropTypes.number,
+      Close: PropTypes.number
     })
   ).isRequired
 }

@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import StockDesriptionHeader from './StockDesriptionHeader';
 import TimeSeriesChart from './TimeSeriesChart';
-
+// import
 
 class HistoricalArbitrage extends React.Component{
 	constructor(props){
@@ -14,11 +14,11 @@ class HistoricalArbitrage extends React.Component{
 		this.state ={
 			etfArbitrageTableData : '',
 			timeseriesdata : [
-			{ value: 14, time: 1503617297689 },
-			{ value: 15, time: 1503616962277 },
-			{ value: 15, time: 1503616882654 },
-			{ value: 20, time: 1503613184594 },
-			{ value: 15, time: 1503611308914 },
+				{ value: 14, time: 1503617297689 },
+				{ value: 15, time: 1503616962277 },
+				{ value: 15, time: 1503616882654 },
+				{ value: 20, time: 1503613184594 },
+				{ value: 15, time: 1503611308914 },
 			]
 		}
 		this.fetchData = this.fetchData.bind(this);
@@ -50,7 +50,7 @@ class HistoricalArbitrage extends React.Component{
   		<Container fluid>
 			<h4> Historical Arbitrage </h4>
 			<Row>
-	          <Col xs={12} md={7}>
+	          <Col className="etfArbitrageTable" xs={12} md={7}>
 	            <StockDesriptionHeader startDate = {this.props.startDate} ETF={this.props.ETF} />
 		      {this.state.etfArbitrageTableData}
 	          </Col>

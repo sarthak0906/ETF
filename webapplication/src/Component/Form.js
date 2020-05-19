@@ -22,7 +22,13 @@ class Former extends Component{
 
 	constructor(props){
     	super(props);
-    }
+	}
+	
+	componentDidUpdate(prevProps,prevState) {
+		if (this.state.ETF != this.props.ETF){
+			this.setState({ETF: prevProps.ETF});
+		}
+	}
 
     // handling date change as well as checking if date lies between 16-17 as data provided has only that
   	changeDate = (selecteddate) => {

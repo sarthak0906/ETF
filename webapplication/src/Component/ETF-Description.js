@@ -39,15 +39,15 @@ class Description extends React.Component{
   }
 
   
-fetchETFDescriptionData(){
+  fetchETFDescriptionData(){
     axios.get(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
-         this.setState({DescriptionData : res.data});
+        this.setState({DescriptionData : res.data});
       });
     }
 
   fetchHoldingsData(){
     axios.get(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`).then(res =>{
-         this.setState({HoldingsData : res});
+        this.setState({HoldingsData : res});
       });
   }
 
@@ -75,7 +75,9 @@ fetchETFDescriptionData(){
                 }
             </Col>
             <Col xs={12} md={4}>
-              <SPDR submitFn={this.props.submitFn}/>
+              <div  className="DescriptionTable">
+                <SPDR submitFn={this.props.submitFn}/>
+              </div>
             </Col>
           </Row>
        </Container>

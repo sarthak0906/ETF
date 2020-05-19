@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import PieChart from './PieChart';
 import AppTable from './Table.js';
 import '../static/css/Description.css';
@@ -8,98 +8,83 @@ import Col from 'react-bootstrap/Col';
 import SPDR from './Sector-SPDR';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button';
+import axios from 'axios';
 
-class Description extends React.Component {
+
+
+class Description extends React.Component{
+  
   constructor(props){
     super(props);
-    this.state = {
-      error: null,
-      isLoaded: false,
-      DescriptionData : {},
-      HoldingsData : {},
-      DescriptionTableData : "",
-      HoldingsTableData : "",
-    }
-    this.fetchData = this.fetchData.bind(this);
   }
 
-  fetchData() {
-    fetch(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`)
-    .then(res =>{return res.clone().json()})
-    .then(
-      async (result) => {
-          await this.setState({isLoaded : true, DescriptionData: result});
-          await this.setState({DescriptionTableData : <DescriptionTableData data={this.state.DescriptionData} />});
-      },
-      async (error) => {
-        await this.setState({isLoaded : false, error : error});
-      }
-    )
-  fetch(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`)
-    .then(res => { return res.clone().json()})
-    .then(
-      async (result) => {
-        await this.setState({isLoaded : true, HoldingsData: result});
-        await this.setState({HoldingsTableData : <HoldingsTableData data={this.state.HoldingsData} />});
-      },
-      async (error) => {
-        await this.setState({isLoaded : false, error : error});
-      }
-    )
+  state ={
+    DescriptionData :'',
+    HoldingsData :''
   }
 
   componentDidMount() {
-    this.fetchData();
-  }
-
-  /* Please make use of componentDidUpdate here, look at implementation in Historical-Arbitrage - KTZ */
-  async UNSAFE_componentWillReceiveProps(props) {
-    this.fetchData();
-  }
+    this.fetchETFDescriptionData()
+    this.fetchHoldingsData()
+    }
+   
   
-  render () {
-    return (
-      <Container fluid>
-        <h4> ETF-Description </h4>
-        <h5> {this.props.ETF} </h5>
-        <h4> <strong>{this.state.DescriptionData.AnnualDividendRate}</strong>  {this.state.DescriptionData.AnnualDividendYield} </h4>
-        <br />
-        <Row>
-          {/* Please give column length here like xs & md - KTZ */}
-          <Col>
-          <h6><strong>ETF Description</strong></h6>
-            {
-              this.state.DescriptionTableData 
-            }
-          </Col>
-          <Col>
-          <h6><strong>ETF Holdings Data</strong></h6>
-            {
-              this.state.HoldingsTableData
-            }
-          </Col>
-
-        {/* We don't need a pie chart, but a table of the etf list - KTZ */}
-          <Col>
-            <SPDR submitFn={this.props.submitFn}/>
-          </Col>
-        </Row>
-     </Container>
-    )
+  componentDidUpdate(prevProps,prevState) {
+      const condition1=this.props.ETF !== prevProps.ETF;
+      const condition2=this.props.startDate !== prevProps.startDate;
+      if (condition1 || condition2) {
+        this.fetchETFDescriptionData()
+        this.fetchHoldingsData()
+    }
   }
-}
 
-const DescriptionTableData = (props) => {
-  return (
-    <div className="DescriptionTable">
-      <AppTable data={props.data} />
-    </div>
-  )
-}
+  
+fetchETFDescriptionData(){
+    axios.get(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
+         this.setState({DescriptionData : res.data});
+      });
+    }
 
-const HoldingsTableData = (props) => {
+  fetchHoldingsData(){
+    axios.get(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`).then(res =>{
+         this.setState({HoldingsData : res});
+      });
+  }
+
+  
+  render(){
+      return (
+        <Container fluid>
+          <h4> ETF-Description </h4>
+          <h5> {this.props.ETF} </h5>
+          <h4> <strong>{this.state.DescriptionData.AnnualDividendRate}</strong>  {this.state.DescriptionData.AnnualDividendYield} </h4>
+          <br />
+          <Row>
+            <Col xs={12} md={4}>
+              <h6><strong>ETF Description</strong></h6>
+              <div className="DescriptionTable">
+                {
+                  (this.state.DescriptionData != null) ? <AppTable data={this.state.DescriptionData} /> : ""
+                }
+              </div>
+            </Col>
+            <Col xs={12} md={4}>
+              <h6><strong>ETF Holdings Data</strong></h6>
+                {
+                  (this.state.HoldingsData.data != null) ? <this.HoldingsTableData data={this.state.HoldingsData.data} /> : ""
+                }
+            </Col>
+            <Col xs={12} md={4}>
+              <SPDR submitFn={this.props.submitFn}/>
+            </Col>
+          </Row>
+       </Container>
+      )
+    }
+
+
+  HoldingsTableData = (props) => {
   const [showPie, setPie] = useState(false);
-
   const handleClose = () => setPie(false);
   const handleShow = () => setPie(true);
 
@@ -110,7 +95,6 @@ const HoldingsTableData = (props) => {
       </Button>
       <br />
       <br />
-    {/* Please give a heading on top of the modal - KTZ */}
       <Modal show={showPie} onHide={handleClose}>
         <Modal.Body>
           <PieChart data={props.data} element={"TickerWeight"} />
@@ -118,7 +102,10 @@ const HoldingsTableData = (props) => {
       </Modal>
       <AppTable data={props.data} />
     </div>
-  )
+    )
+  }
+
 }
+  
 
 export default Description;

@@ -12,11 +12,10 @@ class ListsCreator():
         for etfname in workinglist:
             holdings2 = []
             try:
-                etfdata = LoadHoldingsdata().getAllETFData(etfname,
+                df = LoadHoldingsdata().getHoldingsDatafromDB(etfname,
                                                                              (datetime.datetime.now() - datetime.timedelta(days=1)).strftime(
                                                                                  "%Y-%m-%d"))
-                df = pd.DataFrame(etfdata.to_mongo().to_dict()['holdings'])
-                del etfdata
+
                 df.drop(columns=['TickerName'], inplace=True)
                 df.rename(columns={'TickerSymbol':'symbol', 'TickerWeight':'weight'},inplace=True)
                 holdingslist.extend(df['symbol'].to_list())

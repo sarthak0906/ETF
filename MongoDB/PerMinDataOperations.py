@@ -26,9 +26,12 @@ class PerMinDataOperations():
                                                        {'sym': 1, 'ap': 1, 'bp': 1})
         return quotes_data_for_etf
 
-    def FetchPerMinArbitrageFullDay(self, ts_start_of_day, etfname):
+    def FetchPerMinArbitrageFullDay(self, etfname):
+        day_start_dt = datetime.datetime.strptime(' '.join([str(datetime.datetime.now().date()), '09:00']),
+                                                  '%Y-%m-%d %H:%M')
+        day_start_ts = int(day_start_dt.timestamp() * 1000)
         full_day_data_cursor = arbitrage_per_min.find(
-            {"Timestamp": {"$gte": ts_start_of_day}, "ArbitrageData.Symbol": etfname},
+            {"Timestamp": {"$gte": day_start_ts}, "ArbitrageData.Symbol": etfname},
             {"_id": 0, "Timestamp": 1, "ArbitrageData.$": 1})
         return full_day_data_cursor
 

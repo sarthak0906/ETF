@@ -50,7 +50,7 @@ class HistoricalArbitrage extends React.Component{
 	            <StockDesriptionHeader startDate = {this.props.startDate} ETF={this.props.ETF} />
 		      {this.state.etfArbitrageTableData}
 	          </Col>
-	          <Col xs={12} md={5}>
+	          <Col xs={12} md={5} style={{backgroundColor: '#000000', color: 'white'}}>
 	          	<h4>ETF Mover</h4>
 	          	<ChartComponent/>
 	          	<ul>

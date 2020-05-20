@@ -8,6 +8,7 @@ import Comparison from './Component/ETF-Comparison';
 import Description from './Component/ETF-Description';
 import HistoricalArbitrage from './Component/Historical-Arbitrage';
 import Live_Arbitrage from './Component/Live-Arbitrage';
+import Live_Arbitrage_Single from './Component/Live-Arbitrage-Single';
 import ML from './Component/Machine-Learning';
 
 
@@ -65,7 +66,8 @@ class App extends Component {
       <Route path="/ETF-Comparison" render={Comparison} />
       <Route path="/ETF-Description" render={() => <Description startDate={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitNewETF} />} />
       <Route path="/HistoricalArbitrage" render={() => <HistoricalArbitrage startDate ={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitFn} />} />
-      <Route path="/Live-Arbitrage" render={Live_Arbitrage} />
+      <Route path="/Live-Arbitrage-Single" render={() => <Live_Arbitrage ETF={this.state.ETF} />} />
+      <Route path="/Live-Arbitrage" render={() => <Live_Arbitrage ETF={this.state.ETF} />} />
       <Route path="/Machine-Learning" render={ML} />
     </ Router>
     );

@@ -157,7 +157,7 @@ def FetchPastArbitrageData(ETFName, date):
 
 
 ############################################
-# Live Arbitrage All Tickers
+# Live Arbitrage
 ############################################
 
 from MongoDB.PerMinDataOperations import PerMinDataOperations

@@ -22,10 +22,18 @@ def main():
 
     cursor1 = PerMinDataOperations().FetchPerMinLiveData("XLK")
     cursor2 = PerMinDataOperations().FetchPerMinLiveData()
+
     print("Results for one ETF -- 'XLK' : ")
-    print([item for item in cursor1])
+    data1 = []
+    [data1.append({'Timestamp': item['Timestamp'], 'Symbol': item['ArbitrageData'][0]['Symbol'],
+                  'Arbitrage': item['ArbitrageData'][0]['Arbitrage'], 'Spread': item['ArbitrageData'][0]['Spread']}) for
+     item in cursor1]
+    print(pd.DataFrame.from_records(data1))
+
     print("Results for all ETFs  : ")
-    print([item for item in cursor2])
+    data2 = []
+    [data2.extend(item['ArbitrageData']) for item in cursor2]
+    print(pd.DataFrame.from_records(data2))
     print("***************************************************************************************")
     end = time.time()
     print("Done in {} seconds".format(end-start))

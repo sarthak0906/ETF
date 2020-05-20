@@ -9,7 +9,8 @@ from mongoengine import connect
 import numpy as np
 import math
 import ast
-
+import json
+from datetime import datetime
 sys.path.append("..")
 
 app = Flask(__name__)
@@ -19,11 +20,18 @@ CORS(app)
 # Production Local Server
 # connect('ETF_db', alias='ETF_db')
 # Production Server
-connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
-
+connection=connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
 ############################################
 # Load ETF Holdings Data and Description
 ############################################
+
+
+
+from FlaskAPI.Components.ETFDescription.helper import fetchETFsWithSameIssuer
+@app.route('/GetEtfWithSameIssuer/<ETFName>/<date>')
+def getETFWithSameIssuer(ETFName,date):
+    etfswithsameIssuer = fetchETFsWithSameIssuer(connection,date,issuername)
+
 
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 
@@ -49,18 +57,34 @@ def SendETFHoldingsData(ETFName, date):
         ETFDataObject = pd.DataFrame(ETFDataObject, index=[0])
         ETFDataObject = ETFDataObject.replace(np.nan, 'nan', regex=True)
         ETFDataObject = ETFDataObject.loc[0].to_dict()
-        # Remove 'NaN' from the data
+        # Delete
+        del ETFDataObject['FundHoldingsDate']
+        ETFDataObject['InceptionDate']=str(ETFDataObject['InceptionDate'])
 
+
+
+        # ETFListWithSameIssuer
+        etfswithsameIssuer=fetchETFsWithSameIssuer(connection,date,Issuer=ETFDataObject['Issuer'])
+        if len(etfswithsameIssuer)==0:
+            etfswithsameIssuer=['No other etf was found for issuer']
+        
         # Send back response depending on type of request
         if 'EtfData' in req:
-            print(ETFDataObject)
-            return ETFDataObject
+            allData={}
+            allData['ETFDataObject'] = ETFDataObject
+            allData['etfswithsameIssuer'] = etfswithsameIssuer
+
+            print(etfswithsameIssuer)
+
+            return json.dumps(allData)
         elif 'Holdings' in req:
             return holdingsDatObject
         else:
-            return ETFDataObject, holdingsDatObject
-
-
+            allData={}
+            allData['ETFDataObject'] = ETFDataObject
+            allData['holdingsDatObject'] = holdingsDatObject
+            allData['etfswithsameIssuer'] = etfswithsameIssuer
+            return json.dumps(allData)
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")
         print(e)
@@ -89,11 +113,10 @@ def FetchPastArbitrageData(ETFName, date):
 
     # Retreive data for Components
     data, pricedf = RetrieveETFArbitrageData(ETFName, date)
-    print(pricedf)
+
     # Check if data doesn't exsist
     if data.empty:
         print("No Data Exist")
-
     # Seperate ETF Movers and the percentage of movement
     for movers in etmoverslist:
         def getTickerReturnFromMovers(x):
@@ -123,11 +146,14 @@ def FetchPastArbitrageData(ETFName, date):
                          'Change%2_ticker': 'MOVER2'}, inplace=True)
 
     data['Over Bought/Sold Signal'] = data['Over Bought/Sold Signal'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
-
+# Get the price dataframe
+    allData={}
+    allData['etfPrices'] = pricedf[['Time','Close']].to_json(orient='records')
     # Columns needed to display
     data = data[ColumnsForDisplay]
-    data = data.to_json(orient='index')
-    return data
+    allData['etfhistoricaldata'] = data.to_json(orient='index')
+    print(allData)
+    return json.dumps(allData)
 
 
 ############################################

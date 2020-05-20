@@ -5,7 +5,7 @@ import '../static/css/Description.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import SPDR from './Sector-SPDR';
+import SimilarETFList from './SimilarETFs';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
@@ -20,7 +20,8 @@ class Description extends React.Component{
 
   state ={
     DescriptionData :'',
-    HoldingsData :''
+    HoldingsData :'',
+    similarETFs:''
   }
 
   componentDidMount() {
@@ -39,19 +40,22 @@ class Description extends React.Component{
   }
 
   
-fetchETFDescriptionData(){
+  fetchETFDescriptionData(){
     axios.get(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
-         this.setState({DescriptionData : res.data});
+        console.log(res.data);
+        this.setState({
+          DescriptionData : res.data.ETFDataObject,
+          similarETFs: res.data.etfswithsameIssuer
+        });
       });
     }
 
   fetchHoldingsData(){
     axios.get(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`).then(res =>{
-         this.setState({HoldingsData : res});
+        this.setState({HoldingsData : res});
       });
   }
 
-  
   render(){
       return (
         <Container fluid>
@@ -75,7 +79,7 @@ fetchETFDescriptionData(){
                 }
             </Col>
             <Col xs={12} md={4}>
-              <SPDR submitFn={this.props.submitFn}/>
+                <SimilarETFList data={this.state.similarETFs} submitFn={this.props.submitFn}/>
             </Col>
           </Row>
        </Container>

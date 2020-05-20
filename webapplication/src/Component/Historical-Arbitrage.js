@@ -5,7 +5,8 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import StockDesriptionHeader from './StockDesriptionHeader';
-import TimeSeriesChart from './TimeSeriesChart';
+import ChartComponent from './StockPriceChart';
+
 // import
 
 class HistoricalArbitrage extends React.Component{
@@ -51,7 +52,7 @@ class HistoricalArbitrage extends React.Component{
 	          </Col>
 	          <Col xs={12} md={5}>
 	          	<h4>ETF Mover</h4>
-	          	<TimeSeriesChart chartData={this.state.timeseriesdata} />
+	          	<ChartComponent/>
 	          	<ul>
 	          		<li>Top Movers</li>
 	          		<li>Profit and loss</li>

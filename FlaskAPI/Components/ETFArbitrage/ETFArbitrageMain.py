@@ -79,6 +79,9 @@ def RetrieveETFArbitrageData(etfname, date):
 			print("Sell Positions N+1 Days")
 			print(sellPositions)
 
+			sellPositions.drop(sellPositions.tail(1).index,inplace=True)
+			allData = allData.append(sellPositions)
+
 		etfOverSold = df.loc[df['Flag']== -111.0]
 		if etfOverSold.shape[0]!=0:
 			buyPositions  = analysePerformance(df=df, BuySellIndex=etfOverSold)
@@ -92,9 +95,8 @@ def RetrieveETFArbitrageData(etfname, date):
 			print(buyPositions)
 
 		# Combine all data for Machine Learning Anlaysis
-		sellPositions.drop(sellPositions.tail(1).index,inplace=True)
-		buyPositions.drop(buyPositions.tail(1).index,inplace=True)
-		allData = allData.append(sellPositions)
-		allData = allData.append(buyPositions)
+			buyPositions.drop(buyPositions.tail(1).index,inplace=True)
+			allData = allData.append(buyPositions)
+			
 	print(allData)
 	return allData, pricedf

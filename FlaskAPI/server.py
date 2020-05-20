@@ -10,6 +10,7 @@ import numpy as np
 import math
 import ast
 import json
+from datetime import datetime
 
 sys.path.append("..")
 
@@ -57,7 +58,13 @@ def SendETFHoldingsData(ETFName, date):
         ETFDataObject=pd.DataFrame(ETFDataObject,index=[0])
         ETFDataObject=ETFDataObject.replace(np.nan, 'nan', regex=True)
         ETFDataObject= ETFDataObject.loc[0].to_dict()
+
+        # Delete 
+        del ETFDataObject['FundHoldingsDate']
+        ETFDataObject['InceptionDate']=str(ETFDataObject['InceptionDate'])
         
+        
+
         # ETFListWithSameIssuer
         etfswithsameIssuer=fetchETFsWithSameIssuer(connection,date,Issuer=ETFDataObject['Issuer'])
         if len(etfswithsameIssuer)==0:
@@ -65,14 +72,21 @@ def SendETFHoldingsData(ETFName, date):
         
         # Send back response depending on type of request
         if 'EtfData' in req:
-            print(ETFDataObject)
-            return ETFDataObject
+            allData={}
+            allData['ETFDataObject'] = ETFDataObject
+            allData['etfswithsameIssuer'] = etfswithsameIssuer
+
+            print(etfswithsameIssuer)
+
+            return json.dumps(allData)
         elif 'Holdings' in req:
             return holdingsDatObject
         else:
-            return ETFDataObject, holdingsDatObject
-
-
+            allData={}
+            allData['ETFDataObject'] = ETFDataObject
+            allData['holdingsDatObject'] = holdingsDatObject
+            allData['etfswithsameIssuer'] = etfswithsameIssuer
+            return json.dumps(allData)
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")
         print(e)
@@ -103,7 +117,6 @@ def FetchPastArbitrageData(ETFName, date):
     # Check if data doesn't exsist
     if data.empty:
         print("No Data Exist")
-    
     
     # Seperate ETF Movers and the percentage of movement
     for movers in etmoverslist:
@@ -137,9 +150,7 @@ def FetchPastArbitrageData(ETFName, date):
     
     # Get the price dataframe
     allData={}
-    
     allData['etfPrices'] = pricedf[['Time','Close']].to_json(orient='records')
-    
     # Columns needed to display
     data=data[ColumnsForDisplay]
     allData['etfhistoricaldata']=data.to_json(orient='index')

@@ -66,7 +66,7 @@ class App extends Component {
       <Route path="/ETF-Comparison" render={Comparison} />
       <Route path="/ETF-Description" render={() => <Description startDate={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitNewETF} />} />
       <Route path="/HistoricalArbitrage" render={() => <HistoricalArbitrage startDate ={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitFn} />} />
-      <Route path="/Live-Arbitrage-Single" render={() => <Live_Arbitrage ETF={this.state.ETF} />} />
+      <Route path="/Live-Arbitrage-Single" render={() => <Live_Arbitrage_Single ETF={this.state.ETF} />} />
       <Route path="/Live-Arbitrage" render={() => <Live_Arbitrage ETF={this.state.ETF} />} />
       <Route path="/Machine-Learning" render={ML} />
     </ Router>

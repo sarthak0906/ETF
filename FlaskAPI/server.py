@@ -195,7 +195,8 @@ def SendLiveArbitrageDataSingleTicker(etfname):
                       'Arbitrage': item['ArbitrageData'][0]['Arbitrage'], 'Spread': item['ArbitrageData'][0]['Spread']})
          for item in full_day_data]
         full_day_data_df = pd.DataFrame.from_records(data)
-        return "Live: {}\n Full Day: {}".format(live_data_df.to_dict(), full_day_data_df.to_dict())
+        # return "Live: {}, Full_Day: {}".format(live_data_df.to_dict(), full_day_data_df.to_dict())
+        return jsonify(Live=live_data_df.to_dict(), Full_Day=full_day_data_df.to_dict())
 
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")

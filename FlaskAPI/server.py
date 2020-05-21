@@ -112,11 +112,12 @@ def FetchPastArbitrageData(ETFName, date):
                          'T', 'T+1']
 
     # Retreive data for Components
-    data, pricedf = RetrieveETFArbitrageData(ETFName, date)
+    data, pricedf, historicalArbitrageData, scatterPlotData = RetrieveETFArbitrageData(ETFName, date)
 
     # Check if data doesn't exsist
     if data.empty:
         print("No Data Exist")
+    
     # Seperate ETF Movers and the percentage of movement
     for movers in etmoverslist:
         def getTickerReturnFromMovers(x):
@@ -146,13 +147,14 @@ def FetchPastArbitrageData(ETFName, date):
                          'Change%2_ticker': 'MOVER2'}, inplace=True)
 
     data['Over Bought/Sold Signal'] = data['Over Bought/Sold Signal'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
-# Get the price dataframe
+    # Get the price dataframe
     allData={}
     allData['etfPrices'] = pricedf[['Time','Close']].to_json(orient='records')
     # Columns needed to display
     data = data[ColumnsForDisplay]
     allData['etfhistoricaldata'] = data.to_json(orient='index')
-    print(allData)
+    allData['historicalArbitrageData'] = json.dumps(historicalArbitrageData)
+    allData['scatterPlotData'] = json.dumps(scatterPlotData)
     return json.dumps(allData)
 
 

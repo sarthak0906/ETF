@@ -3,10 +3,12 @@ from pymongo import MongoClient
 import motor.motor_asyncio
 import asyncio
 
-connectionLocal = MongoClient('localhost', 27017)
+#connectionLocal = MongoClient('localhost', 27017)
+connectionLocal = MongoClient('18.213.229.80', 27017)
 db = connectionLocal.ETF_db
 
-motor_client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
+#motor_client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
+motor_client = motor.motor_asyncio.AsyncIOMotorClient('18.213.229.80', 27017)
 motor_db = motor_client.ETF_db
 
 # Quotes Pipeline

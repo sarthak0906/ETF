@@ -42,15 +42,15 @@ class Live_Arbitrage extends React.Component{
 
     componentDidMount() {
         axios.get(`http://localhost:5000/ETfLiveArbitrage/AllTickers`).then(res =>{
+            // console.log(res);
             this.setState({
                 Arbitrage: res.data.Arbitrage,
                 Spread: res.data.Spread,
                 Symbol: res.data.Symbol,
             });
-            console.log(this.state);
+            // console.log(this.state);
         });
         console.log(this.state.seconds);
-        console.log("part 1")
         this.fetchETFLiveData()
     }
   
@@ -61,15 +61,12 @@ class Live_Arbitrage extends React.Component{
             });
             console.log(this.state.seconds);
             if (this.state.seconds == 13){
-                console.log("this is something")
                 axios.get(`http://localhost:5000/ETfLiveArbitrage/AllTickers`).then(res =>{
-                    console.log(res);
                     this.setState({
                         Arbitrage: res.data.Arbitrage,
                         Spread: res.data.Spread,
                         Symbol: res.data.Symbol,
                     });
-                    console.log(this.state);
                 });
             }
         }, 1000)
@@ -96,19 +93,21 @@ class Live_Arbitrage extends React.Component{
 }
 
 const LiveTable = (props) => {
+    // console.log(props)
     const getKeys = function(someJSON){
         return Object.keys(someJSON);
     }
 
-    function getRowsData (){
-        var Symbols = getKeys(props.Symbol)
+    const getRowsData = () => {
+        var Symbols = getKeys(props.data.Symbol)
 
-        Symbols.map((key, index) => {
+        return Symbols.map((key, index) => {
+            // console.log(key);
             return (
-                <tr>
-                    <td>{props.Symbol[key]}</td>
-                    <td>{props.Spread[key]}</td>
-                    <td>{props.Arbitrage[key]}</td>
+                <tr key={index}>
+                    <td>{props.data.Symbol[key]}</td>
+                    <td>{props.data.Spread[key]}</td>
+                    <td>{props.data.Arbitrage[key]}</td>
                 </tr>
             )
         })

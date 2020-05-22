@@ -2,8 +2,6 @@ import sys  # Remove in production - KTZ
 import traceback
 
 # For Piyush System
-from CommonServices.EmailService import EmailSender
-
 sys.path.extend(['/home/piyush/Desktop/etf1903', '/home/piyush/Desktop/etf1903/ETFsList_Scripts',
                  '/home/piyush/Desktop/etf1903/HoldingsDataScripts',
                  '/home/piyush/Desktop/etf1903/CommonServices',
@@ -13,7 +11,7 @@ sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_
                  '/home/ubuntu/ETFAnalysis/HoldingsDataScripts', '/home/ubuntu/ETFAnalysis/CommonServices',
                  '/home/ubuntu/ETFAnalysis/CalculateETFArbitrage'])
 sys.path.append("..")  # Remove in production - KTZ
-
+from CommonServices.EmailService import EmailSender
 import pandas as pd
 from datetime import datetime
 from datetime import timedelta
@@ -41,7 +39,7 @@ logger2.setLevel(logging.ERROR)
 logger.addHandler(handler)
 logger2.addHandler(handler2)
 
-dates = ['2020-05-13', '2020-05-14']
+dates = ['2020-05-19']
 for date in dates:
     etfwhichfailed = []
     # MAKE A LIST OF WORKING ETFs.

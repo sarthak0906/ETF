@@ -2,8 +2,6 @@ import sys  # Remove in production - KTZ
 import traceback
 
 # For Piyush System
-from CommonServices.EmailService import EmailSender
-
 sys.path.extend(['/home/piyush/Desktop/etf1903', '/home/piyush/Desktop/etf1903/ETFsList_Scripts',
                  '/home/piyush/Desktop/etf1903/HoldingsDataScripts',
                  '/home/piyush/Desktop/etf1903/CommonServices',
@@ -13,7 +11,7 @@ sys.path.extend(['/home/ubuntu/ETFAnalysis', '/home/ubuntu/ETFAnalysis/ETFsList_
                  '/home/ubuntu/ETFAnalysis/HoldingsDataScripts', '/home/ubuntu/ETFAnalysis/CommonServices',
                  '/home/ubuntu/ETFAnalysis/CalculateETFArbitrage'])
 sys.path.append("..")  # Remove in production - KTZ
-
+from CommonServices.EmailService import EmailSender
 import pandas as pd
 from datetime import datetime
 from datetime import timedelta

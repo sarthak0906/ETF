@@ -67,6 +67,7 @@ def RetrieveETFArbitrageData(etfname, date):
 		columnsneeded=columnsneeded+MajorUnderlyingMovers
 
 		etfOverBought = df.loc[df['Flag']== 111.0]
+		PNLSellPositionsT_1=0
 		if etfOverBought.shape[0]!=0:
 			sellPositions = analysePerformance(df=df, BuySellIndex=etfOverBought)
 			print("Date ="+str(dateOfAnalysis))
@@ -79,10 +80,14 @@ def RetrieveETFArbitrageData(etfname, date):
 			print("Sell Positions N+1 Days")
 			print(sellPositions)
 
+			# Drop the last row
 			sellPositions.drop(sellPositions.tail(1).index,inplace=True)
 			allData = allData.append(sellPositions)
 
+			PNLSellPositionsT_1 =-(sellPositions['T+1'].sum())
+
 		etfOverSold = df.loc[df['Flag']== -111.0]
+		PNLBuyPositionsT_1=0
 		if etfOverSold.shape[0]!=0:
 			buyPositions  = analysePerformance(df=df, BuySellIndex=etfOverSold)
 			print("Buy Positions Probability")
@@ -94,9 +99,15 @@ def RetrieveETFArbitrageData(etfname, date):
 			buyPositions=pd.merge(tempdf,buyPositions,how='outer',left_index=True,right_index=True)
 			print(buyPositions)
 
-		# Combine all data for Machine Learning Anlaysis
+			# Dropt the last row
 			buyPositions.drop(buyPositions.tail(1).index,inplace=True)
 			allData = allData.append(buyPositions)
-			
-	print(allData)
-	return allData, pricedf
+
+			PNLBuyPositionsT_1 =buyPositions['T+1'].sum()
+
+		
+	historicalArbitrageData = {'PNL Sell Pos. (T+1)':{'% Return':PNLSellPositionsT_1},
+							   'PNL Buy Pos (T+1)':{'% Return':PNLBuyPositionsT_1}}
+	
+	scatterPlotData=df[['ETF Change Price %','Net Asset Value Change%']].to_dict(orient='records')
+	return allData, pricedf, historicalArbitrageData, scatterPlotData

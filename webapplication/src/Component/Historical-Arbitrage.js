@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import StockDesriptionHeader from './StockDesriptionHeader';
 import ChartComponent from './StockPriceChart';
+import ScatterPlot from './scatterplot';
 
 // import
 
@@ -20,7 +21,9 @@ class HistoricalArbitrage extends React.Component{
 			{ Close: 1120, Time: 1503616882654 },
 			{ Close: 1100, Time: 1503613184594 },
 			{ Close: 1110, Time: 1503611308914 },
-			]
+			],
+			historicalArbitrageData:'',
+			scatterPlotData:''
 		}
 		this.fetchData = this.fetchData.bind(this);
 	}
@@ -55,16 +58,19 @@ class HistoricalArbitrage extends React.Component{
 	          	<ChartComponent/>
 	          	<ul>
 	          		<li>Top Movers</li>
-	          		<li>Profit and loss</li>
+	          		<li>Profit and loss - P&L Graph of all buys and sells graphs scatter</li>
 	          		<li>Confidence in signals</li>
 	          		<li>Filter by Magnitude Of arbitrage(Left Side to play with)</li>
-	          		<li>GIve example of days where arbitrage was not that bad</li>
+	          		<li>Give example of days where arbitrage was not that bad</li>
 	          		<li>Give Buy/Sell Signal on the chart, CHange time series data</li>
-	          		<li>Update with change in ticker</li>
 	          		<li>For holidays and weekends data not available</li>
 	          		<li>Make table smaller and scrollable</li>
 	          		<li>Scatter plot of arbitrgae and return</li>
 	          	</ul>
+	          	{this.state.historicalArbitrageData}
+
+	          	<h5>ETF Change % Vs NAV change %</h5>
+	          	{this.state.scatterPlotData}
 	          </Col>
 	        </Row>
          </Container>
@@ -73,8 +79,11 @@ class HistoricalArbitrage extends React.Component{
 
 	fetchData(url){
 		axios.get(`http://localhost:5000/PastArbitrageData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
-  			 this.setState({etfArbitrageTableData : <AppTable data={JSON.parse(res.data.etfhistoricaldata)}/>});
-
+			this.setState({
+			 	etfArbitrageTableData : <AppTable data={JSON.parse(res.data.etfhistoricaldata)}/>,
+			 	historicalArbitrageData : <AppTable data={JSON.parse(res.data.historicalArbitrageData)}/>,
+			 	scatterPlotData: <ScatterPlot data={JSON.parse(res.data.scatterPlotData)}/>
+			});
    		});
    	}
 

@@ -83,6 +83,9 @@ class Former extends Component{
 	            <Nav.Link style={{color: 'white'}} as={Link} to="/HistoricalArbitrage" eventKey="Historical">Historical Arbitrage</Nav.Link>
 	          </Nav.Item>
 	          <Nav.Item>
+	            <Nav.Link style={{color: 'white'}} as={Link} to="/Live-Arbitrage-single" eventKey="Live-Arbitrage">Live-Arbitrage (Focus)</Nav.Link>
+	          </Nav.Item>
+	          <Nav.Item>
 	            <Nav.Link style={{color: 'white'}} as={Link} to="/Live-Arbitrage" eventKey="Live-Arbitrage">Live-Arbitrage</Nav.Link>
 	          </Nav.Item>
 	          <Nav.Item>

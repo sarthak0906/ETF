@@ -112,11 +112,12 @@ def FetchPastArbitrageData(ETFName, date):
                          'T', 'T+1']
 
     # Retreive data for Components
-    data, pricedf = RetrieveETFArbitrageData(ETFName, date)
+    data, pricedf, historicalArbitrageData, scatterPlotData = RetrieveETFArbitrageData(ETFName, date)
 
     # Check if data doesn't exsist
     if data.empty:
         print("No Data Exist")
+    
     # Seperate ETF Movers and the percentage of movement
     for movers in etmoverslist:
         def getTickerReturnFromMovers(x):
@@ -146,13 +147,14 @@ def FetchPastArbitrageData(ETFName, date):
                          'Change%2_ticker': 'MOVER2'}, inplace=True)
 
     data['Over Bought/Sold Signal'] = data['Over Bought/Sold Signal'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
-# Get the price dataframe
+    # Get the price dataframe
     allData={}
     allData['etfPrices'] = pricedf[['Time','Close']].to_json(orient='records')
     # Columns needed to display
     data = data[ColumnsForDisplay]
     allData['etfhistoricaldata'] = data.to_json(orient='index')
-    print(allData)
+    allData['historicalArbitrageData'] = json.dumps(historicalArbitrageData)
+    allData['scatterPlotData'] = json.dumps(scatterPlotData)
     return json.dumps(allData)
 
 
@@ -195,7 +197,8 @@ def SendLiveArbitrageDataSingleTicker(etfname):
                       'Arbitrage': item['ArbitrageData'][0]['Arbitrage'], 'Spread': item['ArbitrageData'][0]['Spread']})
          for item in full_day_data]
         full_day_data_df = pd.DataFrame.from_records(data)
-        return "Live: {}\n Full Day: {}".format(live_data_df.to_dict(), full_day_data_df.to_dict())
+        # return "Live: {}, Full_Day: {}".format(live_data_df.to_dict(), full_day_data_df.to_dict())
+        return jsonify(Live=live_data_df.to_dict(), Full_Day=full_day_data_df.to_dict())
 
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")

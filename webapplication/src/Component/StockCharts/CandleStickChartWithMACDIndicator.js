@@ -202,7 +202,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 						appearance={macdAppearance}
 					/>
 				</Chart>
-				<CrossHairCursor />
+				<CrossHairCursor stroke="#FFFFFF" />
 			</ChartCanvas>
 		);
 	}

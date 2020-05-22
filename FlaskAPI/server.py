@@ -105,10 +105,10 @@ etmoverslist = ['ETFMover%1', 'ETFMover%2', 'ETFMover%3', 'ETFMover%4', 'ETFMove
 
 @app.route('/PastArbitrageData/<ETFName>/<date>')
 def FetchPastArbitrageData(ETFName, date):
-    ColumnsForDisplay = ['ETF Trading Spread in $', 'Arbitrage in $', 'Magnitude of Arbitrage',
-                         'Over Bought/Sold Signal',
-                         'ETFMOVER1', 'ETFMOVER2',
-                         'MOVER1', 'MOVER2',
+    ColumnsForDisplay = ['$Spread', '$Arbitrage', 'Absolute Arbitrage',
+                         'Over Bought/Sold',
+                         'Etf Mover',
+                         'Most Change%',
                          'T', 'T+1']
 
     # Retreive data for Components
@@ -139,14 +139,16 @@ def FetchPastArbitrageData(ETFName, date):
     # Round of DataFrame 
     data = data.round(3)
 
+    print(data.head())
     # Replace Values in Pandas DataFrame
-    data.rename(columns={'Flag': 'Over Bought/Sold Signal',
-                         'ETFMover%1_ticker': 'ETFMOVER1',
-                         'ETFMover%2_ticker': 'ETFMOVER2',
-                         'Change%1_ticker': 'MOVER1',
-                         'Change%2_ticker': 'MOVER2'}, inplace=True)
+    data.rename(columns={'ETF Trading Spread in $':'$Spread',
+                        'Arbitrage in $':'$Arbitrage',
+                        'Flag': 'Over Bought/Sold',
+                        'Magnitude of Arbitrage':'Absolute Arbitrage',
+                        'ETFMover%1_ticker': 'Etf Mover',
+                        'Change%1_ticker': 'Most Change%'}, inplace=True)
 
-    data['Over Bought/Sold Signal'] = data['Over Bought/Sold Signal'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
+    data['Over Bought/Sold'] = data['Over Bought/Sold'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
     # Get the price dataframe
     allData={}
     allData['etfPrices'] = pricedf[['Time','Close']].to_json(orient='records')

@@ -10,7 +10,9 @@ import HistoricalArbitrage from './Component/Historical-Arbitrage';
 import Live_Arbitrage from './Component/Live-Arbitrage';
 import Live_Arbitrage_Single from './Component/Live-Arbitrage-Single';
 import ML from './Component/Machine-Learning';
-
+import SignInFormPage from './Component/User/login';
+import SignUpFormPage from './Component/User/signup';
+import EmailVerification from './Component/User/emailverification';
 
 // StylesSheets
 import './static/css/style.css';
@@ -69,6 +71,9 @@ class App extends Component {
       <Route path="/Live-Arbitrage-Single" render={() => <Live_Arbitrage_Single ETF={this.state.ETF} />} />
       <Route path="/Live-Arbitrage" render={() => <Live_Arbitrage ETF={this.state.ETF} />} />
       <Route path="/Machine-Learning" render={ML} />
+      <Route path="/SignUp" render={SignUpFormPage} />
+      <Route path="/Login" render={SignInFormPage} />
+      <Route path="/EmailVerification" render={EmailVerification} />
     </ Router>
     );
   }

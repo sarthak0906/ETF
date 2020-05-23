@@ -47,3 +47,17 @@ class PerMinDataOperations():
                 {"Timestamp": dt_ts},
                 {"_id": 0, "Timestamp": 1, "ArbitrageData": 1})
         return live_per_min_cursor
+
+    def FetchAllETFPricesLive(self):
+        dt = datetime.datetime.now().replace(second=0, microsecond=0)
+        dt_ts = int(dt.timestamp() * 1000)
+        all_etf_live_prices_cursor = trade_per_min_WS.find({"e": dt_ts}, {"_id": 0, "sym": 1, "vw": 1, "e": 1})
+        return all_etf_live_prices_cursor
+
+    def FetchFullDayPricesForETF(self, etfname):
+        day_start_dt = datetime.datetime.strptime(' '.join([str(datetime.datetime.now().date()), '09:00']),
+                                                  '%Y-%m-%d %H:%M')
+        day_start_ts = int(day_start_dt.timestamp() * 1000)
+        full_day_prices_etf_cursor = trade_per_min_WS.find({"e": {"$gte": day_start_ts}, "sym": etfname},
+                                                           {"_id": 0, "sym": 1, "vw": 1, "e": 1})
+        return full_day_prices_etf_cursor

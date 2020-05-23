@@ -41,7 +41,7 @@ const AppTable = (props) => {
     // console.log(keys);
     return keys.map((key, index)=>{
       // console.log(key);
-      return <th key={key}>{key.toUpperCase()}</th>
+      return <th key={key}>{key}</th>
     })
   }
   
@@ -55,9 +55,13 @@ const AppTable = (props) => {
     }) 
   }
   
+  const TableStyling = {
+    fontSize: '13px'
+  };
+
   return (
     <div className="Table">
-      <Table striped bordered hover variant="dark">
+      <Table striped bordered hover variant="dark" style={TableStyling}>
       <thead className="TableHead">
         <tr>{getHeader()}</tr>
       </thead>

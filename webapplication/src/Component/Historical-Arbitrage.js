@@ -49,11 +49,11 @@ class HistoricalArbitrage extends React.Component{
   		<Container fluid>
 			<h4> Historical Arbitrage </h4>
 			<Row>
-	          <Col className="etfArbitrageTable" xs={12} md={7}>
+	          <Col className="etfArbitrageTable" xs={12} md={5}>
 	            <StockDesriptionHeader startDate = {this.props.startDate} ETF={this.props.ETF} />
 		      {this.state.etfArbitrageTableData}
 	          </Col>
-	          <Col xs={12} md={5}>
+	          <Col xs={12} md={7}>
 	          	<h4>ETF Mover</h4>
 	          	<ChartComponent/>
 	          	<ul>
@@ -65,7 +65,6 @@ class HistoricalArbitrage extends React.Component{
 	          		<li>Give Buy/Sell Signal on the chart, CHange time series data</li>
 	          		<li>For holidays and weekends data not available</li>
 	          		<li>Make table smaller and scrollable</li>
-	          		<li>Scatter plot of arbitrgae and return</li>
 	          	</ul>
 	          	{this.state.historicalArbitrageData}
 

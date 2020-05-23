@@ -23,22 +23,34 @@ class HistoricalArbitrage extends React.Component{
 			{ Close: 1110, Time: 1503611308914 },
 			],
 			historicalArbitrageData:'',
-			scatterPlotData:''
+			scatterPlotData:'',
+			PNLOverDates:''
 		}
-		this.fetchData = this.fetchData.bind(this);
+		this.fetchDataForADateAndETF = this.fetchDataForADateAndETF.bind(this);
+		this.fetchDataCommonToAllDates = this.fetchDataCommonToAllDates.bind(this);
 	}
 
 	componentDidMount() {
-		this.fetchData()
+		this.fetchDataForADateAndETF();
+		this.fetchDataCommonToAllDates();
   	}
   	
   	// Use instead of unsafe to update
   	componentDidUpdate(prevProps,prevState) {
+  		// This updates states which corresponds to any day for any etf
+  		// If date changes update the states to get data for the date
+  		// If ETFName changes get the data for that day for the etf
   		const condition1=this.props.ETF !== prevProps.ETF;
   		const condition2=this.props.startDate !== prevProps.startDate;
-  		
   		if (condition1 || condition2) {
-		    this.fetchData()
+		    this.fetchDataForADateAndETF()
+		}
+
+  		// This updates data which is common to an etf - eg all historical PNL dates datas
+  		// This data is common for a particular etf. eg for XLK, this data will remain same for all dates
+  		// Only update when etfname changes
+  		if (condition1) {
+		    this.fetchDataCommonToAllDates()
 		}
 	}
 	
@@ -66,22 +78,35 @@ class HistoricalArbitrage extends React.Component{
 	          		<li>For holidays and weekends data not available</li>
 	          		<li>Make table smaller and scrollable</li>
 	          	</ul>
-	          	{this.state.historicalArbitrageData}
+	          	{this.state.PNLStatementForTheDay}
 
 	          	<h5>ETF Change % Vs NAV change %</h5>
 	          	{this.state.scatterPlotData}
+
+	          	<h5>PNL For all Dates for ETF</h5>
+	          	{this.state.PNLOverDates}
 	          </Col>
 	        </Row>
          </Container>
   		)
   	}
 
-	fetchData(url){
+	fetchDataForADateAndETF(url){
 		axios.get(`http://localhost:5000/PastArbitrageData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
 			this.setState({
 			 	etfArbitrageTableData : <AppTable data={JSON.parse(res.data.etfhistoricaldata)}/>,
-			 	historicalArbitrageData : <AppTable data={JSON.parse(res.data.historicalArbitrageData)}/>,
-			 	scatterPlotData: <ScatterPlot data={JSON.parse(res.data.scatterPlotData)}/>
+			 	PNLStatementForTheDay : <AppTable data={JSON.parse(res.data.PNLStatementForTheDay)}/>,
+			 	scatterPlotData: <ScatterPlot data={JSON.parse(res.data.scatterPlotData)}/>,
+			});
+   		});
+   	}
+
+   	fetchDataCommonToAllDates(url){
+   		console.log("All Dates ETFCALled");
+		axios.get(`http://localhost:5000/PastArbitrageData/CommonDataAcrossEtf/${this.props.ETF}`).then(res =>{
+			console.log(res.data.PNLOverDates);
+			this.setState({
+			 	PNLOverDates: <AppTable data={JSON.parse(res.data.PNLOverDates)}/>
 			});
    		});
    	}

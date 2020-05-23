@@ -172,10 +172,20 @@ def SendLiveArbitrageDataAllTickers():
     req = request.__dict__['environ']['REQUEST_URI']
     try:
         live_data = PerMinDataOperations().FetchPerMinLiveData()
+        live_prices = PerMinDataOperations().FetchAllETFPricesLive()
+
+        live_prices_data = []
+        [live_prices_data.append(item) for item in live_prices]
+
         data2 = []
         [data2.extend(item['ArbitrageData']) for item in live_data]
+
+        prices_df = pd.DataFrame.from_records(live_prices_data)
+        prices_df.rename(columns={'sym':'Symbol', 'vw':'Price', 'e':'Timestamp'}, inplace=True)
         df = pd.DataFrame.from_records(data2)
-        return df.to_dict()
+        ndf = df.merge(prices_df, how='left',on='Symbol')
+        ndf.dropna(inplace=True)
+        return ndf.to_dict()
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")
         print(e)
@@ -186,6 +196,14 @@ def SendLiveArbitrageDataAllTickers():
 def SendLiveArbitrageDataSingleTicker(etfname):
     req = request.__dict__['environ']['REQUEST_URI']
     try:
+        etf_full_day_price_cursor = PerMinDataOperations().FetchFullDayPricesForETF(etfname)
+        etf_full_day_price_data = []
+        [etf_full_day_price_data.append(item) for item in etf_full_day_price_cursor]
+        full_day_prices_df = pd.DataFrame.from_records(etf_full_day_price_data)
+        full_day_prices_df.rename(columns={'sym':'Symbol', 'vw':'Price', 'e':'Timestamp'}, inplace=True)
+        full_day_prices_df.drop(columns=['Symbol'], inplace=True)
+        # print(full_day_prices_df)
+
         live_data = PerMinDataOperations().FetchPerMinLiveData(etfname=etfname)
         data1 = []
         [data1.append({'Timestamp': item['Timestamp'], 'Symbol': item['ArbitrageData'][0]['Symbol'],
@@ -199,8 +217,14 @@ def SendLiveArbitrageDataSingleTicker(etfname):
                       'Arbitrage': item['ArbitrageData'][0]['Arbitrage'], 'Spread': item['ArbitrageData'][0]['Spread']})
          for item in full_day_data]
         full_day_data_df = pd.DataFrame.from_records(data)
+
+        mergedDF = full_day_data_df.merge(full_day_prices_df, on='Timestamp', how='left')
+        print(mergedDF)
+        # live_data_df = mergedDF.loc[mergedDF['Timestamp'].idxmax()]
+        # live_data_dict = live_data_df.to_dict()
+
         # return "Live: {}, Full_Day: {}".format(live_data_df.to_dict(), full_day_data_df.to_dict())
-        return jsonify(Live=live_data_df.to_dict(), Full_Day=full_day_data_df.to_dict())
+        return jsonify(Live=live_data_df.to_dict(), Full_Day=mergedDF.to_dict())
 
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")

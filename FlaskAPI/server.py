@@ -94,7 +94,7 @@ def SendETFHoldingsData(ETFName, date):
 ############################################
 # Load Past Arbitrage Past Data
 ############################################
-from FlaskAPI.Components.ETFArbitrage.ETFArbitrageMain import RetrieveETFArbitrageData
+from FlaskAPI.Components.ETFArbitrage.ETFArbitrageMain import RetrieveETFArbitrageData, retrievePNLForAllDays
 
 # Divide Columnt into movers and the price by which they are moving
 etmoverslist = ['ETFMover%1', 'ETFMover%2', 'ETFMover%3', 'ETFMover%4', 'ETFMover%5',
@@ -112,7 +112,7 @@ def FetchPastArbitrageData(ETFName, date):
                          'T', 'T+1']
 
     # Retreive data for Components
-    data, pricedf, historicalArbitrageData, scatterPlotData = RetrieveETFArbitrageData(ETFName, date)
+    data, pricedf, PNLStatementForTheDay, scatterPlotData = RetrieveETFArbitrageData(etfname=ETFName, date=date, magnitudeOfArbitrageToFilterOn=0)
 
     # Check if data doesn't exsist
     if data.empty:
@@ -154,10 +154,22 @@ def FetchPastArbitrageData(ETFName, date):
     allData['etfPrices'] = pricedf[['Time','Close']].to_json(orient='records')
     # Columns needed to display
     data = data[ColumnsForDisplay]
+    
+    # PNL for all dates for the etf
     allData['etfhistoricaldata'] = data.to_json(orient='index')
-    allData['historicalArbitrageData'] = json.dumps(historicalArbitrageData)
+    allData['PNLStatementForTheDay'] = json.dumps(PNLStatementForTheDay)
     allData['scatterPlotData'] = json.dumps(scatterPlotData)
     return json.dumps(allData)
+
+
+@app.route('/PastArbitrageData/CommonDataAcrossEtf/<ETFName>')
+def fetchPNLForETFForALlDays(ETFName):
+    print("All ETF PNL Statement is called")
+    PNLOverDates=retrievePNLForAllDays(etfname=ETFName, magnitudeOfArbitrageToFilterOn=0)
+    allData={}
+    print(PNLOverDates)
+    allData['PNLOverDates'] = json.dumps(PNLOverDates)
+    return allData
 
 
 ############################################

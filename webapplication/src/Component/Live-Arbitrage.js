@@ -22,6 +22,7 @@ import {
     LineSeries,
     MACDSeries,
 } from "react-stockcharts/lib/series";
+import '../static/css/Live_Arbitrage.css';
 
 const canvasGradient = createVerticalLinearGradient([
 	{ stop: 0, color: hexToRGBA("#b5d0ff", 0.2) },
@@ -47,6 +48,7 @@ class Live_Arbitrage extends React.Component{
                 Arbitrage: res.data.Arbitrage,
                 Spread: res.data.Spread,
                 Symbol: res.data.Symbol,
+                time: (new Date()).toLocaleString(),
             });
             // console.log(this.state);
         });
@@ -57,16 +59,19 @@ class Live_Arbitrage extends React.Component{
     fetchETFLiveData(){
         setInterval(() => {
             this.setState({
-                seconds : (this.state.seconds > 59) ? 0 : this.state.seconds + 1
+                seconds : (this.state.seconds > 59) ? 1 : this.state.seconds + 1
             });
             console.log(this.state.seconds);
             if (this.state.seconds == 13){
+                console.log("this is something")
                 axios.get(`http://localhost:5000/ETfLiveArbitrage/AllTickers`).then(res =>{
                     this.setState({
                         Arbitrage: res.data.Arbitrage,
                         Spread: res.data.Spread,
                         Symbol: res.data.Symbol,
+                        time: (new Date()).toLocaleString(),
                     });
+                    console.log(this.state);
                 });
             }
         }, 1000)
@@ -75,25 +80,25 @@ class Live_Arbitrage extends React.Component{
     render(){
         return (
             <Container fluid>
-            <h4> Live Arbitrage </h4>
-            <h5> {this.props.ETF} </h5>
-            <br />
-            <Row>
-                <Col xs={12} md={6}>
-                    <div className="DescriptionTable">
-                        {
-                            (this.state.Symbol != null) ? <LiveTable data={this.state} /> : ""
-                        }
-                    </div>
-                </Col>
-            </Row>
-        </Container>
+                <h4> Live Arbitrage </h4>
+                <p>{this.state.time}</p>
+                <br />
+                <Row>
+                    <Col xs={12} md={6}>
+                        <div className="DescriptionTable">
+                            {
+                                (this.state.Symbol != null) ? <LiveTable data={this.state} /> : ""
+                            }
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
         )
     }
 }
 
 const LiveTable = (props) => {
-    // console.log(props)
+    console.log(props);
     const getKeys = function(someJSON){
         return Object.keys(someJSON);
     }
@@ -103,11 +108,18 @@ const LiveTable = (props) => {
 
         return Symbols.map((key, index) => {
             // console.log(key);
+            var cls ;
+            if (props.data.Arbitrage[key] < 0){
+                cls = "Red";
+            }
+            else{
+                cls = "Green";
+            }
             return (
                 <tr key={index}>
-                    <td>{props.data.Symbol[key]}</td>
+                    <td className={cls}>{props.data.Symbol[key]}</td>
+                    <td className={cls}>{props.data.Arbitrage[key]}</td>
                     <td>{props.data.Spread[key]}</td>
-                    <td>{props.data.Arbitrage[key]}</td>
                 </tr>
             )
         })

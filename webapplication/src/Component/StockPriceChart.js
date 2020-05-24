@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Chart from './StockCharts/Chart';
+import CandleStickChartWithMACDIndicator from './StockCharts/CandleStickChartWithMACDIndicator';
 
 import { TypeChooser } from "react-stockcharts/lib/helper";
 
@@ -12,9 +13,16 @@ class ChartComponent extends React.Component {
 	
 	componentWillReceiveProps(nextProps) {
 	  // You don't have to do this check first, but it can help prevent an unneeded render
-	  if (nextProps.data !== this.state.data) {
-	    this.setState({ data: nextProps.data.data });
-	  }
+	  	console.log("Check for updates");
+		console.log(nextProps.data.data);
+		console.log(this.state.data);
+	  	if (nextProps.data.data !== this.state.data && nextProps.data.data!==undefined) {
+	    	var DataCopy =  this.state.date;
+	  		DataCopy = nextProps.data.data;
+	  		this.setState({ 
+	  			data:DataCopy
+	  		});
+	  	}
 	}
 
 	render() {
@@ -24,9 +32,7 @@ class ChartComponent extends React.Component {
 			return <div>Loading...</div>
 		}
 		return (
-			<TypeChooser>
-				{type => <Chart type={type} data={this.state.data} />}
-			</TypeChooser>
+		<CandleStickChartWithMACDIndicator data={this.state.data} />
 		)
 	}
 }

@@ -108,6 +108,7 @@ def AnalyzeArbitrageDataForETF(arbitrageDataFromMongo=None, magnitudeOfArbitrage
 	pnlstatementforday = {'PNL% Sell Pos. (T+1)':PNLSellPositionsT_1,
 							   'PNL% Buy Pos. (T+1)':PNLBuyPositionsT_1}
 	
+	pricedf.columns=['date','volume','open','close','high','low']
 	return arbitrageBuySellSignals, pricedf, pnlstatementforday, scatterPlotData
 
 
@@ -134,8 +135,6 @@ def retrievePNLForAllDays(etfname=None, magnitudeOfArbitrageToFilterOn=0):
 	for i in s:
 		allData, pricedf, pnlstatementforday, scatterPlotData=AnalyzeArbitrageDataForETF(arbitrageDataFromMongo=i, magnitudeOfArbitrageToFilterOn=magnitudeOfArbitrageToFilterOn)
 		PNLOverDates[str(i['dateOfAnalysis'])]=pnlstatementforday
-
-	print(PNLOverDates)
 	return PNLOverDates
 
 

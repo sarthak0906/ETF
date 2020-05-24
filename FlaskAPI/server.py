@@ -151,12 +151,14 @@ def FetchPastArbitrageData(ETFName, date):
     data['Over Bought/Sold'] = data['Over Bought/Sold'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
     # Get the price dataframe
     allData={}
-    allData['etfPrices'] = pricedf[['Time','Close']].to_json(orient='records')
     # Columns needed to display
     data = data[ColumnsForDisplay]
     
     # PNL for all dates for the etf
     allData['etfhistoricaldata'] = data.to_json(orient='index')
+    print("Price Df")
+    print(pricedf)
+    allData['etfPrices'] = pricedf.to_csv(sep='\t',index=False)
     allData['PNLStatementForTheDay'] = json.dumps(PNLStatementForTheDay)
     allData['scatterPlotData'] = json.dumps(scatterPlotData)
     return json.dumps(allData)

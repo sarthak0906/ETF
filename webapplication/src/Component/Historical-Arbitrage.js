@@ -8,7 +8,10 @@ import StockDesriptionHeader from './StockDesriptionHeader';
 import ChartComponent from './StockPriceChart';
 import ScatterPlot from './scatterplot';
 
-// import
+// Code to display chaer
+import { tsvParse, csvParse } from  "d3-dsv";
+import { timeParse } from "d3-time-format";
+
 
 class HistoricalArbitrage extends React.Component{
 	constructor(props){
@@ -24,15 +27,18 @@ class HistoricalArbitrage extends React.Component{
 			],
 			historicalArbitrageData:'',
 			scatterPlotData:'',
-			PNLOverDates:''
+			PNLOverDates:'',
+			LoadingStatement: "Loading.. PNL for " + this.props.ETF,
+			parseDate : timeParse("%Y-%m-%d %H:%M:%S"),
+			etfPriceData:''
 		}
 		this.fetchDataForADateAndETF = this.fetchDataForADateAndETF.bind(this);
-		this.fetchDataCommonToAllDates = this.fetchDataCommonToAllDates.bind(this);
+		//this.fetchDataCommonToAllDates = this.fetchDataCommonToAllDates.bind(this);
 	}
 
 	componentDidMount() {
 		this.fetchDataForADateAndETF();
-		this.fetchDataCommonToAllDates();
+		//this.fetchDataCommonToAllDates();
   	}
   	
   	// Use instead of unsafe to update
@@ -43,19 +49,20 @@ class HistoricalArbitrage extends React.Component{
   		const condition1=this.props.ETF !== prevProps.ETF;
   		const condition2=this.props.startDate !== prevProps.startDate;
   		if (condition1 || condition2) {
-		    this.fetchDataForADateAndETF()
+  			this.fetchDataForADateAndETF()
 		}
 
   		// This updates data which is common to an etf - eg all historical PNL dates datas
   		// This data is common for a particular etf. eg for XLK, this data will remain same for all dates
   		// Only update when etfname changes
   		if (condition1) {
-		    this.fetchDataCommonToAllDates()
+  			this.state.PNLOverDates='';
+  			this.state.LoadingStatement= "Loading.. PNL for " + this.props.ETF;
+		    //this.fetchDataCommonToAllDates()
 		}
 	}
 	
-
-  	render(){
+	render(){
 
   		return(
   		<Container fluid>
@@ -67,7 +74,7 @@ class HistoricalArbitrage extends React.Component{
 	          </Col>
 	          <Col xs={12} md={7}>
 	          	<h4>ETF Mover</h4>
-	          	<ChartComponent/>
+	          	<ChartComponent data={this.state.etfPriceData} />
 	          	<ul>
 	          		<li>Top Movers</li>
 	          		<li>Profit and loss - P&L Graph of all buys and sells graphs scatter</li>
@@ -84,23 +91,30 @@ class HistoricalArbitrage extends React.Component{
 	          	{this.state.scatterPlotData}
 
 	          	<h5>PNL For all Dates for ETF</h5>
-	          	{this.state.PNLOverDates}
+	          	{
+                    (this.state.PNLOverDates) ? this.state.PNLOverDates : this.state.LoadingStatement
+                }
 	          </Col>
 	        </Row>
          </Container>
   		)
   	}
 
+
+  	// Fetch Data For an ETF & a Date
 	fetchDataForADateAndETF(url){
 		axios.get(`http://localhost:5000/PastArbitrageData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
 			this.setState({
 			 	etfArbitrageTableData : <AppTable data={JSON.parse(res.data.etfhistoricaldata)}/>,
 			 	PNLStatementForTheDay : <AppTable data={JSON.parse(res.data.PNLStatementForTheDay)}/>,
+			 	etfPriceData : {'data':tsvParse(res.data.etfPrices, this.parseData(this.state.parseDate))},
 			 	scatterPlotData: <ScatterPlot data={JSON.parse(res.data.scatterPlotData)}/>,
 			});
-   		});
-   	}
+			console.log(this.state.etfPriceData);
+		});
+	}
 
+   	// Fetch Data which is common to an ETF across all dates
    	fetchDataCommonToAllDates(url){
    		console.log("All Dates ETFCALled");
 		axios.get(`http://localhost:5000/PastArbitrageData/CommonDataAcrossEtf/${this.props.ETF}`).then(res =>{
@@ -110,6 +124,20 @@ class HistoricalArbitrage extends React.Component{
 			});
    		});
    	}
+
+   	// Parse Data For Stock Price Chart
+   	parseData(parse) {
+		return function(d) {
+			d.date = parse(d.date);
+			d.open = +parseFloat(d.open);
+			d.high = +parseFloat(d.high);
+			d.low = +parseFloat(d.low);
+			d.close = +parseFloat(d.close);
+			d.volume = +parseInt(d.volume);
+			
+			return d;
+		};
+	}
 
 }
 

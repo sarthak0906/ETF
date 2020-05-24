@@ -1,18 +1,26 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Chart from './StockCharts/Chart';
-import { getData } from "./StockCharts/utils"
 
 import { TypeChooser } from "react-stockcharts/lib/helper";
 
 class ChartComponent extends React.Component {
-	componentDidMount() {
-		getData().then(data => {
-			this.setState({ data })
-		})
+	
+	state={
+		data: this.props.data
 	}
+	
+	componentWillReceiveProps(nextProps) {
+	  // You don't have to do this check first, but it can help prevent an unneeded render
+	  if (nextProps.data !== this.state.data) {
+	    this.setState({ data: nextProps.data.data });
+	  }
+	}
+
 	render() {
-		if (this.state == null) {
+		console.log("State of time series data");
+		console.log(this.state.data);
+		if (this.state.data == '') {
 			return <div>Loading...</div>
 		}
 		return (

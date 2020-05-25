@@ -123,8 +123,8 @@ def RetrieveETFArbitrageData(etfname=None, date=None, magnitudeOfArbitrageToFilt
 	for i in s:
 		allData, pricedf, pnlstatementforday, scatterPlotData=AnalyzeArbitrageDataForETF(arbitrageDataFromMongo=i, magnitudeOfArbitrageToFilterOn=magnitudeOfArbitrageToFilterOn)
 		PNLStatementForTheDay[str(i['dateOfAnalysis'])]=pnlstatementforday
-	print(PNLStatementForTheDay)
-	return allData, pricedf, PNLStatementForTheDay, scatterPlotData
+	
+	return allData, pricedf, pnlstatementforday, scatterPlotData
 
 
 # This function sends back PNL for all dates for ETF 

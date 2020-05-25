@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col'
 import StockDesriptionHeader from './StockDesriptionHeader';
 import ChartComponent from './StockPriceChart';
 import ScatterPlot from './scatterplot';
+import PieChartGraph from './PieChart';
 
 // Code to display chaer
 import { tsvParse, csvParse } from  "d3-dsv";
@@ -33,12 +34,12 @@ class HistoricalArbitrage extends React.Component{
 			etfPriceData:''
 		}
 		this.fetchDataForADateAndETF = this.fetchDataForADateAndETF.bind(this);
-		//this.fetchDataCommonToAllDates = this.fetchDataCommonToAllDates.bind(this);
+		this.fetchDataCommonToAllDates = this.fetchDataCommonToAllDates.bind(this);
 	}
 
 	componentDidMount() {
 		this.fetchDataForADateAndETF();
-		//this.fetchDataCommonToAllDates();
+		this.fetchDataCommonToAllDates();
   	}
   	
   	// Use instead of unsafe to update
@@ -58,7 +59,7 @@ class HistoricalArbitrage extends React.Component{
   		if (condition1) {
   			this.state.PNLOverDates='';
   			this.state.LoadingStatement= "Loading.. PNL for " + this.props.ETF;
-		    //this.fetchDataCommonToAllDates()
+		    this.fetchDataCommonToAllDates()
 		}
 	}
 	
@@ -66,18 +67,29 @@ class HistoricalArbitrage extends React.Component{
 
   		return(
   		<Container fluid>
-			<h4> Historical Arbitrage </h4>
 			<Row>
 	          <Col className="etfArbitrageTable" xs={12} md={5}>
 	            <StockDesriptionHeader startDate = {this.props.startDate} ETF={this.props.ETF} />
-		      {this.state.etfArbitrageTableData}
+		      	{this.state.etfArbitrageTableData}
 	          </Col>
+
 	          <Col xs={12} md={7}>
-	          	<h4>ETF Mover</h4>
-	          	<ChartComponent data={this.state.etfPriceData} />
-	          	<ul>
-	          		<li>Top Movers</li>
-	          		<li>Profit and loss - P&L Graph of all buys and sells graphs scatter</li>
+				<Row>
+					
+					<Col xs={12} md={8}>
+						<p>Price Chart</p>
+		          		<ChartComponent data={this.state.etfPriceData} />
+	          		</Col>
+
+	          		<Col xs={12} md={4}>
+	          			<p>ETF Movers(Weighted)</p>
+	          			<PieChartGraph data={this.state.etfmoversDictCount} element={"Count"}/>
+	          			<p>Holdings with most movement</p>
+	          			<PieChartGraph data={this.state.highestChangeDictCount} element={"Count"}/>
+		          	</Col>
+				</Row>
+
+				<ul>
 	          		<li>Confidence in signals</li>
 	          		<li>Filter by Magnitude Of arbitrage(Left Side to play with)</li>
 	          		<li>Give example of days where arbitrage was not that bad</li>
@@ -85,6 +97,7 @@ class HistoricalArbitrage extends React.Component{
 	          		<li>For holidays and weekends data not available</li>
 	          		<li>Make table smaller and scrollable</li>
 	          	</ul>
+	          	
 	          	{this.state.PNLStatementForTheDay}
 
 	          	<h5>ETF Change % Vs NAV change %</h5>
@@ -109,6 +122,8 @@ class HistoricalArbitrage extends React.Component{
 			 	PNLStatementForTheDay : <AppTable data={JSON.parse(res.data.PNLStatementForTheDay)}/>,
 			 	etfPriceData : {'data':tsvParse(res.data.etfPrices, this.parseData(this.state.parseDate))},
 			 	scatterPlotData: <ScatterPlot data={JSON.parse(res.data.scatterPlotData)}/>,
+			 	etfmoversDictCount: JSON.parse(res.data.etfmoversDictCount),
+			 	highestChangeDictCount: JSON.parse(res.data.highestChangeDictCount)
 			});
 			console.log(this.state.etfPriceData);
 		});

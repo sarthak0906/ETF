@@ -4,6 +4,7 @@ import AppTable from './Table.js';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Card from 'react-bootstrap/Card'
 import StockDesriptionHeader from './StockDesriptionHeader';
 import ChartComponent from './StockPriceChart';
 import ScatterPlot from './scatterplot';
@@ -67,46 +68,56 @@ class HistoricalArbitrage extends React.Component{
 
   		return(
   		<Container fluid>
-			<Row>
+  		<Row>
 	          <Col className="etfArbitrageTable" xs={12} md={5}>
 	            <StockDesriptionHeader startDate = {this.props.startDate} ETF={this.props.ETF} />
 		      	{this.state.etfArbitrageTableData}
 	          </Col>
 
 	          <Col xs={12} md={7}>
-				<Row>
-					
+	          	<Row>
 					<Col xs={12} md={8}>
-						<p>Price Chart</p>
-		          		<ChartComponent data={this.state.etfPriceData} />
+						<Card>
+						  <Card.Header className="text-white" style={{'background-color':'#292b2c'}}>Price Chart</Card.Header>
+						  <Card.Body>
+						    <ChartComponent data={this.state.etfPriceData} />
+						  </Card.Body>
+						</Card>
 	          		</Col>
 
 	          		<Col xs={12} md={4}>
-	          			<p>ETF Movers(Weighted)</p>
-	          			<PieChartGraph data={this.state.etfmoversDictCount} element={"Count"}/>
-	          			<p>Holdings with most movement</p>
-	          			<PieChartGraph data={this.state.highestChangeDictCount} element={"Count"}/>
-		          	</Col>
-				</Row>
+						<Card>
+							<Card.Header className="text-white" style={{'background-color':'#292b2c'}}>Holdings</Card.Header>
+						  <Card.Body>
+						  	<p>ETF Movers(Weighted)</p>
+						    <PieChartGraph data={this.state.etfmoversDictCount} element={"Count"}/>
+						    <p>Holdings with most movement</p>
+					    	<PieChartGraph data={this.state.highestChangeDictCount} element={"Count"}/>
+						  </Card.Body>
+						</Card>
+	          		</Col>
+					
+					<Col xs={12} md={6}>
+						<h5>PNL Statemens for day</h5>
+						{this.state.PNLStatementForTheDay}
+					</Col>
 
-				<ul>
-	          		<li>Confidence in signals</li>
-	          		<li>Filter by Magnitude Of arbitrage(Left Side to play with)</li>
-	          		<li>Give example of days where arbitrage was not that bad</li>
-	          		<li>Give Buy/Sell Signal on the chart, CHange time series data</li>
-	          		<li>For holidays and weekends data not available</li>
-	          		<li>Make table smaller and scrollable</li>
-	          	</ul>
-	          	
-	          	{this.state.PNLStatementForTheDay}
+					<Col xs={12} md={6}>
+						<Card>
+							<Card.Header className="text-white" style={{'background-color':'#292b2c'}}>ETF Change % Vs NAV change %</Card.Header>
+						  <Card.Body>
+							{this.state.scatterPlotData}						  	
+						  </Card.Body>
+						</Card>
+					</Col>
 
-	          	<h5>ETF Change % Vs NAV change %</h5>
-	          	{this.state.scatterPlotData}
-
-	          	<h5>PNL For all Dates for ETF</h5>
-	          	{
-                    (this.state.PNLOverDates) ? this.state.PNLOverDates : this.state.LoadingStatement
-                }
+					<Col xs={12} md={12}>
+						<h5>PNL For all Dates for ETF</h5>
+			          	{
+		                    (this.state.PNLOverDates) ? this.state.PNLOverDates : this.state.LoadingStatement
+		                }
+	                </Col>
+                </Row>
 	          </Col>
 	        </Row>
          </Container>

@@ -152,12 +152,10 @@ def FetchPastArbitrageData(ETFName, date):
     # Replace Values in Pandas DataFrame
     data.rename(columns={'ETF Trading Spread in $':'$Spread',
                         'Arbitrage in $':'$Arbitrage',
-                        'Flag': 'Over Bought/Sold',
                         'Magnitude of Arbitrage':'Absolute Arbitrage',
                         'ETFMover%1_ticker': 'Etf Mover',
                         'Change%1_ticker': 'Most Change%'}, inplace=True)
 
-    data['Over Bought/Sold'] = data['Over Bought/Sold'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
     # Get the price dataframe
     allData={}
     # Columns needed to display

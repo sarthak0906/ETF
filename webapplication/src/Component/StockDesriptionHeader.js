@@ -6,8 +6,8 @@ class StockDesriptionHeader extends Component {
 	render(){
 		return (
 		<div>
-			<p> {this.props.ETF} </p>
-    		<p> Date of Arbitrage : {this.props.startDate}</p>
+			<h5> {this.props.ETF} </h5>
+    		<h5> Date of Arbitrage : {this.props.startDate}</h5>
     		<ColoredLine color="black" />
 		</div>
 		);

@@ -94,7 +94,7 @@ def SendETFHoldingsData(ETFName, date):
 ############################################
 # Load Past Arbitrage Past Data
 ############################################
-from FlaskAPI.Components.ETFArbitrage.ETFArbitrageMain import RetrieveETFArbitrageData
+from FlaskAPI.Components.ETFArbitrage.ETFArbitrageMain import RetrieveETFArbitrageData, retrievePNLForAllDays
 
 # Divide Columnt into movers and the price by which they are moving
 etmoverslist = ['ETFMover%1', 'ETFMover%2', 'ETFMover%3', 'ETFMover%4', 'ETFMover%5',
@@ -112,12 +112,13 @@ def FetchPastArbitrageData(ETFName, date):
                          'T', 'T+1']
 
     # Retreive data for Components
-    data, pricedf, historicalArbitrageData, scatterPlotData = RetrieveETFArbitrageData(ETFName, date)
+    data, pricedf, PNLStatementForTheDay, scatterPlotData = RetrieveETFArbitrageData(etfname=ETFName, date=date, magnitudeOfArbitrageToFilterOn=0)
 
     # Check if data doesn't exsist
     if data.empty:
         print("No Data Exist")
     
+    ########### Code to modify the ETF Movers and Underlying with highest change %
     # Seperate ETF Movers and the percentage of movement
     for movers in etmoverslist:
         def getTickerReturnFromMovers(x):
@@ -129,6 +130,14 @@ def FetchPastArbitrageData(ETFName, date):
         data[newcolnames] = pd.DataFrame(data[movers].tolist(), index=data.index)
         del data[movers]
 
+    etfmoversList=dict(data[['ETFMover%1_ticker','ETFMover%2_ticker','ETFMover%3_ticker']].stack().value_counts())
+    etfmoversDictCount=pd.DataFrame.from_dict(etfmoversList,orient='index',columns=['Count']).to_dict('index')
+
+    highestChangeList=dict(data[['Change%1_ticker','Change%2_ticker','Change%3_ticker']].stack().value_counts())
+    highestChangeDictCount=pd.DataFrame.from_dict(highestChangeList,orient='index',columns=['Count']).to_dict('index')
+    ########## Code to modify the ETF Movers and Underlying with highest change %
+
+
     # Sort the data frame on time since Sell and Buy are concatenated one after other
     data = data.sort_index()
 
@@ -138,26 +147,40 @@ def FetchPastArbitrageData(ETFName, date):
 
     # Round of DataFrame 
     data = data.round(3)
-
     print(data.head())
+
     # Replace Values in Pandas DataFrame
     data.rename(columns={'ETF Trading Spread in $':'$Spread',
                         'Arbitrage in $':'$Arbitrage',
-                        'Flag': 'Over Bought/Sold',
                         'Magnitude of Arbitrage':'Absolute Arbitrage',
                         'ETFMover%1_ticker': 'Etf Mover',
                         'Change%1_ticker': 'Most Change%'}, inplace=True)
 
-    data['Over Bought/Sold'] = data['Over Bought/Sold'].map({111.0: 'Over Bought', -111.0: 'Over Sold'})
     # Get the price dataframe
     allData={}
-    allData['etfPrices'] = pricedf[['Time','Close']].to_json(orient='records')
     # Columns needed to display
     data = data[ColumnsForDisplay]
+    
+    # PNL for all dates for the etf
     allData['etfhistoricaldata'] = data.to_json(orient='index')
-    allData['historicalArbitrageData'] = json.dumps(historicalArbitrageData)
+    print("Price Df")
+    print(pricedf)
+    allData['etfPrices'] = pricedf.to_csv(sep='\t',index=False)
+    allData['PNLStatementForTheDay'] = json.dumps(PNLStatementForTheDay)
     allData['scatterPlotData'] = json.dumps(scatterPlotData)
+    allData['etfmoversDictCount']=json.dumps(etfmoversDictCount)
+    allData['highestChangeDictCount']=json.dumps(highestChangeDictCount)
     return json.dumps(allData)
+
+
+@app.route('/PastArbitrageData/CommonDataAcrossEtf/<ETFName>')
+def fetchPNLForETFForALlDays(ETFName):
+    print("All ETF PNL Statement is called")
+    PNLOverDates=retrievePNLForAllDays(etfname=ETFName, magnitudeOfArbitrageToFilterOn=0)
+    allData={}
+    print(PNLOverDates)
+    allData['PNLOverDates'] = json.dumps(PNLOverDates)
+    return allData
 
 
 ############################################

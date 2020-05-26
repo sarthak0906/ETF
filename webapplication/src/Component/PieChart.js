@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { PieChart, Pie, Sector, Cell } from 'recharts';
+import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
 
 const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
@@ -46,11 +46,12 @@ const renderActiveShape = (props) => {
 };
 
 
-export default class Example extends PureComponent {
+class PieChartGraph extends PureComponent {
   constructor(props) {
       super(props);
       this.state = {
           data: [],
+          chartname:'',
           activeIndex: 0,
           COLORS     : ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
       };
@@ -61,7 +62,8 @@ export default class Example extends PureComponent {
       await this.setState({data : []});
       for (let key in this.props.data){
         await this.setState({
-            data : [...this.state.data, {'name': key, 'value': this.props.data[key][this.props.element]}]
+            data : [...this.state.data, {'name': key, 'value': this.props.data[key][this.props.element]}],
+            chartname:this.props.chartname
         })
       }
     }
@@ -83,13 +85,14 @@ export default class Example extends PureComponent {
   
   render() {
     return (
-      <PieChart width={400} height={350}>
+    
+      <PieChart  width={350} height={300}>
         <Pie
         activeIndex={this.state.activeIndex}
         activeShape={renderActiveShape}
         data={this.state.data}
-        cx={200}
-        cy={200}
+        cx={175}
+        cy={150}
         innerRadius={25}
         outerRadius={90}
         fill="#8884d8"
@@ -101,6 +104,9 @@ export default class Example extends PureComponent {
           }
         </Pie>
       </PieChart>
+    
     );
   }
 }
+
+export default PieChartGraph;

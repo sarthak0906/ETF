@@ -84,7 +84,7 @@ class PullandCleanData:
                     PERatio=str(etfdescdf.loc[etfdescdf['Symbol'] == etfname]['PERatio'].values[0]),
                     Beta=str(etfdescdf.loc[etfdescdf['Symbol'] == etfname]['Beta'].values[0]),
                     NumberOfHolding=float(etfdescdf.loc[etfdescdf['Symbol'] == etfname]['NumberOfHolding'].values[0]),
-                    OverAllRating=str(etfdescdf.loc[etfdescdf['Symbol'] == etfname]['OverAllRating'].values[0]),
+                    # OverAllRating=str(etfdescdf.loc[etfdescdf['Symbol'] == etfname]['OverAllRating'].values[0]),
                     LiquidityRating=str(
                         etfdescdf.loc[etfdescdf['Symbol'] == etfname]['LiquidityRating'].values[0]),
                     ExpensesRating=str(

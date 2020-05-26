@@ -44,7 +44,7 @@ class masterclass:
             pass
 
         e = self.driver.find_element(By.ID, "user_login")
-        e.send_keys("etfanalysis4")
+        e.send_keys("ticketsoft")
         e = self.driver.find_element(By.ID, "password")
         e.send_keys("etfapp2020")
         e = self.driver.find_element(By.ID, "login-button")

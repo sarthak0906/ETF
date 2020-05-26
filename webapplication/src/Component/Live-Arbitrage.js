@@ -115,7 +115,7 @@ const LiveTable = (props) => {
             if (props.data.Arbitrage[key] < 0){
                 cls = "Red";
             }
-            if(props.data.Arbitrage[key] > 0){
+            else if(props.data.Arbitrage[key] > 0){
                 cls = "Green";
             }
             else {

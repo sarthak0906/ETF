@@ -138,7 +138,7 @@ const LiveTable = (props) => {
             if (props.data.Arbitrage[key] < 0){
                 cls = "Red";
             }
-            if(props.data.Arbitrage[key] > 0){
+            else if(props.data.Arbitrage[key] > 0){
                 cls = "Green";
             }
             else {
@@ -146,7 +146,7 @@ const LiveTable = (props) => {
             }
             return (
                 <tr key={index}>
-                    <td>{new Date(props.data.Timestamp[key]).toLocaleTimeString()}</td>
+                    <td className={cls}>{new Date(props.data.Timestamp[key]).toLocaleTimeString()}</td>
                     <td className={cls}>{props.data.Arbitrage[key]}</td>
                     <td>{props.data.Spread[key]}</td>
                 </tr>

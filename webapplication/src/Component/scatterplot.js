@@ -15,11 +15,11 @@ class ScatterPlot extends React.Component {
 
   render() {
     return (
-        <ScatterChart width={600} height={400} margin={{top: 20, right: 20, bottom: 20, left: 20}}>
+        <ScatterChart width={500} height={300} margin={{top: 20, right: 20, bottom: 20, left: 20}}>
           <CartesianGrid />
           <XAxis dataKey={'Net Asset Value Change%'} type="number" name='Net Asset Value Chage %' unit='%'/>
           <YAxis dataKey={'ETF Change Price %'} type="number" name='ETF Change Price %' unit='%'/>
-          <Scatter name='A school' data={this.props.data} fill='#8884d8'/>
+          <Scatter name='A school' data={this.props.data} fill='#292b2c'/>
           <Tooltip cursor={{strokeDasharray: '3 3'}}/>
         </ScatterChart>
       );

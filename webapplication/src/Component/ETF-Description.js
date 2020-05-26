@@ -91,7 +91,8 @@ class Description extends React.Component{
   const [showPie, setPie] = useState(false);
   const handleClose = () => setPie(false);
   const handleShow = () => setPie(true);
-
+  console.log("What are we sending to piechart");
+  console.log(props.data);
   return (
     <div className="DescriptionTable">
       <Button variant="primary" onClick={handleShow}>

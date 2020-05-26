@@ -67,3 +67,20 @@ def analysePerformance(df=None, BuySellIndex=None):
     singalDf.loc['Total Return',:]=singalDf.sum(axis=0)
     return singalDf
 
+
+def countRightSignals(data=None):
+    resultDict={}
+    buysignal=data[data['Over Bought/Sold']=='Buy']
+    resultDict['# of Buy Signal']=buysignal.shape[0]
+    resultDict['# of Right Buy Signal']=buysignal[buysignal['T+1']>0].shape[0]
+
+    sellsignal=data[data['Over Bought/Sold']=='Sell']
+    resultDict['# of Sell Signal']=sellsignal.shape[0]
+    resultDict['# of Right Sell Signal']=sellsignal[sellsignal['T+1']<0].shape[0]
+
+    return resultDict
+
+
+
+
+

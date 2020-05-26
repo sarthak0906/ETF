@@ -9,7 +9,7 @@ return (
       <form>
         <p className="h4 text-center mb-4">Verify Email Address</p>
         <label htmlFor="defaultFormRegisterNameEx" className="grey-text">
-          Enter Verficatio Code
+          Enter Verfication Code
         </label>
         <input type="text" id="defaultFormRegisterNameEx" className="form-control" />
         <div className="text-center mt-4">

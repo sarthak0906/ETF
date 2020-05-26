@@ -8,10 +8,28 @@ import '../static/css/NavStyle.css';
 import "react-datepicker/dist/react-datepicker.css";
 import { Link } from 'react-router-dom';
 import moment from 'moment'
-
+import {
+	AuthenticationDetails,
+	CognitoUserPool,
+	CognitoUserAttribute,
+	CognitoUser,
+	CognitoUserSession,
+} from "amazon-cognito-identity-js";
+  
 // CSS Modules, react-datepicker-cssmodules.css
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
+const userPool = new CognitoUserPool({UserPoolId: 'ap-south-1_x8YZmKVyG', ClientId: '2j72c46s52rm3us8rj720tsknd'});
+
+export function logout(username) {
+	var cognitoUser = new CognitoUser({
+	  Username: username,
+	  Pool: userPool
+	});
+  
+	// call SigOut on User
+	cognitoUser.signOut();
+}
 
 class Former extends Component{
 	state={
@@ -110,6 +128,9 @@ class Former extends Component{
 	              Submit
 	            </Button>
 	        </Form>
+			<Button variant="dark" onClick={() => {logout(localStorage.getItem("username"))}}>
+				logout
+			</Button>
 	      </Navbar>
 	    </Nav>
 	  )

@@ -13,10 +13,12 @@ import ML from './Component/Machine-Learning';
 import SignInFormPage from './Component/User/login';
 import SignUpFormPage from './Component/User/signup';
 import EmailVerification from './Component/User/emailverification';
+import { createBrowserHistory } from "history";
 
 // StylesSheets
 import './static/css/style.css';
 
+const history = createBrowserHistory();
 
 class App extends Component {
   
@@ -57,7 +59,7 @@ class App extends Component {
 
   render(){
   	return (
-      <Router>
+    <Router history={history} >
       <div className="Container">
         <div>
           <div className="Form">
@@ -71,9 +73,9 @@ class App extends Component {
       <Route path="/Live-Arbitrage-Single" render={() => <Live_Arbitrage_Single ETF={this.state.ETF} />} />
       <Route path="/Live-Arbitrage" render={() => <Live_Arbitrage ETF={this.state.ETF} />} />
       <Route path="/Machine-Learning" render={ML} />
-      <Route path="/SignUp" render={SignUpFormPage} />
+      <Route path="/SignUp" render={() => <SignUpFormPage />} />
       <Route path="/Login" render={SignInFormPage} />
-      <Route path="/EmailVerification" render={EmailVerification} />
+      <Route path="/EmailVerification" render={() => <EmailVerification />} />
     </ Router>
     );
   }

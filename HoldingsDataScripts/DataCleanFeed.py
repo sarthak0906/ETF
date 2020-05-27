@@ -29,7 +29,7 @@ class PullandCleanData:
         self.detailsdata = pd.DataFrame()
         self.holdingsdata = pd.DataFrame()
         # connect to 'ETF_db' database in Mongodb
-        connect('ETF_db', alias='ETF_db')
+        connect('ETF_db', alias='ETF_db', replicaSet='rs0')
 
     def readfilesandclean(self, etfname, etfdescdf):
         # take etf name to be stored and respective data in DataFrame format

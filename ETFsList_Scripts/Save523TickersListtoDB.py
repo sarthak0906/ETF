@@ -9,7 +9,7 @@ from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
 class ETFListSaver:
 
     def __init__(self):
-        connect('ETF_db', alias='ETF_db')
+        connect('ETF_db', alias='ETF_db', replicaSet='rs0')
         self.readingpath = ''
         self.etflistdf = pd.DataFrame()
 

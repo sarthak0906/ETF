@@ -10,7 +10,7 @@ from FlaskAPI.Components.ETFArbitrage.helperForETFArbitrage import LoadETFPrices
 from FlaskAPI.Components.ETFArbitrage.MomentumSignal import MomentumSignals
 from FlaskAPI.Components.ETFArbitrage.CandleStickPattern import PatternSignals
 
-connectionLocal = MongoClient('18.213.229.80', 27017)
+connectionLocal = MongoClient('18.213.229.80', 27017, replicaSet='rs0')
 db = connectionLocal.ETF_db
 TradesData = db.TradesData
 arbitragecollection = db.ArbitrageCollection

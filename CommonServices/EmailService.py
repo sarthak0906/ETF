@@ -83,6 +83,10 @@ class EmailSender():
             smtp.quit()
         except socket.gaierror:
             print("Network connection error, email not sent.")
+            pass
+        except Exception as e:
+            print(e)
+            pass
 
 if __name__=="__main__":
     emailobj = EmailSender()

@@ -73,10 +73,10 @@ class LoadHoldingsdata(object):
             # Production username = ubuntu
             if getpass.getuser() == 'ubuntu':
                 # Connect to localhost server for Production
-                connect('ETF_db', alias='ETF_db')
+                connect('ETF_db', alias='ETF_db', replicaSet='rs0')
             else:
                 # Connecting to ETF_db on AWS EC2 Production Server
-                connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
+                connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017, replicaSet='rs0')
             etfdata = ETF.objects(ETFTicker=etfname, FundHoldingsDate__lte=fundholdingsdate).order_by(
                 '-FundHoldingsDate').first()
             print(etfdata)
@@ -112,10 +112,10 @@ class LoadHoldingsdata(object):
             # Production username = ubuntu
             if getpass.getuser() == 'ubuntu':
                 # Connect to localhost server for Production
-                connect('ETF_db', alias='ETF_db')
+                connect('ETF_db', alias='ETF_db', replicaSet='rs0')
             else:
                 # Connecting to ETF_db on AWS EC2 Production Server
-                connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
+                connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017, replicaSet='rs0')
             etfdata = ETF.objects(ETFTicker=etfname).order_by('-FundHoldingsDate').first()
             print(etfdata.ETFTicker)
             holdingsdatadf = pd.DataFrame(etfdata.to_mongo().to_dict()['holdings'])

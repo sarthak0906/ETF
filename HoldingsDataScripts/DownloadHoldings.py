@@ -32,7 +32,7 @@ from HoldingsDataScripts.ETFMongo import ETF
 class PullHoldingsListClass(object):
 
     def __init__(self, dateofdownload=datetime.now().date()):
-        connect('ETF_db', alias='ETF_db')
+        connect('ETF_db', alias='ETF_db', replicaSet='rs0')
         self.todaysdata = ETFListDocument.objects(Download_date=dateofdownload).first()
         self.etfdescdf = pd.DataFrame(self.todaysdata.to_mongo().to_dict()['etflist'])
 

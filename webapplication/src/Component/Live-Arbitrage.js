@@ -98,6 +98,9 @@ class Live_Arbitrage extends React.Component{
 }
 
 const LiveTable = (props) => {
+    if(props.data == {} || props.data == undefined){
+        return "Loading";
+    }
     console.log(props);
     const getKeys = function(someJSON){
         return Object.keys(someJSON);
@@ -108,12 +111,15 @@ const LiveTable = (props) => {
 
         return Symbols.map((key, index) => {
             // console.log(key);
-            var cls ;
+            let cls = "";
             if (props.data.Arbitrage[key] < 0){
                 cls = "Red";
             }
-            else{
+            else if(props.data.Arbitrage[key] > 0){
                 cls = "Green";
+            }
+            else {
+                cls = "";
             }
             return (
                 <tr key={index}>

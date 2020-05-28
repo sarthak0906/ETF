@@ -93,10 +93,9 @@ class Former extends Component{
  	   	});
 	}
 	  
-	setValues = selectValues => this.setState({ ETF: selectValues });
+	setValues = selectValues => this.setState({ ETF: selectValues[0].element });
 
   render(){
-	  console.log(options);
   	return (
 	    <Nav className="bg-dark justify-content-between nav">
 	      <Navbar  className="bg-dark">

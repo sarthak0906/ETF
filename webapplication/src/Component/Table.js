@@ -51,7 +51,14 @@ const AppTable = (props) => {
     return MainKeys.map((Key1, index) => {
       var row = (typeof(props.data[Key1]) == Object) ? props.data[Key1].values() : props.data[Key1];
       // console.log(row);
-      return <RenderRow k={Key1} key={index} data={row} />
+    
+      if (props.clickableTable=='True'){
+        console.log("Clicable was called");
+        return <RenderRowClickable k={Key1} key={index} data={row} submitFn={props.submitFn}/>
+      } else{
+        console.log("None-Clicable was called");
+        return <RenderRow k={Key1} key={index} data={row} />
+      }
     }) 
   }
   
@@ -86,6 +93,31 @@ const RenderRow = (props) =>{
   else {
     return(
       <tr>
+        <td className="Main">{props.k}</td>
+        {
+          Object.keys(props.data).map((key, i) => (
+            <td key={i}>{props.data[key]}</td>
+          ))
+        }
+      </tr>
+    );
+  }
+}
+
+
+// functional Component to render one row at a time
+const RenderRowClickable = (props) =>{
+  if (whatIsIt(props.data) !== "Object"){
+    return( 
+      <tr>
+        <td className="Main">{props.k}</td>
+        <td>{props.data}</td>
+      </tr>
+    )
+  }
+  else {
+    return(
+      <tr onClick={() => props.submitFn(props.k)}>
         <td className="Main">{props.k}</td>
         {
           Object.keys(props.data).map((key, i) => (

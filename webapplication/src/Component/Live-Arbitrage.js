@@ -4,7 +4,6 @@ import '../static/css/Description.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import SimilarETFList from './SimilarETFs';
 import axios from 'axios';
 import { ChartCanvas, Chart } from "react-stockcharts";
 import PropTypes from "prop-types";

@@ -7,6 +7,7 @@ import Nav from 'react-bootstrap/Nav'
 import '../static/css/NavStyle.css';
 import "react-datepicker/dist/react-datepicker.css";
 import { Link } from 'react-router-dom';
+import { options } from "./options";
 import moment from 'moment'
 import {
 	AuthenticationDetails,
@@ -15,6 +16,7 @@ import {
 	CognitoUser,
 	CognitoUserSession,
 } from "amazon-cognito-identity-js";
+import Select from "react-dropdown-select";
   
 // CSS Modules, react-datepicker-cssmodules.css
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
@@ -33,9 +35,14 @@ export function logout(username) {
 
 class Former extends Component{
 	state={
-	    arr : ["XLK", "BMLP","IHI","SZK","JHMC","FHLC","PUI","KBWB","FTXG","XLV","XBI","RORE","PSCM","PASS","IEO","IYZ","XLY","PSCF","MRRL","PXE","BNKU","XLC","XHB","PPH","XRT","NUGT","FDIS","XWEB","FDN","RTM","SEF","USD","QABA","DRN","KBE","TAWK","IBB","UGE","PSCE","SCC","WANT","RXL","EVX","KRE","DRV","BNKD","BTEC","ROKT","BBC","SOXS","GASX","FXZ","CNRG","PTH","XHE","XLP","HDGE","FXD","FTEC","REZ","XITK","TECS","IHF","DUSL","XLF","ZIG","IYG","PBE","DDG","ZBIO","SCHH","FINU","SOXX","XLB","FRI","IECS","XPH","IYC","SIJ","SKYY","IYE","PKB","RETL","RYU","FTXL","PPA","PYZ","FXU","AMZA","RWR","FMAT","XLI","REK","ITB","BBH","RYE","BBP","IEDI","IAI","PSCT","TDV","XLE","JHMA","LABU","PPTY","JHME","XSD","VPC","REML","KBWP","DIG","UYM","EWRE","DPST","ROOF","MORL","FTXR","FUTY","XOP","PSL","PXJ","PSI","FTXO","IGN","RTH","IHE","FXH","BBRE","PSCI","ROM","VCR","NAIL","FIVG","MLPQ","ONLN","QQQ","NRGO","AMLP","XLU","FBT","JHMS","SKF","PJP","VNQ","VGT","INDS","CWEB","SMN","WCLD","XTN","ERY","UTES","HOMZ","RHS","FIDU","RDOG","UXI","SRS","IYF","TPOR","PTF","VDE","IGE","JHMH","DUG","PBW","CLIX","JNUG","NURE","MLPA","XNTK","IYM","FIW","PXQ","QTEC","OIH","KIE","FINZ","IYT","XSW","LABD","XHS","JHMU","IAT","PEZ","IFRA","UPW","IEFN","FXR","RGI","ZMLP","VHT","XAR","IGM","RYT","IYW","IYK","IEHS","UCC","VAW","XME","IEZ","PHO","ITA","GASL","SMH","VPU","PSCD","PSCH","PSJ","SDP","NEED","PNQI","SOXL","SSG","KBWR","SRVR","XLRE","FCG","VIS","JHMT","IAK","KBWY","MLPX","ICF","PXI","PAVE","REW","HAIL","DRIP","SLX","PILL","PBS","AIRR","IDU","FITE","IYH","REM","ERX","MLPB","PEJ","NRGU","XTL","BIZD","ARKG","NETL","RCD","SIMS","IETC","RYH","RYF","NRGD","VDC","XES","MORT","FREL","FENY","TDIV","FXG","PFI","BUYN","FXL","PSR","PSCU","SBIO","PRN","FSTA","DFEN","IYR","VOX","FXN","GUSH","CNCR","MLPI","URE","CURE","LACK","UTSL","VMOT","IGV","WDRW","TECL"],
+	    arr : options,
 	    date: moment(this.props.startDate, 'YYYYMMDD').toDate(),
-	    ETF: this.props.ETF
+		ETF: this.props.ETF,
+		searchBy: "element",
+		labelField: "element",
+		valueField: "element",
+		color: "#0074D9",
+		dropdownPosition: "bottom",
 	}
 
 	constructor(props){
@@ -84,7 +91,9 @@ class Former extends Component{
 		 this.setState({
  	   		ETF:event.target.value
  	   	});
-  	}
+	}
+	  
+	setValues = selectValues => this.setState({ ETF: selectValues[0].element });
 
   render(){
   	return (
@@ -114,10 +123,15 @@ class Former extends Component{
 	      <Navbar className="bg-dark">
 	        <Form inline >
 	            <Form.Group onChange={this.select}>
-	              <Form.Label className="FormLabel">Stock Select</Form.Label>
-	              <Form.Control className="FormInput" as="select" value={this.state.ETF}>
-	                {this.FormSelect(this.state.arr)}
-	              </Form.Control>
+				  <Select
+				  		style={{color: "black", width: '150px', marginRight: "20px", backgroundColor: "white"}}
+						placeholder="Select ETFs"
+						labelField={this.state.labelField}
+						valueField={this.state.labelField}
+						options={options}
+						onChange={values => this.setValues(values)}
+						noDataLabel="No matches found"
+				  />
 	            </Form.Group>
 	            <DatePicker
 	              className="FormInput"

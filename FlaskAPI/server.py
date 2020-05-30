@@ -58,10 +58,10 @@ def SendETFHoldingsData(ETFName, date):
         etfdata = LoadHoldingsdata().getAllETFData(ETFName, date)
         ETFDataObject = etfdata.to_mongo().to_dict()
         print(ETFDataObject)
-        HoldingsDatObject=pd.DataFrame(ETFDataObject['holdings']).set_index('TickerSymbol').to_dict(orient='index')
+        HoldingsDatObject=pd.DataFrame(ETFDataObject['holdings']).set_index('TickerSymbol').T.to_dict()
         SimilarTotalAsstUndMgmt = fetchETFsWithSimilarTotAsstUndMgmt(connection=connection,totalassetUnderManagement=ETFDataObject['TotalAssetsUnderMgmt'])
 
-        ETFDataObject['TotalAssetsUnderMgmt']="${:,.0f} M".format(ETFDataObject['TotalAssetsUnderMgmt'])
+        ETFDataObject['TotalAssetsUnderMgmt']="${:,.0f}".format(ETFDataObject['TotalAssetsUnderMgmt'])
         ETFDataObject['SharesOutstanding']="{:,.0f}".format(ETFDataObject['SharesOutstanding'])
         ETFDataObject['InceptionDate'] = str(ETFDataObject['InceptionDate'])
         

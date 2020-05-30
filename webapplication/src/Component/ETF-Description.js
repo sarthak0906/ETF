@@ -89,34 +89,53 @@ class Description extends React.Component{
           <Row>
             <Col xs={12} md={9}>
               <Row>
-                <Col xs={12} md={6}>
-                  <h6><strong>ETF Description</strong></h6>
-                  <div className="DescriptionTable">
-                    {
-                      (this.state.DescriptionData != null) ? <AppTable data={this.state.DescriptionData} clickableTable={'False'} /> : ""
-                    }
-                  </div>
+                <Col xs={12} md={4}>
+                  <Card>
+                    <Card.Header className="text-white BlackHeaderForModal">ETF Description</Card.Header>
+                    <Card.Body>
+                        <div className="DescriptionTable">
+                          {
+                           (this.state.DescriptionData != null) ? <AppTable data={this.state.DescriptionData} clickableTable={'False'} /> : ""
+                          }
+                        </div>
+                    </Card.Body>
+                  </Card>
                 </Col>
                 
-                <Col xs={12} md={6}>
-                  <h6><strong>ETFs from same issuer : {this.state.IssuerName}</strong></h6>
-                  <div className="DescriptionTable">
-                      <AppTable data={this.state.SameIssuerETFs} clickableTable='True' submitFn={this.props.submitFn}/>
-                  </div>
+                <Col xs={12} md={8}>
+                </Col>
+                
+                <Col xs={12} md={4}>
+                  <Card>
+                    <Card.Header className="text-white BlackHeaderForModal">ETFs from same issuer : {this.state.IssuerName}</Card.Header>
+                    <Card.Body>
+                        <div className="DescriptionTable">
+                           <AppTable data={this.state.SameIssuerETFs} clickableTable='True' submitFn={this.props.submitFn}/>
+                        </div>
+                    </Card.Body>
+                  </Card>
                 </Col>
 
-                <Col xs={12} md={6}>
-                  <h6><strong>Other ETF similar asset under management</strong></h6>
-                  <div className="DescriptionTable">
-                    <AppTable data={this.state.SimilarTotalAsstUndMgmt} clickableTable='False' submitFn={this.props.submitFn}/>
-                  </div>
+                <Col xs={12} md={4}>
+                  <Card>
+                    <Card.Header className="text-white BlackHeaderForModal">ETF with similar asset under mgmt</Card.Header>
+                    <Card.Body>
+                        <div className="DescriptionTable">
+                           <AppTable data={this.state.SimilarTotalAsstUndMgmt} clickableTable='False' submitFn={this.props.submitFn}/>
+                        </div>
+                    </Card.Body>
+                  </Card>
                 </Col>
 
-                <Col xs={12} md={6}>
-                  <h6><strong>ETF within Industry : {this.state.EtfDbCategory}</strong></h6>
-                  <div className="DescriptionTable">
-                    <AppTable data={this.state.EtfsWithSameEtfDbCategory} clickableTable='False' submitFn={this.props.submitFn}/>
-                  </div>
+                <Col xs={12} md={4}>
+                <Card>
+                    <Card.Header className="text-white BlackHeaderForModal">ETF in same Industry : {this.state.EtfDbCategory}</Card.Header>
+                    <Card.Body>
+                        <div className="DescriptionTable">
+                           <AppTable data={this.state.EtfsWithSameEtfDbCategory} clickableTable='False' submitFn={this.props.submitFn}/>
+                        </div>
+                    </Card.Body>
+                  </Card>
                 </Col>
 
               </Row>

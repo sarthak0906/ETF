@@ -6,7 +6,7 @@
 
 td {
     height: 10px;
-    line-height: 0.75rem;
+    line-height: 1rem;
 }
 
 .TableContainer {
@@ -18,7 +18,7 @@ td {
 
 /* Description Table with one kind of css */
 .DescriptionTable {
-    height: 50vh;
+    height: 38vh;
     overflow: auto;
 }
 

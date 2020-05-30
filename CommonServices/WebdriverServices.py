@@ -1,5 +1,5 @@
 import traceback
-
+from mongoengine.errors import NotUniqueError
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -59,6 +59,8 @@ class masterclass:
 
             etflistsaverobject.pushtodb()
 
+        except NotUniqueError:
+            print("Not Unique Error")
         except Exception as e:
             print("Not stored in DB")
             print(e)

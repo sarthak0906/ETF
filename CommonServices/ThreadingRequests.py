@@ -1,6 +1,8 @@
 # modified fetch function with semaphore
 import random
 import asyncio
+import traceback
+
 from aiohttp import ClientSession
 import logging
 import json
@@ -12,10 +14,15 @@ logger.setLevel(logging.DEBUG)
 
 async def fetch(url, session):
     async with session.get(url) as response:
-        delay = response.headers.get("DELAY")
-        date = response.headers.get("DATE")
-        print("{}:{} with delay {}".format(date, response.url, delay))
-        return json.loads(await response.text())
+        try:
+            delay = response.headers.get("DELAY")
+            date = response.headers.get("DATE")
+            print("{}:{} with delay {}".format(date, response.url, delay))
+            return json.loads(await response.text())
+        except  json.decoder.JSONDecodeError as jsone:
+            traceback.print_exc()
+            logger.exception(jsone)
+            return None
 
 async def bound_fetch(sem, url, session):
     # Getter function with semaphore.

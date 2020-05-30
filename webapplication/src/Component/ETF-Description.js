@@ -5,12 +5,10 @@ import '../static/css/Description.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import SimilarETFList from './SimilarETFs';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
-
-
+import Card from 'react-bootstrap/Card'
 
 class Description extends React.Component{
   
@@ -58,29 +56,30 @@ class Description extends React.Component{
 
   render(){
       return (
-        <Container fluid>
-          <h4> ETF-Description </h4>
-          <h5> {this.props.ETF} </h5>
-          <h4> <strong>{this.state.DescriptionData.AnnualDividendRate}</strong>  {this.state.DescriptionData.AnnualDividendYield} </h4>
-          <br />
+        <Container fluid className='pt-3'>
           <Row>
-            <Col xs={12} md={4}>
+            <Col xs={12} md={2}>
               <h6><strong>ETF Description</strong></h6>
               <div className="DescriptionTable">
                 {
-                  (this.state.DescriptionData != null) ? <AppTable data={this.state.DescriptionData} /> : ""
+                  (this.state.DescriptionData != null) ? <AppTable data={this.state.DescriptionData} clickableTable={'False'} /> : ""
                 }
               </div>
             </Col>
+            
             <Col xs={12} md={4}>
-              <h6><strong>ETF Holdings Data</strong></h6>
+
+              <div className="DescriptionTable">
+                  <AppTable data={this.state.similarETFs} clickableTable='True' submitFn={this.props.submitFn}/>
+              </div>
+            </Col>
+
+            <Col xs={12} md={3}>
                 {
-                  (this.state.HoldingsData.data != null) ? <this.HoldingsTableData data={this.state.HoldingsData.data} /> : ""
+                  (this.state.HoldingsData.data != null) ? <this.HoldingsTableData data={this.state.HoldingsData.data} clickableTable={'False'} /> : ""
                 }
             </Col>
-            <Col xs={12} md={4}>
-                <SimilarETFList data={this.state.similarETFs} submitFn={this.props.submitFn}/>
-            </Col>
+
           </Row>
        </Container>
       )
@@ -91,22 +90,16 @@ class Description extends React.Component{
   const [showPie, setPie] = useState(false);
   const handleClose = () => setPie(false);
   const handleShow = () => setPie(true);
-  console.log("What are we sending to piechart");
-  console.log(props.data);
   return (
-    <div className="DescriptionTable">
-      <Button variant="primary" onClick={handleShow}>
-        Holdings Piechart
-      </Button>
-      <br />
-      <br />
-      <Modal show={showPie} onHide={handleClose}>
-        <Modal.Body>
-          <PieChart data={props.data} element={"TickerWeight"} />
-        </Modal.Body>
-      </Modal>
-      <AppTable data={props.data} />
-    </div>
+      <Card>
+        <Card.Header className="text-white BlackHeaderForModal">ETF Holdings</Card.Header>
+        <Card.Body>
+            <PieChart data={props.data} element={"TickerWeight"} />
+            <div className="DescriptionTable2">
+              <AppTable data={props.data} />
+            </div>
+        </Card.Body>
+      </Card>
     )
   }
 

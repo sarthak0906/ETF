@@ -53,10 +53,10 @@ const AppTable = (props) => {
       // console.log(row);
     
       if (props.clickableTable=='True'){
-        console.log("Clicable was called");
+        //console.log("Clickable was called");
         return <RenderRowClickable k={Key1} key={index} data={row} submitFn={props.submitFn}/>
       } else{
-        console.log("None-Clicable was called");
+        //console.log("None-Clickable was called");
         return <RenderRow k={Key1} key={index} data={row} />
       }
     }) 

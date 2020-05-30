@@ -11,6 +11,10 @@ import math
 import ast
 import json
 from datetime import datetime
+import traceback
+import sys
+
+
 
 sys.path.append("..")
 
@@ -29,27 +33,23 @@ connection = connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
 
 from FlaskAPI.Components.ETFDescription.helper import fetchETFsWithSameIssuer, fetchETFsWithSameETFdbCategory, \
     fetchETFsWithSimilarTotAsstUndMgmt
-
-
-@app.route('/GetEtfWithSameIssuer/<ETFName>/<date>')
-def getETFWithSameIssuer(ETFName, date):
-    etfswithsameIssuer = fetchETFsWithSameIssuer(connection, date, issuername)
-
-
-def getETFsWithSameETFdbCategory(ETFName, date):
-    etfs_with_same_etfdbcategory = fetchETFsWithSameETFdbCategory(connection=connection, etfname=ETFName, date=date)
-
-
-def getETFsWithSimilarTotAsstUndMgmt(ETFName, date):
-    etfs_with_similar_tot_asst_und_mgmt = fetchETFsWithSimilarTotAsstUndMgmt(connection=connection, date=date,
-                                                                             etfname=ETFName)
-
-
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 
 
-@app.route('/ETfDescription/<ETFName>/<date>')
-@app.route('/ETfDescription/Holdings/<ETFName>/<date>')
+@app.route('/ETfDescription/getETFWithSameIssuer/<IssuerName>')
+def getETFWithSameIssuer(IssuerName):
+    etfswithsameIssuer = fetchETFsWithSameIssuer(connection, Issuer=IssuerName)
+    if len(etfswithsameIssuer) == 0:
+            etfswithsameIssuer['None'] = {'ETFName': 'None','TotalAssetsUnderMgmt': "No Other ETF was found with same Issuer"}
+    return json.dumps(etfswithsameIssuer)
+
+@app.route('/ETfDescription/getETFsWithSameETFdbCategory/<ETFdbCategory>')
+def getETFsWithSameETFdbCategory(ETFdbCategory):
+    etfsWithSameEtfDbCategory = fetchETFsWithSameETFdbCategory(connection=connection,ETFdbCategory=ETFdbCategory)
+    if len(etfsWithSameEtfDbCategory) == 0:
+            etfsWithSameEtfDbCategory['None'] = {'ETFName': 'None','TotalAssetsUnderMgmt': "No Other ETF was found with same ETF DB Category"}
+    return json.dumps(etfsWithSameEtfDbCategory)
+
 @app.route('/ETfDescription/EtfData/<ETFName>/<date>')
 def SendETFHoldingsData(ETFName, date):
     req = request.__dict__['environ']['REQUEST_URI']
@@ -57,47 +57,38 @@ def SendETFHoldingsData(ETFName, date):
         # Load all the data holdings data together
         etfdata = LoadHoldingsdata().getAllETFData(ETFName, date)
         ETFDataObject = etfdata.to_mongo().to_dict()
+        print(ETFDataObject)
+        HoldingsDatObject=pd.DataFrame(ETFDataObject['holdings']).set_index('TickerSymbol').to_dict(orient='index')
+        SimilarTotalAsstUndMgmt = fetchETFsWithSimilarTotAsstUndMgmt(connection=connection,totalassetUnderManagement=ETFDataObject['TotalAssetsUnderMgmt'])
 
-        # Holdings Data foe etf
-        holdingsDatObject = pd.DataFrame(ETFDataObject['holdings']).set_index('TickerSymbol').to_json(orient='index')
-
-        # ETF Description data
+        ETFDataObject['TotalAssetsUnderMgmt']="${:,.0f} M".format(ETFDataObject['TotalAssetsUnderMgmt'])
+        ETFDataObject['SharesOutstanding']="{:,.0f}".format(ETFDataObject['SharesOutstanding'])
+        ETFDataObject['InceptionDate'] = str(ETFDataObject['InceptionDate'])
+        
+        
         # List of columns we don't need
-        columnsNotNeeded = ['_id', 'DateOfScraping', 'ETFhomepage', 'holdings']
-        for v in columnsNotNeeded:
+        for v in ['_id', 'DateOfScraping', 'ETFhomepage', 'holdings','FundHoldingsDate']:
             del ETFDataObject[v]
+        
         ETFDataObject = pd.DataFrame(ETFDataObject, index=[0])
         ETFDataObject = ETFDataObject.replace(np.nan, 'nan', regex=True)
         ETFDataObject = ETFDataObject.loc[0].to_dict()
-        # Delete
-        del ETFDataObject['FundHoldingsDate']
-        ETFDataObject['InceptionDate'] = str(ETFDataObject['InceptionDate'])
+        
+        
+        allData = {}
+        allData['ETFDataObject'] = ETFDataObject
+        allData['HoldingsDatObject'] = HoldingsDatObject
+        allData['SimilarTotalAsstUndMgmt'] = SimilarTotalAsstUndMgmt
 
-        # ETFListWithSameIssuer
-        etfswithsameIssuer = fetchETFsWithSameIssuer(connection, date, Issuer=ETFDataObject['Issuer'])
-        if len(etfswithsameIssuer) == 0:
-            etfswithsameIssuer = ['No other etf was found for issuer']
+        print(ETFDataObject)
+        print(allData['HoldingsDatObject'])
+        print(SimilarTotalAsstUndMgmt)
 
-        # Send back response depending on type of request
-        if 'EtfData' in req:
-            allData = {}
-            allData['ETFDataObject'] = ETFDataObject
-            allData['etfswithsameIssuer'] = etfswithsameIssuer
+        return json.dumps(allData)
 
-            print(etfswithsameIssuer)
-
-            return json.dumps(allData)
-        elif 'Holdings' in req:
-            return holdingsDatObject
-        else:
-            allData = {}
-            allData['ETFDataObject'] = ETFDataObject
-            allData['holdingsDatObject'] = holdingsDatObject
-            allData['etfswithsameIssuer'] = etfswithsameIssuer
-            return json.dumps(allData)
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")
-        print(e)
+        print(traceback.format_exc())
         return str(e)
 
 

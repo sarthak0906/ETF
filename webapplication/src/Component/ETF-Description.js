@@ -19,67 +19,113 @@ class Description extends React.Component{
   state ={
     DescriptionData :'',
     HoldingsData :'',
-    similarETFs:''
+    SameIssuerETFs:'',
+    IssuerName:null,
+    SimilarTotalAsstUndMgmt:'',
+    EtfsWithSameEtfDbCategory:'',
+    EtfDbCategory:null
   }
 
   componentDidMount() {
     this.fetchETFDescriptionData()
-    this.fetchHoldingsData()
+    this.fetchSameIssuer()
+    this.fetchSameETFdbCategory()
     }
    
   
   componentDidUpdate(prevProps,prevState) {
       const condition1=this.props.ETF !== prevProps.ETF;
       const condition2=this.props.startDate !== prevProps.startDate;
+      
       if (condition1 || condition2) {
         this.fetchETFDescriptionData()
-        this.fetchHoldingsData()
-    }
+      }
+
+      if (this.state.IssuerName !== prevState.IssuerName){
+        this.fetchSameIssuer();
+      }
+
+      if (this.state.EtfDbCategory !== prevState.EtfDbCategory){
+        this.fetchSameETFdbCategory();
+      }
   }
 
   
   fetchETFDescriptionData(){
     axios.get(`http://localhost:5000/ETfDescription/EtfData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
-        console.log(res.data);
         this.setState({
           DescriptionData : res.data.ETFDataObject,
-          similarETFs: res.data.etfswithsameIssuer
+          HoldingsData : res.data.HoldingsDatObject,
+          SimilarTotalAsstUndMgmt: res.data.SimilarTotalAsstUndMgmt,
+          IssuerName: res.data.ETFDataObject.Issuer,
+          EtfDbCategory: res.data.ETFDataObject.ETFdbCategory
         });
+        console.log("HoldingsData");
+        console.log(this.state.HoldingsData);
       });
     }
 
-  fetchHoldingsData(){
-    axios.get(`http://localhost:5000/ETfDescription/Holdings/${this.props.ETF}/${this.props.startDate}`).then(res =>{
-        this.setState({HoldingsData : res});
-      });
-  }
+  fetchSameIssuer(){
+      if(this.state.IssuerName!== null){
+        axios.get(`http://localhost:5000/ETfDescription/getETFWithSameIssuer/${this.state.IssuerName}`).then(res =>{
+          this.setState({SameIssuerETFs : res.data});
+        });
+      }
+    }
+
+
+  fetchSameETFdbCategory(){
+      if(this.state.EtfDbCategory!== null){
+        axios.get(`http://localhost:5000/ETfDescription/getETFsWithSameETFdbCategory/${this.state.EtfDbCategory}`).then(res =>{
+            this.setState({EtfsWithSameEtfDbCategory : res.data});
+        });
+      }
+    }
+  
 
   render(){
       return (
         <Container fluid className='pt-3'>
           <Row>
-            <Col xs={12} md={2}>
-              <h6><strong>ETF Description</strong></h6>
-              <div className="DescriptionTable">
-                {
-                  (this.state.DescriptionData != null) ? <AppTable data={this.state.DescriptionData} clickableTable={'False'} /> : ""
-                }
-              </div>
-            </Col>
-            
-            <Col xs={12} md={4}>
+            <Col xs={12} md={9}>
+              <Row>
+                <Col xs={12} md={6}>
+                  <h6><strong>ETF Description</strong></h6>
+                  <div className="DescriptionTable">
+                    {
+                      (this.state.DescriptionData != null) ? <AppTable data={this.state.DescriptionData} clickableTable={'False'} /> : ""
+                    }
+                  </div>
+                </Col>
+                
+                <Col xs={12} md={6}>
+                  <h6><strong>ETFs from same issuer : {this.state.IssuerName}</strong></h6>
+                  <div className="DescriptionTable">
+                      <AppTable data={this.state.SameIssuerETFs} clickableTable='True' submitFn={this.props.submitFn}/>
+                  </div>
+                </Col>
 
-              <div className="DescriptionTable">
-                  <AppTable data={this.state.similarETFs} clickableTable='True' submitFn={this.props.submitFn}/>
-              </div>
-            </Col>
+                <Col xs={12} md={6}>
+                  <h6><strong>Other ETF similar asset under management</strong></h6>
+                  <div className="DescriptionTable">
+                    <AppTable data={this.state.SimilarTotalAsstUndMgmt} clickableTable='False' submitFn={this.props.submitFn}/>
+                  </div>
+                </Col>
 
+                <Col xs={12} md={6}>
+                  <h6><strong>ETF within Industry : {this.state.EtfDbCategory}</strong></h6>
+                  <div className="DescriptionTable">
+                    <AppTable data={this.state.EtfsWithSameEtfDbCategory} clickableTable='False' submitFn={this.props.submitFn}/>
+                  </div>
+                </Col>
+
+              </Row>
+            </Col>
             <Col xs={12} md={3}>
                 {
-                  (this.state.HoldingsData.data != null) ? <this.HoldingsTableData data={this.state.HoldingsData.data} clickableTable={'False'} /> : ""
+                (this.state.HoldingsData != null) ? <this.HoldingsTableData data={this.state.HoldingsData} clickableTable={'False'} /> : ""
                 }
             </Col>
-
           </Row>
        </Container>
       )

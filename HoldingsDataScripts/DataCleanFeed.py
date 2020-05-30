@@ -3,7 +3,7 @@ import traceback
 import pandas as pd
 from datetime import datetime
 from mongoengine import *
-
+from mongoengine.errors import NotUniqueError
 from HoldingsDataScripts.ETFMongo import ETF
 from HoldingsDataScripts.HoldingsMongo import Holdings
 from CommonServices.EmailService import EmailSender
@@ -61,8 +61,8 @@ class PullandCleanData:
                     ETFTicker=str(self.detailsdata.iloc[0]['Key']),
                     InceptionDate=datetime.strptime(self.detailsdata.iloc[1]['Value'], '%Y-%m-%d'),
                     FundHoldingsDate=datetime.strptime(self.detailsdata.iloc[2]['Value'], '%Y-%m-%d'),
-                    TotalAssetsUnderMgmt=str(self.detailsdata.iloc[3]['Value']),
-                    SharesOutstanding=str(self.detailsdata.iloc[4]['Value']),
+                    TotalAssetsUnderMgmt=int(self.detailsdata.iloc[3]['Value']),
+                    SharesOutstanding=int(self.detailsdata.iloc[4]['Value']),
                     ExpenseRatio=str(self.detailsdata.iloc[5]['Value']),
                     IndexTracker=str(self.detailsdata.iloc[6]['Value']),
                     ETFdbCategory=str(self.detailsdata.iloc[7]['Value']),
@@ -113,6 +113,10 @@ class PullandCleanData:
             pass
             logger.error("Today's File/Folder Not Found...")
             disconnect('ETF_db')
+        except NotUniqueError:
+            logger.critical("Duplicate Entry Error/ Not Unique Error")
+            logger.exception("Exception occurred in DataCleanFeed.py")
+            pass
         except Exception as e:
             logger.critical(e)
             logger.exception("Exception occurred in DataCleanFeed.py")

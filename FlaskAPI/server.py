@@ -32,7 +32,7 @@ connection = connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
 
 
 from FlaskAPI.Components.ETFDescription.helper import fetchETFsWithSameIssuer, fetchETFsWithSameETFdbCategory, \
-    fetchETFsWithSimilarTotAsstUndMgmt
+    fetchETFsWithSimilarTotAsstUndMgmt, fetchOHLCHistoricalData
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 
 
@@ -50,6 +50,15 @@ def getETFsWithSameETFdbCategory(ETFdbCategory):
             etfsWithSameEtfDbCategory['None'] = {'ETFName': 'None','TotalAssetsUnderMgmt': "No Other ETF was found with same ETF DB Category"}
     return json.dumps(etfsWithSameEtfDbCategory)
 
+@app.route('/ETfDescription/getOHLCDailyData/<ETFName>/<StartDate>')
+def fetchOHLCDailyData(ETFName,StartDate):
+    StartDate=StartDate.split(' ')[0]
+    OHLCData=fetchOHLCHistoricalData(etfname=ETFName,StartDate=StartDate)
+    OHLCData=OHLCData.to_csv(sep='\t', index=False)
+    return OHLCData
+
+
+
 @app.route('/ETfDescription/EtfData/<ETFName>/<date>')
 def SendETFHoldingsData(ETFName, date):
     req = request.__dict__['environ']['REQUEST_URI']
@@ -61,7 +70,7 @@ def SendETFHoldingsData(ETFName, date):
         HoldingsDatObject=pd.DataFrame(ETFDataObject['holdings']).set_index('TickerSymbol').T.to_dict()
         SimilarTotalAsstUndMgmt = fetchETFsWithSimilarTotAsstUndMgmt(connection=connection,totalassetUnderManagement=ETFDataObject['TotalAssetsUnderMgmt'])
 
-        ETFDataObject['TotalAssetsUnderMgmt']="${:,.0f}".format(ETFDataObject['TotalAssetsUnderMgmt'])
+        ETFDataObject['TotalAssetsUnderMgmt']="${:,.3f} M".format(ETFDataObject['TotalAssetsUnderMgmt']/1000)
         ETFDataObject['SharesOutstanding']="{:,.0f}".format(ETFDataObject['SharesOutstanding'])
         ETFDataObject['InceptionDate'] = str(ETFDataObject['InceptionDate'])
         

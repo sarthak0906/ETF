@@ -5,6 +5,8 @@ from PolygonTickData.PolygonCreateURLS import PolgonDataCreateURLS
 from dateutil.rrule import *
 import datetime
 import pandas as pd
+import requests
+import json
 
 class HistoricOHLC():
     def getDailyOpenCloseSinceInceptionFromPolygon(self, getUrls=None):
@@ -14,8 +16,6 @@ class HistoricOHLC():
     def getopenlowhistoric(self, etfname=None, startdate=None):
         todaysDate = datetime.datetime.today().strftime('%Y-%m-%d')
         url  = PolgonDataCreateURLS().PolygonAggregdateData(symbol=etfname, aggregateBy='day', startDate=startdate, endDate=todaysDate)
-        responsedata = self.getDailyOpenCloseSinceInceptionFromPolygon(getUrls=[url])
-        result=responsedata[0]['results']
-        result=pd.DataFrame(result)
-        print(result)
-        return result
+        response=requests.get(url)
+        OHLCdata=pd.DataFrame(json.loads(response.text)['results'])
+        return OHLCdata

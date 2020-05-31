@@ -1,7 +1,7 @@
 from mongoengine import connect
 import datetime
 from PolygonTickData.HistoricOHLCgetter import HistoricOHLC
-
+from PolygonTickData.Helper import Helper
 
 def fetchETFsWithSameIssuer(connection=None, Issuer=None):
     CollectionName = connection.ETF_db.ETFHoldings
@@ -13,7 +13,7 @@ def fetchETFsWithSameIssuer(connection=None, Issuer=None):
     for item in dataD:
         if item['ETFTicker'] not in list(item.keys()):
             ETFWithSameIssuer[item['ETFTicker']] = {'ETFName': item['ETFName'],
-                                               'TotalAssetsUnderMgmt': "${:,.0f}".format(item['TotalAssetsUnderMgmt'])}
+                                               'TotalAssetsUnderMgmt': "${:,.3f} M".format(item['TotalAssetsUnderMgmt']/1000)}
     return ETFWithSameIssuer
 
 
@@ -27,7 +27,7 @@ def fetchETFsWithSameETFdbCategory(connection=None,ETFdbCategory=None):
     for item in data:
         if item['ETFTicker'] not in list(item.keys()):
             ETFWithSameETFDBCategory[item['ETFTicker']] = {'ETFName': item['ETFName'],
-                                               'TotalAssetsUnderMgmt': "${:,.0f}".format(item['TotalAssetsUnderMgmt'])}
+                                               'TotalAssetsUnderMgmt': "${:,.3f} M".format(item['TotalAssetsUnderMgmt']/1000)}
     return ETFWithSameETFDBCategory
 
 
@@ -46,11 +46,21 @@ def fetchETFsWithSimilarTotAsstUndMgmt(connection=None,totalassetUnderManagement
     ETFWithSameAssetUnderManagement={}
     for item in similar_taum_etfs:
         ETFWithSameAssetUnderManagement[item['ETFTicker']]={'ETFName': item['ETFName'], 
-                                                            'TotalAssetsUnderMgmt': "${:,.0f}".format(item['TotalAssetsUnderMgmt'])}
+                                                            'TotalAssetsUnderMgmt': "${:,.3f} M".format(item['TotalAssetsUnderMgmt']/1000)}
     return ETFWithSameAssetUnderManagement
 
-def fetchOHLCHistoricalData(etfname=None,issuedate=None):
-    etfname='XLK'
-    startdate='2010-01-01'
+def fetchOHLCHistoricalData(etfname=None,StartDate=None):
     ob = HistoricOHLC()
-    ob.getopenlowhistoric(etfname='XLK', startdate='2010-01-01')
+    data=ob.getopenlowhistoric(etfname=etfname, startdate=StartDate)
+    del data['n']
+    data.rename(columns={'v': 'volume',
+                         'o': 'open',
+                         'c': 'close',
+                         'h': 'high',
+                         'l': 'low',
+                         't': 'date'}, inplace=True)
+    # Helper Class from PolygonTickData.Helper for converting uni timestamp to human timestamp
+    helperObjTimeConversion = Helper()
+    data['date']=data['date'].apply(lambda x: helperObjTimeConversion.getHumanTime(ts=x, divideby=1000))
+    print(data)
+    return data

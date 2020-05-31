@@ -5,25 +5,30 @@ import '../static/css/Description.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ChartComponent from './StockPriceChart';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Card from 'react-bootstrap/Card'
 
+import { tsvParse, csvParse } from  "d3-dsv";
+import { timeParse } from "d3-time-format";
+
 class Description extends React.Component{
   
   constructor(props){
     super(props);
-  }
-
-  state ={
-    DescriptionData :'',
-    HoldingsData :'',
-    SameIssuerETFs:'',
-    IssuerName:null,
-    SimilarTotalAsstUndMgmt:'',
-    EtfsWithSameEtfDbCategory:'',
-    EtfDbCategory:null
+    this.state ={
+      DescriptionData :null,
+      HoldingsData :'',
+      SameIssuerETFs:'',
+      IssuerName:null,
+      SimilarTotalAsstUndMgmt:'',
+      EtfsWithSameEtfDbCategory:'',
+      EtfDbCategory:null,
+      OHLCDailyData:'',
+      parseDate : timeParse("%Y-%m-%d %H:%M:%S")
+    }
   }
 
   componentDidMount() {
@@ -48,7 +53,11 @@ class Description extends React.Component{
       if (this.state.EtfDbCategory !== prevState.EtfDbCategory){
         this.fetchSameETFdbCategory();
       }
-  }
+
+      if(this.state.DescriptionData!==prevState.DescriptionData){
+          this.fetchOHLCDailyData();
+      }
+    }
 
   
   fetchETFDescriptionData(){
@@ -60,9 +69,8 @@ class Description extends React.Component{
           IssuerName: res.data.ETFDataObject.Issuer,
           EtfDbCategory: res.data.ETFDataObject.ETFdbCategory
         });
-        console.log("HoldingsData");
-        console.log(this.state.HoldingsData);
       });
+    
     }
 
   fetchSameIssuer(){
@@ -81,7 +89,30 @@ class Description extends React.Component{
         });
       }
     }
+
+  fetchOHLCDailyData(){
+    if(this.state.DescriptionData!== null){
+      console.log("Coming in to fetch")
+        axios.get(`http://localhost:5000/ETfDescription/getOHLCDailyData/${this.props.ETF}/${this.state.DescriptionData['InceptionDate']}`).then(res =>{
+            this.setState({
+              OHLCDailyData : {'data':tsvParse(res.data, this.parseData(this.state.parseDate))},
+            });
+        });
+      }
+  }
   
+  parseData(parse) {
+    return function(d) {
+      d.date = parse(d.date);
+      d.open = +parseFloat(d.open);
+      d.high = +parseFloat(d.high);
+      d.low = +parseFloat(d.low);
+      d.close = +parseFloat(d.close);
+      d.volume = +parseInt(d.volume);
+      
+      return d;
+    };
+  }  
 
   render(){
       return (
@@ -93,7 +124,7 @@ class Description extends React.Component{
                   <Card>
                     <Card.Header className="text-white BlackHeaderForModal">ETF Description</Card.Header>
                     <Card.Body>
-                        <div className="DescriptionTable">
+                        <div className="DescriptionTable2">
                           {
                            (this.state.DescriptionData != null) ? <AppTable data={this.state.DescriptionData} clickableTable={'False'} /> : ""
                           }
@@ -103,6 +134,12 @@ class Description extends React.Component{
                 </Col>
                 
                 <Col xs={12} md={8}>
+                  <Card>
+                    <Card.Header className="text-white BlackHeaderForModal">Price Chart</Card.Header>
+                    <Card.Body>
+                      <ChartComponent data={this.state.OHLCDailyData} />
+                    </Card.Body>
+                  </Card>
                 </Col>
                 
                 <Col xs={12} md={4}>

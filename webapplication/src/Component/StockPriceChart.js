@@ -8,32 +8,36 @@ import { TypeChooser } from "react-stockcharts/lib/helper";
 class ChartComponent extends React.Component {
 	
 	state={
-		data: this.props.data
+		data: this.props.data,
+		didupdate:false
 	}
 	
-	componentWillReceiveProps(nextProps) {
+	shouldComponentUpdate(nextProps) {
 	  // You don't have to do this check first, but it can help prevent an unneeded render
-	  	console.log("Check for updates");
-		console.log(nextProps.data.data);
-		console.log(this.state.data);
 	  	if (nextProps.data.data !== this.state.data && nextProps.data.data!==undefined) {
+			console.log("Went insideComponent Update Called");
 	    	var DataCopy =  this.state.date;
 	  		DataCopy = nextProps.data.data;
 	  		this.setState({ 
-	  			data:DataCopy
+	  			data:DataCopy,
+	  			didupdate:true
 	  		});
+	  		return true
 	  	}
+	  	return false
 	}
 
 	render() {
-		console.log("State of time series data");
-		console.log(this.state.data);
 		if (this.state.data == '') {
 			return <div>Loading...</div>
 		}
-		return (
-		<CandleStickChartWithMACDIndicator data={this.state.data} />
-		)
+		if (this.state.didupdate){
+			console.log("Rendering New Chart");
+			return (
+			<CandleStickChartWithMACDIndicator data={this.state.data} />
+			)	
+			this.state.didupdate=false;
+		}
 	}
 }
 

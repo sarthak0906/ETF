@@ -1,5 +1,6 @@
 from mongoengine import connect
 import datetime
+from PolygonTickData.HistoricOHLCgetter import HistoricOHLC
 
 
 def fetchETFsWithSameIssuer(connection=None, Issuer=None):
@@ -47,3 +48,9 @@ def fetchETFsWithSimilarTotAsstUndMgmt(connection=None,totalassetUnderManagement
         ETFWithSameAssetUnderManagement[item['ETFTicker']]={'ETFName': item['ETFName'], 
                                                             'TotalAssetsUnderMgmt': "${:,.0f}".format(item['TotalAssetsUnderMgmt'])}
     return ETFWithSameAssetUnderManagement
+
+def fetchOHLCHistoricalData(etfname=None,issuedate=None):
+    etfname='XLK'
+    startdate='2010-01-01'
+    ob = HistoricOHLC()
+    ob.getopenlowhistoric(etfname='XLK', startdate='2010-01-01')

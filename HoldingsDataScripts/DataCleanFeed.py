@@ -28,8 +28,10 @@ class PullandCleanData:
         self.savingpath = './ETFDailyData' + '/' + datetime.now().strftime("%Y%m%d")
         self.detailsdata = pd.DataFrame()
         self.holdingsdata = pd.DataFrame()
+        # connect to 'ETF_db' database in Mongodb with replica set
+        # connect('ETF_db', alias='ETF_db', replicaSet='rs0')
         # connect to 'ETF_db' database in Mongodb
-        connect('ETF_db', alias='ETF_db', replicaSet='rs0')
+        connect('ETF_db', alias='ETF_db')
 
     def readfilesandclean(self, etfname, etfdescdf):
         # take etf name to be stored and respective data in DataFrame format

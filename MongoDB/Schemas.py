@@ -5,9 +5,9 @@ import asyncio
 
 # CONNECTION STATEMENT FOR PRODUCTION AND PIYUSH :
 # connect with replica set
-# connectionLocal = MongoClient('localhost', 27017, replicaSet='rs0')
+connectionLocal = MongoClient('localhost', 27017, replicaSet='rs0')
 # connect without replica set for now
-connectionLocal = MongoClient('localhost', 27017)
+# connectionLocal = MongoClient('localhost', 27017)
 
 # CONNECTION STATEMENT FOR REST OF DEV TEAM (from Non-local environment)
 # (Connects only to Primary. Will fail if Primary is down):

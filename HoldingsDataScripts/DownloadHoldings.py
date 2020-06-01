@@ -33,9 +33,9 @@ class PullHoldingsListClass(object):
 
     def __init__(self, dateofdownload=datetime.now().date()):
         # connect to 'ETF_db' database in Mongodb with replica set
-        # connect('ETF_db', alias='ETF_db', replicaSet='rs0')
+        connect('ETF_db', alias='ETF_db', replicaSet='rs0')
         # connect to 'ETF_db' database in Mongodb
-        connect('ETF_db', alias='ETF_db')
+        # connect('ETF_db', alias='ETF_db')
         self.todaysdata = ETFListDocument.objects(Download_date=dateofdownload).first()
         self.etfdescdf = pd.DataFrame(self.todaysdata.to_mongo().to_dict()['etflist'])
 

@@ -15,9 +15,9 @@ from bson.json_util import dumps
 
 # client = pymongo.MongoClient('18.213.229.80',27017)
 # Connect with replica set
-# client = pymongo.MongoClient('localhost',27017, replicaSet='rs0')
+client = pymongo.MongoClient('localhost',27017, replicaSet='rs0')
 # Connect without replica set for now
-client = pymongo.MongoClient('localhost',27017)
+# client = pymongo.MongoClient('localhost',27017)
 db = client.ETF_db
 def live_data_trigger():
     try:

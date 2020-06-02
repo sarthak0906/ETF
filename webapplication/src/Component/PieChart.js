@@ -9,14 +9,12 @@ const renderActiveShape = (props) => {
   } = props;
   const sin = Math.sin(-RADIAN * midAngle);
   const cos = Math.cos(-RADIAN * midAngle);
-  const sx = cx + (outerRadius + 10) * cos;
-  const sy = cy + (outerRadius + 10) * sin;
   const mx = cx + (outerRadius + 30) * cos;
   const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ex = mx + (cos >= 0 ? 1 : -1);
   const ey = my;
   const textAnchor = cos >= 0 ? 'start' : 'end';
-
+  
   return (
     <g>
       <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>{payload.name}</text>
@@ -24,23 +22,12 @@ const renderActiveShape = (props) => {
         cx={cx}
         cy={cy}
         innerRadius={innerRadius}
-        outerRadius={outerRadius}
+        outerRadius={outerRadius * 1.15}
         startAngle={startAngle}
         endAngle={endAngle}
         fill={fill}
       />
-      <Sector
-        cx={cx}
-        cy={cy}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        innerRadius={outerRadius + 6}
-        outerRadius={outerRadius + 10}
-        fill={fill}
-      />
-      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
-      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${value}`}</text>
+      <text x={ex} y={ey}>{payload.value}</text>
     </g>
   );
 };
@@ -62,7 +49,7 @@ class PieChartGraph extends PureComponent {
       await this.setState({data : []});
       for (let key in this.props.data){
         await this.setState({
-            data : [...this.state.data, {'name': key, 'value': this.props.data[key][this.props.element]}],
+            data : [...this.state.data, {'name': this.props.data[key][this.props.label], 'value': this.props.data[key][this.props.element]}],
             chartname:this.props.chartname
         })
       }
@@ -72,7 +59,7 @@ class PieChartGraph extends PureComponent {
   async componentDidMount (){
     for (let key in this.props.data){
       await this.setState({
-          data : [...this.state.data, {'name': key, 'value': this.props.data[key][this.props.element]}]
+          data : [...this.state.data, {'name': this.props.data[key][this.props.label], 'value': this.props.data[key][this.props.element]}]
       })
     }
   }
@@ -85,26 +72,26 @@ class PieChartGraph extends PureComponent {
   
   render() {
     return (
-    
-      <PieChart  width={350} height={300}>
-        <Pie
-        activeIndex={this.state.activeIndex}
-        activeShape={renderActiveShape}
-        data={this.state.data}
-        cx={175}
-        cy={150}
-        innerRadius={25}
-        outerRadius={90}
-        fill="#8884d8"
-        dataKey="value"
-        onMouseEnter={this.onPieEnter}
-        >
-          {
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie
+            activeIndex={this.state.activeIndex}
+            activeShape={renderActiveShape}
+            data={this.state.data}
+            cx="50%"
+            cy="50%"
+            innerRadius="15%"
+            outerRadius="50%"
+            fill="#8884d8"
+            dataKey="value"
+            onMouseEnter={this.onPieEnter}
+          >
+            {
               this.state.data.map((entry, index) => <Cell key={index} fill={this.state.COLORS[index % this.state.COLORS.length]}/>)
-          }
-        </Pie>
-      </PieChart>
-    
+            }
+          </Pie>
+        </PieChart>
+     </ResponsiveContainer>
     );
   }
 }

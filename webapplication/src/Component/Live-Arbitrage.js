@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AppTable from './Table.js';
 import Table from 'react-bootstrap/Table'
 import '../static/css/Description.css';
 import Container from 'react-bootstrap/Container';
@@ -42,14 +43,12 @@ class Live_Arbitrage extends React.Component{
 
     componentDidMount() {
         axios.get(`http://localhost:5000/ETfLiveArbitrage/AllTickers`).then(res =>{
-            // console.log(res);
+            console.log(res);
             this.setState({
-                Arbitrage: res.data.Arbitrage,
-                Spread: res.data.Spread,
-                Symbol: res.data.Symbol,
+                data: res.data,
                 time: (new Date()).toLocaleString(),
             });
-            // console.log(this.state);
+            console.log(this.state);
         });
         console.log(this.state.seconds);
         this.fetchETFLiveData()
@@ -65,9 +64,7 @@ class Live_Arbitrage extends React.Component{
                 console.log("this is something")
                 axios.get(`http://localhost:5000/ETfLiveArbitrage/AllTickers`).then(res =>{
                     this.setState({
-                        Arbitrage: res.data.Arbitrage,
-                        Spread: res.data.Spread,
-                        Symbol: res.data.Symbol,
+                        data: res.data,
                         time: (new Date()).toLocaleString(),
                     });
                     console.log(this.state);
@@ -86,7 +83,7 @@ class Live_Arbitrage extends React.Component{
                     <Col xs={12} md={6}>
                         <div className="DescriptionTable">
                             {
-                                (this.state.Symbol != null) ? <LiveTable data={this.state} /> : ""
+                                (this.state.data != null) ? <AppTable data={this.state.data} live={true} /> : ""
                             }
                         </div>
                     </Col>

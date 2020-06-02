@@ -9,7 +9,7 @@ import StockDesriptionHeader from './StockDesriptionHeader';
 import ChartComponent from './StockPriceChart';
 import ScatterPlot from './scatterplot';
 import PieChartGraph from './PieChart';
-
+import '../static/css/History.css';
 // Code to display chaer
 import { tsvParse, csvParse } from  "d3-dsv";
 import { timeParse } from "d3-time-format";
@@ -69,14 +69,14 @@ class HistoricalArbitrage extends React.Component{
   		return(
   		<Container fluid>
   		<Row>
-	          <Col className="etfArbitrageTable" xs={12} md={5}>
-	            <StockDesriptionHeader startDate = {this.props.startDate} ETF={this.props.ETF} />
+	          <Col className="etfArbitrageTable DescriptionTable" xs={12} md={5}>
+	            <StockDesriptionHeader className="DescriptionTable" startDate = {this.props.startDate} ETF={this.props.ETF} />
 		      	{this.state.etfArbitrageTableData}
 	          </Col>
 
 	          <Col xs={12} md={7}>
 	          	<Row>
-					<Col xs={12} md={8}>
+					<Col xs={12} md={8} className="DescriptionTable">
 						<Card>
 						  <Card.Header className="text-white" style={{'background-color':'#292b2c'}}>Price Chart</Card.Header>
 						  <Card.Body>
@@ -85,7 +85,7 @@ class HistoricalArbitrage extends React.Component{
 						</Card>
 	          		</Col>
 
-	          		<Col xs={12} md={4}>
+	          		<Col xs={12} md={4} className="DescriptionTable">
 						<Card>
 							<Card.Header className="text-white" style={{'background-color':'#292b2c'}}>Holdings</Card.Header>
 						  <Card.Body>
@@ -97,12 +97,12 @@ class HistoricalArbitrage extends React.Component{
 						</Card>
 	          		</Col>
 					
-					<Col xs={12} md={6}>
+					<Col xs={12} md={6} className="DescriptionTable">
 						<h5>PNL Statemens for day</h5>
 						{this.state.PNLStatementForTheDay}
 					</Col>
 
-					<Col xs={12} md={6}>
+					<Col xs={12} md={6} className="DescriptionTable">
 						<Card>
 							<Card.Header className="text-white" style={{'background-color':'#292b2c'}}>ETF Change % Vs NAV change %</Card.Header>
 						  <Card.Body>
@@ -111,7 +111,7 @@ class HistoricalArbitrage extends React.Component{
 						</Card>
 					</Col>
 
-					<Col xs={12} md={12}>
+					<Col xs={12} md={12} className="DescriptionTable">
 						<h5>PNL For all Dates for ETF</h5>
 			          	{
 		                    (this.state.PNLOverDates) ? this.state.PNLOverDates : this.state.LoadingStatement
@@ -128,13 +128,15 @@ class HistoricalArbitrage extends React.Component{
   	// Fetch Data For an ETF & a Date
 	fetchDataForADateAndETF(url){
 		axios.get(`http://localhost:5000/PastArbitrageData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
+			console.log(res.data.etfhistoricaldata);
+			console.log(res.data.PNLStatementForTheDay);
 			this.setState({
-			 	etfArbitrageTableData : <AppTable data={JSON.parse(res.data.etfhistoricaldata)}/>,
-			 	PNLStatementForTheDay : <AppTable data={JSON.parse(res.data.PNLStatementForTheDay)}/>,
+			 	etfArbitrageTableData : <AppTable data={res.data.etfhistoricaldata} />,
+			 	PNLStatementForTheDay : <AppTable data={res.data.PNLStatementForTheDay} />,
 			 	etfPriceData : {'data':tsvParse(res.data.etfPrices, this.parseData(this.state.parseDate))},
 			 	scatterPlotData: <ScatterPlot data={JSON.parse(res.data.scatterPlotData)}/>,
-			 	etfmoversDictCount: JSON.parse(res.data.etfmoversDictCount),
-			 	highestChangeDictCount: JSON.parse(res.data.highestChangeDictCount)
+			 	etfmoversDictCount: (res.data.etfmoversDictCount),
+			 	highestChangeDictCount: (res.data.highestChangeDictCount)
 			});
 			console.log(this.state.etfPriceData);
 		});
@@ -146,7 +148,7 @@ class HistoricalArbitrage extends React.Component{
 		axios.get(`http://localhost:5000/PastArbitrageData/CommonDataAcrossEtf/${this.props.ETF}`).then(res =>{
 			console.log(res.data.PNLOverDates);
 			this.setState({
-			 	PNLOverDates: <AppTable data={JSON.parse(res.data.PNLOverDates)}/>
+			 	PNLOverDates: <AppTable data={res.data.PNLOverDates} />
 			});
    		});
    	}

@@ -129,6 +129,11 @@ class Former extends Component{
 						labelField={this.state.labelField}
 						valueField={this.state.labelField}
 						options={options}
+						multi={false}
+						clearable={true}
+						backspaceDelete="true"
+						onClick={() => this.setState({ETF: ""})}
+						clearOnSelect="true"
 						onChange={values => this.setValues(values)}
 						noDataLabel="No matches found"
 				  />

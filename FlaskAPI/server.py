@@ -11,11 +11,6 @@ import math
 import ast
 import json
 from datetime import datetime
-import traceback
-import sys
-
-
-
 sys.path.append("..")
 
 app = Flask(__name__)
@@ -26,39 +21,23 @@ CORS(app)
 # connect('ETF_db', alias='ETF_db')
 # Production Server
 connection = connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
+
+
 ############################################
 # Load ETF Holdings Data and Description
 ############################################
+from FlaskAPI.Components.ETFDescription.helper import fetchETFsWithSameIssuer
+
+@app.route('/GetEtfWithSameIssuer/<ETFName>/<date>')
+def getETFWithSameIssuer(ETFName,date):
+    etfswithsameIssuer = fetchETFsWithSameIssuer(connection,date,issuername)
 
 
-from FlaskAPI.Components.ETFDescription.helper import fetchETFsWithSameIssuer, fetchETFsWithSameETFdbCategory, \
-    fetchETFsWithSimilarTotAsstUndMgmt, fetchOHLCHistoricalData
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 
 
-@app.route('/ETfDescription/getETFWithSameIssuer/<IssuerName>')
-def getETFWithSameIssuer(IssuerName):
-    etfswithsameIssuer = fetchETFsWithSameIssuer(connection, Issuer=IssuerName)
-    if len(etfswithsameIssuer) == 0:
-            etfswithsameIssuer['None'] = {'ETFName': 'None','TotalAssetsUnderMgmt': "No Other ETF was found with same Issuer"}
-    return json.dumps(etfswithsameIssuer)
-
-@app.route('/ETfDescription/getETFsWithSameETFdbCategory/<ETFdbCategory>')
-def getETFsWithSameETFdbCategory(ETFdbCategory):
-    etfsWithSameEtfDbCategory = fetchETFsWithSameETFdbCategory(connection=connection,ETFdbCategory=ETFdbCategory)
-    if len(etfsWithSameEtfDbCategory) == 0:
-            etfsWithSameEtfDbCategory['None'] = {'ETFName': 'None','TotalAssetsUnderMgmt': "No Other ETF was found with same ETF DB Category"}
-    return json.dumps(etfsWithSameEtfDbCategory)
-
-@app.route('/ETfDescription/getOHLCDailyData/<ETFName>/<StartDate>')
-def fetchOHLCDailyData(ETFName,StartDate):
-    StartDate=StartDate.split(' ')[0]
-    OHLCData=fetchOHLCHistoricalData(etfname=ETFName,StartDate=StartDate)
-    OHLCData=OHLCData.to_csv(sep='\t', index=False)
-    return OHLCData
-
-
-
+@app.route('/ETfDescription/<ETFName>/<date>')
+@app.route('/ETfDescription/Holdings/<ETFName>/<date>')
 @app.route('/ETfDescription/EtfData/<ETFName>/<date>')
 def SendETFHoldingsData(ETFName, date):
     req = request.__dict__['environ']['REQUEST_URI']
@@ -66,38 +45,57 @@ def SendETFHoldingsData(ETFName, date):
         # Load all the data holdings data together
         etfdata = LoadHoldingsdata().getAllETFData(ETFName, date)
         ETFDataObject = etfdata.to_mongo().to_dict()
-        print(ETFDataObject)
-        HoldingsDatObject=pd.DataFrame(ETFDataObject['holdings']).set_index('TickerSymbol').T.to_dict()
-        SimilarTotalAsstUndMgmt = fetchETFsWithSimilarTotAsstUndMgmt(connection=connection,totalassetUnderManagement=ETFDataObject['TotalAssetsUnderMgmt'])
 
-        ETFDataObject['TotalAssetsUnderMgmt']="${:,.3f} M".format(ETFDataObject['TotalAssetsUnderMgmt']/1000)
-        ETFDataObject['SharesOutstanding']="{:,.0f}".format(ETFDataObject['SharesOutstanding'])
-        ETFDataObject['InceptionDate'] = str(ETFDataObject['InceptionDate'])
-        
-        
+        # Holdings Data foe etf
+        holdingsDatObject = pd.DataFrame(ETFDataObject['holdings']).to_dict(orient='records')
+
+        # ETF Description data
         # List of columns we don't need
-        for v in ['_id', 'DateOfScraping', 'ETFhomepage', 'holdings','FundHoldingsDate']:
+        # Delete
+        columnsNotNeeded = ['_id', 'DateOfScraping', 'ETFhomepage', 'holdings']
+        for v in columnsNotNeeded:
             del ETFDataObject[v]
+        # ETFListWithSameIssuer
+        etfswithsameIssuer=fetchETFsWithSameIssuer(connection,date,Issuer=ETFDataObject['Issuer'])
+        if len(etfswithsameIssuer)==0:
+            etfswithsameIssuer=['No other etf was found for issuer']
+        else:
+            # print(etfswithsameIssuer, file=open('a.txt', 'w'))
+            WithSameIssuer = []
+            for key in etfswithsameIssuer[0]:
+                WithSameIssuer.append({'Symbol': key, 'Name': etfswithsameIssuer[0][key], 'Value': etfswithsameIssuer[1][key]})
+            etfswithsameIssuer = pd.DataFrame(WithSameIssuer).to_dict(orient='records')
+            print(etfswithsameIssuer, file=open('a.txt', 'w'))
         
-        ETFDataObject = pd.DataFrame(ETFDataObject, index=[0])
+        del ETFDataObject['FundHoldingsDate']
+        ETFDataObject['InceptionDate']=str(ETFDataObject['InceptionDate'])
+
+        ETFDataObject = pd.DataFrame(ETFDataObject.items())
         ETFDataObject = ETFDataObject.replace(np.nan, 'nan', regex=True)
-        ETFDataObject = ETFDataObject.loc[0].to_dict()
-        
-        
-        allData = {}
-        allData['ETFDataObject'] = ETFDataObject
-        allData['HoldingsDatObject'] = HoldingsDatObject
-        allData['SimilarTotalAsstUndMgmt'] = SimilarTotalAsstUndMgmt
+        ETFDataObject = ETFDataObject.to_dict(orient='records')
 
-        print(ETFDataObject)
-        print(allData['HoldingsDatObject'])
-        print(SimilarTotalAsstUndMgmt)
 
-        return json.dumps(allData)
 
+        # Send back response depending on type of request
+        if 'EtfData' in req:
+            allData={}
+            allData['ETFDataObject'] = ETFDataObject
+            allData['etfswithsameIssuer'] = etfswithsameIssuer
+
+            print(etfswithsameIssuer)
+
+            return json.dumps(allData)
+        elif 'Holdings' in req:
+            return json.dumps(holdingsDatObject)
+        else:
+            allData={}
+            allData['ETFDataObject'] = ETFDataObject
+            allData['holdingsDatObject'] = holdingsDatObject
+            allData['etfswithsameIssuer'] = etfswithsameIssuer
+            return json.dumps(allData)
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")
-        print(traceback.format_exc())
+        print(e)
         return str(e)
 
 
@@ -122,13 +120,12 @@ def FetchPastArbitrageData(ETFName, date):
                          'T', 'T+1']
 
     # Retreive data for Components
-    data, pricedf, PNLStatementForTheDay, scatterPlotData = RetrieveETFArbitrageData(etfname=ETFName, date=date,
-                                                                                     magnitudeOfArbitrageToFilterOn=0)
+    data, pricedf, PNLStatementForTheDay, scatterPlotData = RetrieveETFArbitrageData(etfname=ETFName, date=date, magnitudeOfArbitrageToFilterOn=0)
 
     # Check if data doesn't exsist
     if data.empty:
         print("No Data Exist")
-
+    
     ########### Code to modify the ETF Movers and Underlying with highest change %
     # Seperate ETF Movers and the percentage of movement
     for movers in etmoverslist:
@@ -141,13 +138,13 @@ def FetchPastArbitrageData(ETFName, date):
         data[newcolnames] = pd.DataFrame(data[movers].tolist(), index=data.index)
         del data[movers]
 
-    etfmoversList = dict(data[['ETFMover%1_ticker', 'ETFMover%2_ticker', 'ETFMover%3_ticker']].stack().value_counts())
-    etfmoversDictCount = pd.DataFrame.from_dict(etfmoversList, orient='index', columns=['Count']).to_dict('index')
+    etfmoversList = dict(data[['ETFMover%1_ticker','ETFMover%2_ticker','ETFMover%3_ticker']].stack().value_counts())
+    etfmoversDictCount = pd.DataFrame.from_dict(etfmoversList,orient='index',columns=['Count']).to_dict('records')
 
-    highestChangeList = dict(data[['Change%1_ticker', 'Change%2_ticker', 'Change%3_ticker']].stack().value_counts())
-    highestChangeDictCount = pd.DataFrame.from_dict(highestChangeList, orient='index', columns=['Count']).to_dict(
-        'index')
+    highestChangeList=dict(data[['Change%1_ticker','Change%2_ticker','Change%3_ticker']].stack().value_counts())
+    highestChangeDictCount=pd.DataFrame.from_dict(highestChangeList,orient='index',columns=['Count']).to_dict('index')
     ########## Code to modify the ETF Movers and Underlying with highest change %
+
 
     # Sort the data frame on time since Sell and Buy are concatenated one after other
     data = data.sort_index()
@@ -161,35 +158,39 @@ def FetchPastArbitrageData(ETFName, date):
     print(data.head())
 
     # Replace Values in Pandas DataFrame
-    data.rename(columns={'ETF Trading Spread in $': '$Spread',
-                         'Arbitrage in $': '$Arbitrage',
-                         'Magnitude of Arbitrage': 'Absolute Arbitrage',
-                         'ETFMover%1_ticker': 'Etf Mover',
-                         'Change%1_ticker': 'Most Change%'}, inplace=True)
+    data.rename(columns={'ETF Trading Spread in $':'$Spread',
+                        'Arbitrage in $':'$Arbitrage',
+                        'Magnitude of Arbitrage':'Absolute Arbitrage',
+                        'ETFMover%1_ticker': 'Etf Mover',
+                        'Change%1_ticker': 'Most Change%'}, inplace=True)
 
     # Get the price dataframe
-    allData = {}
+    allData={}
     # Columns needed to display
     data = data[ColumnsForDisplay]
-
+    
     # PNL for all dates for the etf
-    allData['etfhistoricaldata'] = data.to_json(orient='index')
+    allData['etfhistoricaldata'] = data.to_dict(orient='records')
     print("Price Df")
     print(pricedf)
-    allData['etfPrices'] = pricedf.to_csv(sep='\t', index=False)
-    allData['PNLStatementForTheDay'] = json.dumps(PNLStatementForTheDay)
+    allData['etfPrices'] = pricedf.to_csv(sep='\t',index=False)
+    allData['PNLStatementForTheDay'] = pd.DataFrame(PNLStatementForTheDay.items()).to_dict(orient='records')
+    print(pd.DataFrame(PNLStatementForTheDay.items()).to_dict(orient='records'))
     allData['scatterPlotData'] = json.dumps(scatterPlotData)
-    allData['etfmoversDictCount'] = json.dumps(etfmoversDictCount)
-    allData['highestChangeDictCount'] = json.dumps(highestChangeDictCount)
+    allData['etfmoversDictCount']=json.dumps(etfmoversDictCount)
+    allData['highestChangeDictCount']=json.dumps(highestChangeDictCount)
     return json.dumps(allData)
 
 
 @app.route('/PastArbitrageData/CommonDataAcrossEtf/<ETFName>')
 def fetchPNLForETFForALlDays(ETFName):
     print("All ETF PNL Statement is called")
-    PNLOverDates = retrievePNLForAllDays(etfname=ETFName, magnitudeOfArbitrageToFilterOn=0)
-    allData = {}
+    PNLOverDates=retrievePNLForAllDays(etfname=ETFName, magnitudeOfArbitrageToFilterOn=0)
+    allData={}
     print(PNLOverDates)
+    PNLOverDates = pd.DataFrame(PNLOverDates, index=False).set_index('date')
+    print(PNLOverDates)
+    PNLOverDates = PNLOverDates.to_dict(orient='records')
     allData['PNLOverDates'] = json.dumps(PNLOverDates)
     return allData
 
@@ -215,11 +216,11 @@ def SendLiveArbitrageDataAllTickers():
         [data2.extend(item['ArbitrageData']) for item in live_data]
 
         prices_df = pd.DataFrame.from_records(live_prices_data)
-        prices_df.rename(columns={'sym': 'Symbol', 'vw': 'Price', 'e': 'Timestamp'}, inplace=True)
+        prices_df.rename(columns={'sym':'Symbol', 'vw':'Price', 'e':'Timestamp'}, inplace=True)
         df = pd.DataFrame.from_records(data2)
-        ndf = df.merge(prices_df, how='left', on='Symbol')
+        ndf = df.merge(prices_df, how='left',on='Symbol')
         ndf.dropna(inplace=True)
-        return ndf.to_dict()
+        return json.dumps(ndf.to_dict(orient='records'))
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")
         print(e)
@@ -234,7 +235,7 @@ def SendLiveArbitrageDataSingleTicker(etfname):
         etf_full_day_price_data = []
         [etf_full_day_price_data.append(item) for item in etf_full_day_price_cursor]
         full_day_prices_df = pd.DataFrame.from_records(etf_full_day_price_data)
-        full_day_prices_df.rename(columns={'sym': 'Symbol', 'vw': 'Price', 'e': 'Timestamp'}, inplace=True)
+        full_day_prices_df.rename(columns={'sym':'Symbol', 'vw':'Price', 'e':'Timestamp'}, inplace=True)
         full_day_prices_df.drop(columns=['Symbol'], inplace=True)
         # print(full_day_prices_df)
 
@@ -258,7 +259,7 @@ def SendLiveArbitrageDataSingleTicker(etfname):
         # live_data_dict = live_data_df.to_dict()
 
         # return "Live: {}, Full_Day: {}".format(live_data_df.to_dict(), full_day_data_df.to_dict())
-        return jsonify(Live=live_data_df.to_dict(), Full_Day=mergedDF.to_dict())
+        return jsonify(Live=live_data_df.to_dict(orient='records'), Full_Day=mergedDF.to_dict(orient='records'))
 
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")

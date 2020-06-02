@@ -1,7 +1,5 @@
 import React from 'react';
-// react table
-import ReactTable from 'react-table';
-import "react-table/react-table.css";
+import Table from 'react-bootstrap/Table'
 import '../static/css/TableStyle.css'
 
 var stringConstructor = "test".constructor;
@@ -27,85 +25,107 @@ function whatIsIt(object) {
   return "don't know";
 }
 
-class AppTable extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {};
-  }
-
+const AppTable = (props) => {
   // getting all te keys to the json data to diectly fetch the data later
-  getKeys (someJSON) {
+  const getKeys = function(someJSON){
     return Object.keys(someJSON);
   }
 
-  getCols (clickableTable, live) {
-    var keys = this.getKeys(this.props.data[0]);
-    var cols = [];
-    if (clickableTable){
-      return keys.map((el, i) => {
-        return {Header: el,accessor: el, Cell: (<td onClick={() => this.props.submitFn(el)} >el</td>)};
-      })
-    }
-    if (live){
-      return keys.map((el, i) => {
-        if (el == "Arbitrage") return {
-          Header: el,
-          accessor: el,
-          Cell: row => {
-            row.styles['color'] = '#fff';
-            row.styles['backgroundColor'] = row.value < 0 ? 'red' : 'green';
-            return row.value;
-          }
-        }
-        else {
-          return {Header: el,accessor: el};            
-        }
-      })
-    }
-    return keys.map((el, i) => {
-      return {Header: el,accessor: el};
+  const MainKeys = getKeys(props.data);
+  
+  // getting the headings for the heading of the table
+  const getHeader = function(){
+    // console.log(whatIsIt(props.data[MainKeys[0]]));
+    var keys = (whatIsIt(props.data[MainKeys[0]]) === "Object") ? getKeys(props.data[MainKeys[0]]) : [];
+    keys.unshift("");
+    // console.log(keys);
+    return keys.map((key, index)=>{
+      // console.log(key);
+      return <th key={key}>{key}</th>
     })
   }
-
-  render() {
-    if (this.props.data == "" || this.props.data == {} || this.props.data == undefined){
-      return "Loading";
-    }
-    else{
-      const columns = this.getCols(this.props.clickableTable, this.props.live);
-      return (
-        <div>
-          <ReactTable
-            data={this.props.data}
-            defaultPageSize={this.props.data.length}
-            showPagination={false}
-            columns={columns}
-            noDataText="No Data Available"
-            filterable
-            className="-striped -highlight bg-dark" />
-        </div>
-      );
-    }
+  
+  // getting data for each of the rows
+  const getRowsData = function(){
+    // var keys = (whatIsIt(props.data[MainKeys[0]]) != "Object") ? getKeys(props.data[MainKeys[0]]) : [];
+    return MainKeys.map((Key1, index) => {
+      var row = (typeof(props.data[Key1]) == Object) ? props.data[Key1].values() : props.data[Key1];
+      // console.log(row);
+    
+      if (props.clickableTable=='True'){
+        //console.log("Clickable was called");
+        return <RenderRowClickable k={Key1} key={index} data={row} submitFn={props.submitFn}/>
+      } else{
+        //console.log("None-Clickable was called");
+        return <RenderRow k={Key1} key={index} data={row} />
+      }
+    }) 
   }
+  
+  const TableStyling = {
+    fontSize: '13px'
+  };
+
+  return (
+    <div className="Table">
+      <Table striped bordered hover variant="dark" style={TableStyling}>
+      <thead className="TableHead">
+        <tr>{getHeader()}</tr>
+      </thead>
+      <tbody>
+        {getRowsData()}
+      </tbody>
+      </Table>
+    </div>          
+  );
 }
 
 // functional Component to render one row at a time
-const RenderLiveData = (props) =>{
-  // console.log(props);
-  if(props.value < 0){
+const RenderRow = (props) =>{
+  if (whatIsIt(props.data) !== "Object"){
     return( 
-      <td style={{backgroundColor: "red", height: "100%"}} className="Red"> {props.value} </td>
+      <tr>
+        <td className="Main">{props.k}</td>
+        <td>{props.data}</td>
+      </tr>
     )
   }
-  else if(props.value < 0){
+  else {
+    return(
+      <tr>
+        <td className="Main">{props.k}</td>
+        {
+          Object.keys(props.data).map((key, i) => (
+            <td key={i}>{props.data[key]}</td>
+          ))
+        }
+      </tr>
+    );
+  }
+}
+
+
+// functional Component to render one row at a time
+const RenderRowClickable = (props) =>{
+  if (whatIsIt(props.data) !== "Object"){
     return( 
-      <td className="Green"> {props.value} </td>
+      <tr>
+        <td className="Main">{props.k}</td>
+        <td>{props.data}</td>
+      </tr>
     )
   }
-  else{
-    return( 
-      <td> {props.value} </td>
-    )
+  else {
+    return(
+      <tr onClick={() => props.submitFn(props.k)}>
+        <td className="Main">{props.k}</td>
+        {
+          Object.keys(props.data).map((key, i) => (
+            <td key={i}>{props.data[key]}</td>
+          ))
+        }
+      </tr>
+    );
   }
 }
 

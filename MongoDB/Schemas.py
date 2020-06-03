@@ -25,7 +25,7 @@ else:
 
 # CONNECTION STATEMENT FOR REST OF DEV TEAM (from Non-local environment)
 # (Connects only to Primary. Will fail if Primary is down):
-connectionLocal = MongoClient('18.213.229.80', 27017)
+# connectionLocal = MongoClient('18.213.229.80', 27017)
 
 db = connectionLocal.ETF_db
 
@@ -38,7 +38,7 @@ else:
 
 # CONNECTION STATEMENT FOR REST OF DEV TEAM (from Non-local environment)
 # (Connects only to Primary. Will fail if Primary is down):
-motor_client = motor.motor_asyncio.AsyncIOMotorClient('18.213.229.80', 27017)
+# motor_client = motor.motor_asyncio.AsyncIOMotorClient('18.213.229.80', 27017)
 
 motor_db = motor_client.ETF_db
 

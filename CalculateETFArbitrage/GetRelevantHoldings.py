@@ -17,7 +17,9 @@ class RelevantHoldings():
         try:
             # connect('ETF_db', alias='ETF_db')
             # Connecting to ETF_db on AWS EC2 Production Server
-            connect('ETF_db', alias='ETF_db', host='52.90.110.245', port=27017)
+            # READ ONLY ACCESS
+            connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017, username='usertesterReadOnly',
+                    password='onlyreadpass')
             etflistdocument = ETFListDocument.objects().first()
             # print(etflistdocument)
             for etf in etflistdocument.etflist:

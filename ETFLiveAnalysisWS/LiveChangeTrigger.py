@@ -15,7 +15,7 @@ from bson.json_util import dumps
 
 # client = pymongo.MongoClient('18.213.229.80',27017)
 # Connect with replica set
-client = pymongo.MongoClient('localhost',27017, replicaSet='rs0')
+client = pymongo.MongoClient('localhost', 27017, replicaSet='rs0', username='usertesterReadOnly', password='onlyreadpass')
 # Connect without replica set for now
 # client = pymongo.MongoClient('localhost',27017)
 db = client.ETF_db

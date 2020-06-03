@@ -9,10 +9,28 @@ from ETFsList_Scripts.List523ETFsMongo import ETFListDocument
 class ETFListSaver:
 
     def __init__(self):
+        try:
+            with open("MongoDBAccInfo.txt") as f:
+                credentials = [x.strip().split(':', 1) for x in f]
+            username = credentials[0][0]
+            password = credentials[0][1]
+        except :
+            username = None
+            password = None
+            pass
         # connect to 'ETF_db' database in Mongodb with replica set
-        connect('ETF_db', alias='ETF_db', replicaSet='rs0')
-        # connect to 'ETF_db' database in Mongodb
-        # connect('ETF_db', alias='ETF_db')
+        if username is not None and password is not None:
+            connect('ETF_db', alias='ETF_db', replicaSet='rs0', username=username, password=password)
+        else:
+            # READ ONLY ACCESS
+            connect('ETF_db', alias='ETF_db', replicaSet='rs0', username='usertesterReadOnly', password='onlyreadpass')
+
+        # connect to 'ETF_db' database in Mongodb without replica set
+        # if username is not None and password is not None:
+        #     connect('ETF_db', alias='ETF_db', username=username, password=password)
+        # else:
+        #     connect('ETF_db', alias='ETF_db', username='usertesterReadOnly', password='onlyreadpass')
+
         self.readingpath = ''
         self.etflistdf = pd.DataFrame()
 

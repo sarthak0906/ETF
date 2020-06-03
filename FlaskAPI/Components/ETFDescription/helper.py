@@ -1,5 +1,6 @@
 from mongoengine import connect
 import datetime
+import pandas as pd
 from PolygonTickData.HistoricOHLCgetter import HistoricOHLC
 from PolygonTickData.Helper import Helper
 
@@ -14,6 +15,7 @@ def fetchETFsWithSameIssuer(connection=None, Issuer=None):
         if item['ETFTicker'] not in list(item.keys()):
             ETFWithSameIssuer[item['ETFTicker']] = {'ETFName': item['ETFName'],
                                                'TotalAssetsUnderMgmt': "${:,.3f} M".format(item['TotalAssetsUnderMgmt']/1000)}
+    ETFWithSameIssuer = pd.DataFrame(ETFWithSameIssuer).to_dict(orient='records')
     return ETFWithSameIssuer
 
 

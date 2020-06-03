@@ -13,7 +13,8 @@ import json
 from datetime import datetime
 import traceback
 import sys
-
+import traceback	
+import sys
 
 
 sys.path.append("..")
@@ -57,8 +58,10 @@ def fetchOHLCDailyData(ETFName,StartDate):
     OHLCData=OHLCData.to_csv(sep='\t', index=False)
     return OHLCData
 
+from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 
-
+@app.route('/ETfDescription/<ETFName>/<date>')
+@app.route('/ETfDescription/Holdings/<ETFName>/<date>')
 @app.route('/ETfDescription/EtfData/<ETFName>/<date>')
 def SendETFHoldingsData(ETFName, date):
     req = request.__dict__['environ']['REQUEST_URI']
@@ -67,7 +70,7 @@ def SendETFHoldingsData(ETFName, date):
         etfdata = LoadHoldingsdata().getAllETFData(ETFName, date)
         ETFDataObject = etfdata.to_mongo().to_dict()
         print(ETFDataObject)
-        HoldingsDatObject=pd.DataFrame(ETFDataObject['holdings']).set_index('TickerSymbol').T.to_dict()
+        HoldingsDatObject=pd.DataFrame(ETFDataObject['holdings']).set_index('TickerSymbol').T.to_dict(orient='records')
         SimilarTotalAsstUndMgmt = fetchETFsWithSimilarTotAsstUndMgmt(connection=connection,totalassetUnderManagement=ETFDataObject['TotalAssetsUnderMgmt'])
 
         ETFDataObject['TotalAssetsUnderMgmt']="${:,.3f} M".format(ETFDataObject['TotalAssetsUnderMgmt']/1000)
@@ -79,9 +82,9 @@ def SendETFHoldingsData(ETFName, date):
         for v in ['_id', 'DateOfScraping', 'ETFhomepage', 'holdings','FundHoldingsDate']:
             del ETFDataObject[v]
         
-        ETFDataObject = pd.DataFrame(ETFDataObject, index=[0])
+        ETFDataObject = pd.DataFrame(ETFDataObject.items())
         ETFDataObject = ETFDataObject.replace(np.nan, 'nan', regex=True)
-        ETFDataObject = ETFDataObject.loc[0].to_dict()
+        ETFDataObject = ETFDataObject.loc[0].to_dict(orient='records')
         
         
         allData = {}
@@ -142,11 +145,11 @@ def FetchPastArbitrageData(ETFName, date):
         del data[movers]
 
     etfmoversList = dict(data[['ETFMover%1_ticker', 'ETFMover%2_ticker', 'ETFMover%3_ticker']].stack().value_counts())
-    etfmoversDictCount = pd.DataFrame.from_dict(etfmoversList, orient='index', columns=['Count']).to_dict('index')
+    etfmoversDictCount = pd.DataFrame.from_dict(etfmoversList, orient='index', columns=['Count']).to_dict('records')
 
     highestChangeList = dict(data[['Change%1_ticker', 'Change%2_ticker', 'Change%3_ticker']].stack().value_counts())
     highestChangeDictCount = pd.DataFrame.from_dict(highestChangeList, orient='index', columns=['Count']).to_dict(
-        'index')
+        'records')
     ########## Code to modify the ETF Movers and Underlying with highest change %
 
     # Sort the data frame on time since Sell and Buy are concatenated one after other
@@ -173,7 +176,7 @@ def FetchPastArbitrageData(ETFName, date):
     data = data[ColumnsForDisplay]
 
     # PNL for all dates for the etf
-    allData['etfhistoricaldata'] = data.to_json(orient='index')
+    allData['etfhistoricaldata'] = data.to_dict(orient='records')
     print("Price Df")
     print(pricedf)
     allData['etfPrices'] = pricedf.to_csv(sep='\t', index=False)
@@ -189,6 +192,7 @@ def fetchPNLForETFForALlDays(ETFName):
     print("All ETF PNL Statement is called")
     PNLOverDates = retrievePNLForAllDays(etfname=ETFName, magnitudeOfArbitrageToFilterOn=0)
     allData = {}
+    PNLOverDates = pd.DataFrame(PNLOverDates, index=False).set_index('date')
     print(PNLOverDates)
     allData['PNLOverDates'] = json.dumps(PNLOverDates)
     return allData
@@ -219,7 +223,7 @@ def SendLiveArbitrageDataAllTickers():
         df = pd.DataFrame.from_records(data2)
         ndf = df.merge(prices_df, how='left', on='Symbol')
         ndf.dropna(inplace=True)
-        return ndf.to_dict()
+        return json.dumps(ndf.to_dict(orient='records'))
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")
         print(e)
@@ -258,7 +262,7 @@ def SendLiveArbitrageDataSingleTicker(etfname):
         # live_data_dict = live_data_df.to_dict()
 
         # return "Live: {}, Full_Day: {}".format(live_data_df.to_dict(), full_day_data_df.to_dict())
-        return jsonify(Live=live_data_df.to_dict(), Full_Day=mergedDF.to_dict())
+        return jsonify(Live=live_data_df.to_dict(orient='records'), Full_Day=mergedDF.to_dict(orient='records'))
 
     except Exception as e:
         print("Issue in Flask app while fetching ETF Description Data")

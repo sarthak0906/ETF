@@ -3,9 +3,23 @@ from pymongo import MongoClient
 import motor.motor_asyncio
 import asyncio
 
+try:
+    with open("/home/ubuntu/ETFAnalysis/MongoDBAccInfo.txt") as f:
+        credentials = [x.strip().split(':', 1) for x in f]
+    username = credentials[0][0]
+    password = credentials[0][1]
+except:
+    username = None
+    password = None
+    pass
+
 # CONNECTION STATEMENT FOR PRODUCTION AND PIYUSH :
 # connect with replica set
-# connectionLocal = MongoClient('localhost', 27017, replicaSet='rs0')
+if username is not None and password is not None:
+    connectionLocal = MongoClient('localhost', 27017, replicaSet='rs0', username=username, password=password)
+else:
+    # READ ONLY ACCESS
+    connectionLocal = MongoClient('localhost', 27017, replicaSet='rs0', username='usertesterReadOnly', password='onlyreadpass')
 # connect without replica set for now
 # connectionLocal = MongoClient('localhost', 27017)
 
@@ -16,7 +30,11 @@ connectionLocal = MongoClient('18.213.229.80', 27017)
 db = connectionLocal.ETF_db
 
 # CONNECTION STATEMENT FOR PRODUCTION AND PIYUSH :
-# motor_client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, replicaSet='rs0')
+if username is not None and password is not None:
+    motor_client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, replicaSet='rs0', username=username, password=password)
+else:
+    # READ ONLY ACCESS
+    motor_client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, replicaSet='rs0', username='usertesterReadOnly', password='onlyreadpass')
 
 # CONNECTION STATEMENT FOR REST OF DEV TEAM (from Non-local environment)
 # (Connects only to Primary. Will fail if Primary is down):

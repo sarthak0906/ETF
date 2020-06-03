@@ -26,7 +26,8 @@ CORS(app)
 # Production Local Server
 # connect('ETF_db', alias='ETF_db')
 # Production Server
-connection = connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017)
+# READ ONLY ACCESS
+connection = connect('ETF_db', alias='ETF_db', host='18.213.229.80', port=27017, username='usertesterReadOnly', password='onlyreadpass')
 ############################################
 # Load ETF Holdings Data and Description
 ############################################

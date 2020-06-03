@@ -8,26 +8,7 @@ import axios from 'axios';
 import { ChartCanvas, Chart } from "react-stockcharts";
 import PropTypes from "prop-types";
 
-import { scaleTime } from "d3-scale";
-import { curveMonotoneX } from "d3-shape";
-
-import { AreaSeries } from "react-stockcharts/lib/series";
-import { XAxis, YAxis } from "react-stockcharts/lib/axes";
-import { fitWidth } from "react-stockcharts/lib/helper";
-import { createVerticalLinearGradient, hexToRGBA } from "react-stockcharts/lib/utils";
-import {
-    BarSeries,
-    CandlestickSeries,
-    LineSeries,
-    MACDSeries,
-} from "react-stockcharts/lib/series";
 import '../static/css/Live_Arbitrage.css';
-
-const canvasGradient = createVerticalLinearGradient([
-	{ stop: 0, color: hexToRGBA("#b5d0ff", 0.2) },
-	{ stop: 0.7, color: hexToRGBA("#6fa4fc", 0.4) },
-	{ stop: 1, color: hexToRGBA("#4286f4", 0.8) },
-]);
 
 
 class Live_Arbitrage extends React.Component{
@@ -96,6 +77,11 @@ class Live_Arbitrage extends React.Component{
     }
 }
 
+
+const TableStyling = {
+    fontSize: '13px'
+  };
+
 const LiveTable = (props) => {
     if(props.data == {} || props.data == undefined){
         return "Loading";
@@ -132,7 +118,7 @@ const LiveTable = (props) => {
 
     return (
         <div className="Table">
-          <Table striped bordered hover variant="dark">
+          <Table striped bordered hover variant="dark"  style={TableStyling}>
           <thead className="TableHead">
             <tr>
                 <td>Symbol</td>

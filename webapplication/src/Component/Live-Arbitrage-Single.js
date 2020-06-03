@@ -6,28 +6,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import axios from 'axios';
-import { ChartCanvas, Chart } from "react-stockcharts";
-import PropTypes from "prop-types";
 
-import { scaleTime } from "d3-scale";
-import { curveMonotoneX } from "d3-shape";
 
-import { AreaSeries } from "react-stockcharts/lib/series";
-import { XAxis, YAxis } from "react-stockcharts/lib/axes";
-import { fitWidth } from "react-stockcharts/lib/helper";
-import { createVerticalLinearGradient, hexToRGBA } from "react-stockcharts/lib/utils";
-import {
-    BarSeries,
-    CandlestickSeries,
-    LineSeries,
-    MACDSeries,
-} from "react-stockcharts/lib/series";
-
-const canvasGradient = createVerticalLinearGradient([
-	{ stop: 0, color: hexToRGBA("#b5d0ff", 0.2) },
-	{ stop: 0.7, color: hexToRGBA("#6fa4fc", 0.4) },
-	{ stop: 1, color: hexToRGBA("#4286f4", 0.8) },
-]);
 
 class Live_Arbitrage extends React.Component{
     constructor(props){
@@ -35,61 +15,53 @@ class Live_Arbitrage extends React.Component{
     }
 
     state ={
-        seconds: (new Date()).getSeconds(),
         LiveData: {},
         FullDay : {},
     }
 
     componentDidMount() {
-        console.log(this.state.seconds);
-        console.log("part 1")
-        this.fetchETFLiveData()
-        axios.get(`http://localhost:5000/ETfLiveArbitrage/Single/${this.props.ETF}`).then(res =>{
-            console.log(res);
-            this.setState({
-                LiveData: res.data.Live,
-                time: (new Date(res.data.Full_Day.Timestamp["0"])).toLocaleString(),
-                FullDay: res.data.Full_Day,
-            });
-            console.log(this.state.FullDay);
-        });
+        this.fetchETFLiveData(true);
     }
    
-  
     componentDidUpdate(prevProps,prevState) {
-        const condition1=this.props.ETF !== prevProps.ETF;
-        const condition2=this.props.startDate !== prevProps.startDate;
-        if (condition1 || condition2) {
+        if (this.props.ETF !== prevProps.ETF) {
+            this.fetchETFLiveData(true);
+        }
+    }
+
+    fetchETFLiveData(newEtfWasRequested){
+        this.UpdateArbitragDataTables(newEtfWasRequested)
+        setInterval(() => {
+            if ((new Date()).getSeconds() == 13){
+                this.UpdateArbitragDataTables(false)
+            }
+        }, 1000)
+    }
+
+    UpdateArbitragDataTables(newEtfWasRequested){
+        console.log(newEtfWasRequested);
+        if(newEtfWasRequested){
             axios.get(`http://localhost:5000/ETfLiveArbitrage/Single/${this.props.ETF}`).then(res =>{
                 console.log(res);
                 this.setState({
                     LiveData: res.data.Live,
-                    FullDay: res.data.Full_Day,
                     time: (new Date(res.data.Full_Day.Timestamp["0"])).toLocaleString(),
+                    FullDay: res.data.Full_Day,
                 });
-            });
-            this.fetchETFLiveData();
+                console.log(this.state.FullDay);
+            });    
+        }else{
+            axios.get(`http://localhost:5000/ETfLiveArbitrage/Single/UpdateTable/${this.props.ETF}`).then(res =>{
+                console.log(res);
+                this.setState({
+                    LiveData: res.data.Live,
+                    time: (new Date(res.data.Full_Day.Timestamp["0"])).toLocaleString(),
+                    FullDay: res.data.Full_Day,
+                });
+                console.log(this.state.FullDay);
+            });    
         }
-    }
-
-  
-    fetchETFLiveData(){
-        setInterval(() => {
-            this.setState({
-                seconds : (this.state.seconds > 59) ? 0 : this.state.seconds + 1
-            });
-            console.log(this.state.seconds);
-            if (this.state.seconds == 13){
-                console.log("this is something")
-                axios.get(`http://localhost:5000/ETfLiveArbitrage/Single/${this.props.ETF}`).then(res =>{
-                    this.setState({
-                        LiveData: res.data.Live,
-                        time: (new Date(res.data.Full_Day.Timestamp["0"] - 0)).toLocaleString(),
-                        FullDay: res.data.Full_Day,
-                    });
-                });
-            }
-        }, 1000)
+        
     }
 
     render(){
@@ -101,14 +73,14 @@ class Live_Arbitrage extends React.Component{
             <br />
             <Row>
                 <Col xs={12} md={6}>
-                    <div className="DescriptionTable">
+                    <div className="DescriptionTable3">
                         {
                             (this.state.LiveData) ? <AppTable data={this.state.LiveData} /> : "Loadingg"
                         }
                     </div>
                 </Col>
                 <Col xs={12} md={6}>
-                    <div className="DescriptionTable">
+                    <div className="DescriptionTable3">
                         <LiveTable data={this.state.FullDay} />
                     </div>
                 </Col>
@@ -118,8 +90,13 @@ class Live_Arbitrage extends React.Component{
     }
 }
 
+
+const TableStyling = {
+    fontSize: '13px'
+  };
+
 const LiveTable = (props) => {
-    console.log(props.data);
+    //console.log(props.data);
     if(props.data.Symbol == null){
         console.log(props.data);
         return "Loading";
@@ -148,6 +125,8 @@ const LiveTable = (props) => {
                     <td className={cls}>{new Date(props.data.Timestamp[key]).toLocaleTimeString()}</td>
                     <td className={cls}>{props.data.Arbitrage[key]}</td>
                     <td>{props.data.Spread[key]}</td>
+                    <td>{props.data.Price[key]}</td>
+                    <td>{props.data.Symbol[key]}</td>
                 </tr>
             )
         })
@@ -155,12 +134,14 @@ const LiveTable = (props) => {
 
     return (
         <div className="Table">
-          <Table striped bordered hover variant="dark">
+          <Table striped bordered hover variant="dark"  style={TableStyling}>
           <thead className="TableHead">
             <tr>
                 <td>Time</td>
                 <td>Arbitrage</td>
                 <td>Spread</td>
+                <td>Price</td>
+                <td>Volume</td>
             </tr>
           </thead>
           <tbody>

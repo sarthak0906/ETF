@@ -1,1130 +1,1130 @@
 export const options = [
-    {
-        "element": "XLK",
-        "index": 0
-    },
-    {
-        "element": "BMLP",
-        "index": 1
-    },
-    {
-        "element": "IHI",
-        "index": 2
-    },
-    {
-        "element": "SZK",
-        "index": 3
-    },
-    {
-        "element": "JHMC",
-        "index": 4
-    },
-    {
-        "element": "FHLC",
-        "index": 5
-    },
-    {
-        "element": "PUI",
-        "index": 6
-    },
-    {
-        "element": "KBWB",
-        "index": 7
-    },
-    {
-        "element": "FTXG",
-        "index": 8
-    },
-    {
-        "element": "XLV",
-        "index": 9
-    },
-    {
-        "element": "XBI",
-        "index": 10
-    },
-    {
-        "element": "RORE",
-        "index": 11
-    },
-    {
-        "element": "PSCM",
-        "index": 12
-    },
-    {
-        "element": "PASS",
-        "index": 13
-    },
-    {
-        "element": "IEO",
-        "index": 14
-    },
-    {
-        "element": "IYZ",
-        "index": 15
-    },
-    {
-        "element": "XLY",
-        "index": 16
-    },
-    {
-        "element": "PSCF",
-        "index": 17
-    },
-    {
-        "element": "MRRL",
-        "index": 18
-    },
-    {
-        "element": "PXE",
-        "index": 19
-    },
-    {
-        "element": "BNKU",
-        "index": 20
-    },
-    {
-        "element": "XLC",
-        "index": 21
-    },
-    {
-        "element": "XHB",
-        "index": 22
-    },
-    {
-        "element": "PPH",
-        "index": 23
-    },
-    {
-        "element": "XRT",
-        "index": 24
-    },
-    {
-        "element": "NUGT",
-        "index": 25
-    },
-    {
-        "element": "FDIS",
-        "index": 26
-    },
-    {
-        "element": "XWEB",
-        "index": 27
-    },
-    {
-        "element": "FDN",
-        "index": 28
-    },
-    {
-        "element": "RTM",
-        "index": 29
-    },
-    {
-        "element": "SEF",
-        "index": 30
-    },
-    {
-        "element": "USD",
-        "index": 31
-    },
-    {
-        "element": "QABA",
-        "index": 32
-    },
-    {
-        "element": "DRN",
-        "index": 33
-    },
-    {
-        "element": "KBE",
-        "index": 34
-    },
-    {
-        "element": "TAWK",
-        "index": 35
-    },
-    {
-        "element": "IBB",
-        "index": 36
-    },
-    {
-        "element": "UGE",
-        "index": 37
-    },
-    {
-        "element": "PSCE",
-        "index": 38
-    },
-    {
-        "element": "SCC",
-        "index": 39
-    },
-    {
-        "element": "WANT",
-        "index": 40
-    },
-    {
-        "element": "RXL",
-        "index": 41
-    },
-    {
-        "element": "EVX",
-        "index": 42
-    },
-    {
-        "element": "KRE",
-        "index": 43
-    },
-    {
-        "element": "DRV",
-        "index": 44
-    },
-    {
-        "element": "BNKD",
-        "index": 45
-    },
-    {
-        "element": "BTEC",
-        "index": 46
-    },
-    {
-        "element": "ROKT",
-        "index": 47
-    },
-    {
-        "element": "BBC",
-        "index": 48
-    },
-    {
-        "element": "SOXS",
-        "index": 49
-    },
-    {
-        "element": "GASX",
-        "index": 50
-    },
-    {
-        "element": "FXZ",
-        "index": 51
-    },
-    {
-        "element": "CNRG",
-        "index": 52
-    },
-    {
-        "element": "PTH",
-        "index": 53
-    },
-    {
-        "element": "XHE",
-        "index": 54
-    },
-    {
-        "element": "XLP",
-        "index": 55
-    },
-    {
-        "element": "HDGE",
-        "index": 56
-    },
-    {
-        "element": "FXD",
-        "index": 57
-    },
-    {
-        "element": "FTEC",
-        "index": 58
-    },
-    {
-        "element": "REZ",
-        "index": 59
-    },
-    {
-        "element": "XITK",
-        "index": 60
-    },
-    {
-        "element": "TECS",
-        "index": 61
-    },
-    {
-        "element": "IHF",
-        "index": 62
-    },
-    {
-        "element": "DUSL",
-        "index": 63
-    },
-    {
-        "element": "XLF",
-        "index": 64
-    },
-    {
-        "element": "ZIG",
-        "index": 65
-    },
-    {
-        "element": "IYG",
-        "index": 66
-    },
-    {
-        "element": "PBE",
-        "index": 67
-    },
-    {
-        "element": "DDG",
-        "index": 68
-    },
-    {
-        "element": "ZBIO",
-        "index": 69
-    },
-    {
-        "element": "SCHH",
-        "index": 70
-    },
-    {
-        "element": "FINU",
-        "index": 71
-    },
-    {
-        "element": "SOXX",
-        "index": 72
-    },
-    {
-        "element": "XLB",
-        "index": 73
-    },
-    {
-        "element": "FRI",
-        "index": 74
-    },
-    {
-        "element": "IECS",
-        "index": 75
-    },
-    {
-        "element": "XPH",
-        "index": 76
-    },
-    {
-        "element": "IYC",
-        "index": 77
-    },
-    {
-        "element": "SIJ",
-        "index": 78
-    },
-    {
-        "element": "SKYY",
-        "index": 79
-    },
-    {
-        "element": "IYE",
-        "index": 80
-    },
-    {
-        "element": "PKB",
-        "index": 81
-    },
-    {
-        "element": "RETL",
-        "index": 82
-    },
-    {
-        "element": "RYU",
-        "index": 83
-    },
-    {
-        "element": "FTXL",
-        "index": 84
-    },
-    {
-        "element": "PPA",
-        "index": 85
-    },
-    {
-        "element": "PYZ",
-        "index": 86
-    },
-    {
-        "element": "FXU",
-        "index": 87
-    },
-    {
-        "element": "AMZA",
-        "index": 88
-    },
-    {
-        "element": "RWR",
-        "index": 89
-    },
-    {
-        "element": "FMAT",
-        "index": 90
-    },
-    {
-        "element": "XLI",
-        "index": 91
-    },
-    {
-        "element": "REK",
-        "index": 92
-    },
-    {
-        "element": "ITB",
-        "index": 93
-    },
-    {
-        "element": "BBH",
-        "index": 94
-    },
-    {
-        "element": "RYE",
-        "index": 95
-    },
-    {
-        "element": "BBP",
-        "index": 96
-    },
-    {
-        "element": "IEDI",
-        "index": 97
-    },
-    {
-        "element": "IAI",
-        "index": 98
-    },
-    {
-        "element": "PSCT",
-        "index": 99
-    },
-    {
-        "element": "TDV",
-        "index": 100
-    },
-    {
-        "element": "XLE",
-        "index": 101
-    },
-    {
-        "element": "JHMA",
-        "index": 102
-    },
-    {
-        "element": "LABU",
-        "index": 103
-    },
-    {
-        "element": "PPTY",
-        "index": 104
-    },
-    {
-        "element": "JHME",
-        "index": 105
-    },
-    {
-        "element": "XSD",
-        "index": 106
-    },
-    {
-        "element": "VPC",
-        "index": 107
-    },
-    {
-        "element": "REML",
-        "index": 108
-    },
-    {
-        "element": "KBWP",
-        "index": 109
-    },
-    {
-        "element": "DIG",
-        "index": 110
-    },
-    {
-        "element": "UYM",
-        "index": 111
-    },
-    {
-        "element": "EWRE",
-        "index": 112
-    },
-    {
-        "element": "DPST",
-        "index": 113
-    },
-    {
-        "element": "ROOF",
-        "index": 114
-    },
-    {
-        "element": "MORL",
-        "index": 115
-    },
-    {
-        "element": "FTXR",
-        "index": 116
-    },
-    {
-        "element": "FUTY",
-        "index": 117
-    },
-    {
-        "element": "XOP",
-        "index": 118
-    },
-    {
-        "element": "PSL",
-        "index": 119
-    },
-    {
-        "element": "PXJ",
-        "index": 120
-    },
-    {
-        "element": "PSI",
-        "index": 121
-    },
-    {
-        "element": "FTXO",
-        "index": 122
-    },
-    {
-        "element": "IGN",
-        "index": 123
-    },
-    {
-        "element": "RTH",
-        "index": 124
-    },
-    {
-        "element": "IHE",
-        "index": 125
-    },
-    {
-        "element": "FXH",
-        "index": 126
-    },
-    {
-        "element": "BBRE",
-        "index": 127
-    },
-    {
-        "element": "PSCI",
-        "index": 128
-    },
-    {
-        "element": "ROM",
-        "index": 129
-    },
-    {
-        "element": "VCR",
-        "index": 130
-    },
-    {
-        "element": "NAIL",
-        "index": 131
-    },
-    {
-        "element": "FIVG",
-        "index": 132
-    },
-    {
-        "element": "MLPQ",
-        "index": 133
-    },
-    {
-        "element": "ONLN",
-        "index": 134
-    },
-    {
-        "element": "QQQ",
-        "index": 135
-    },
-    {
-        "element": "NRGO",
-        "index": 136
-    },
-    {
-        "element": "AMLP",
-        "index": 137
-    },
-    {
-        "element": "XLU",
-        "index": 138
-    },
-    {
-        "element": "FBT",
-        "index": 139
-    },
-    {
-        "element": "JHMS",
-        "index": 140
-    },
-    {
-        "element": "SKF",
-        "index": 141
-    },
-    {
-        "element": "PJP",
-        "index": 142
-    },
-    {
-        "element": "VNQ",
-        "index": 143
-    },
-    {
-        "element": "VGT",
-        "index": 144
-    },
-    {
-        "element": "INDS",
-        "index": 145
-    },
-    {
-        "element": "CWEB",
-        "index": 146
-    },
-    {
-        "element": "SMN",
-        "index": 147
-    },
-    {
-        "element": "WCLD",
-        "index": 148
-    },
-    {
-        "element": "XTN",
-        "index": 149
-    },
-    {
-        "element": "ERY",
-        "index": 150
-    },
-    {
-        "element": "UTES",
-        "index": 151
-    },
-    {
-        "element": "HOMZ",
-        "index": 152
-    },
-    {
-        "element": "RHS",
-        "index": 153
-    },
-    {
-        "element": "FIDU",
-        "index": 154
-    },
-    {
-        "element": "RDOG",
-        "index": 155
-    },
-    {
-        "element": "UXI",
-        "index": 156
-    },
-    {
-        "element": "SRS",
-        "index": 157
-    },
-    {
-        "element": "IYF",
-        "index": 158
-    },
-    {
-        "element": "TPOR",
-        "index": 159
-    },
-    {
-        "element": "PTF",
-        "index": 160
-    },
-    {
-        "element": "VDE",
-        "index": 161
-    },
-    {
-        "element": "IGE",
-        "index": 162
-    },
-    {
-        "element": "JHMH",
-        "index": 163
-    },
-    {
-        "element": "DUG",
-        "index": 164
-    },
-    {
-        "element": "PBW",
-        "index": 165
-    },
-    {
-        "element": "CLIX",
-        "index": 166
-    },
-    {
-        "element": "JNUG",
-        "index": 167
-    },
-    {
-        "element": "NURE",
-        "index": 168
-    },
-    {
-        "element": "MLPA",
-        "index": 169
-    },
-    {
-        "element": "XNTK",
-        "index": 170
-    },
-    {
-        "element": "IYM",
-        "index": 171
-    },
-    {
-        "element": "FIW",
-        "index": 172
-    },
-    {
-        "element": "PXQ",
-        "index": 173
-    },
-    {
-        "element": "QTEC",
-        "index": 174
-    },
-    {
-        "element": "OIH",
-        "index": 175
-    },
-    {
-        "element": "KIE",
-        "index": 176
-    },
-    {
-        "element": "FINZ",
-        "index": 177
-    },
-    {
-        "element": "IYT",
-        "index": 178
-    },
-    {
-        "element": "XSW",
-        "index": 179
-    },
-    {
-        "element": "LABD",
-        "index": 180
-    },
-    {
-        "element": "XHS",
-        "index": 181
-    },
-    {
-        "element": "JHMU",
-        "index": 182
-    },
-    {
-        "element": "IAT",
-        "index": 183
-    },
-    {
-        "element": "PEZ",
-        "index": 184
-    },
-    {
-        "element": "IFRA",
-        "index": 185
-    },
-    {
-        "element": "UPW",
-        "index": 186
-    },
-    {
-        "element": "IEFN",
-        "index": 187
-    },
-    {
-        "element": "FXR",
-        "index": 188
-    },
-    {
-        "element": "RGI",
-        "index": 189
-    },
-    {
-        "element": "ZMLP",
-        "index": 190
-    },
-    {
-        "element": "VHT",
-        "index": 191
-    },
-    {
-        "element": "XAR",
-        "index": 192
-    },
-    {
-        "element": "IGM",
-        "index": 193
-    },
-    {
-        "element": "RYT",
-        "index": 194
-    },
-    {
-        "element": "IYW",
-        "index": 195
-    },
-    {
-        "element": "IYK",
-        "index": 196
-    },
-    {
-        "element": "IEHS",
-        "index": 197
-    },
-    {
-        "element": "UCC",
-        "index": 198
-    },
-    {
-        "element": "VAW",
-        "index": 199
-    },
-    {
-        "element": "XME",
-        "index": 200
-    },
-    {
-        "element": "IEZ",
-        "index": 201
-    },
-    {
-        "element": "PHO",
-        "index": 202
-    },
-    {
-        "element": "ITA",
-        "index": 203
-    },
-    {
-        "element": "GASL",
-        "index": 204
-    },
-    {
-        "element": "SMH",
-        "index": 205
-    },
-    {
-        "element": "VPU",
-        "index": 206
-    },
-    {
-        "element": "PSCD",
-        "index": 207
-    },
-    {
-        "element": "PSCH",
-        "index": 208
-    },
-    {
-        "element": "PSJ",
-        "index": 209
-    },
-    {
-        "element": "SDP",
-        "index": 210
-    },
-    {
-        "element": "NEED",
-        "index": 211
-    },
-    {
-        "element": "PNQI",
-        "index": 212
-    },
-    {
-        "element": "SOXL",
-        "index": 213
-    },
-    {
-        "element": "SSG",
-        "index": 214
-    },
-    {
-        "element": "KBWR",
-        "index": 215
-    },
-    {
-        "element": "SRVR",
-        "index": 216
-    },
-    {
-        "element": "XLRE",
-        "index": 217
-    },
-    {
-        "element": "FCG",
-        "index": 218
-    },
-    {
-        "element": "VIS",
-        "index": 219
-    },
-    {
-        "element": "JHMT",
-        "index": 220
-    },
-    {
-        "element": "IAK",
-        "index": 221
-    },
-    {
-        "element": "KBWY",
-        "index": 222
-    },
-    {
-        "element": "MLPX",
-        "index": 223
-    },
-    {
-        "element": "ICF",
-        "index": 224
-    },
-    {
-        "element": "PXI",
-        "index": 225
-    },
-    {
-        "element": "PAVE",
-        "index": 226
-    },
-    {
-        "element": "REW",
-        "index": 227
-    },
-    {
-        "element": "HAIL",
-        "index": 228
-    },
-    {
-        "element": "DRIP",
-        "index": 229
-    },
-    {
-        "element": "SLX",
-        "index": 230
-    },
-    {
-        "element": "PILL",
-        "index": 231
-    },
-    {
-        "element": "PBS",
-        "index": 232
-    },
-    {
-        "element": "AIRR",
-        "index": 233
-    },
-    {
-        "element": "IDU",
-        "index": 234
-    },
-    {
-        "element": "FITE",
-        "index": 235
-    },
-    {
-        "element": "IYH",
-        "index": 236
-    },
-    {
-        "element": "REM",
-        "index": 237
-    },
-    {
-        "element": "ERX",
-        "index": 238
-    },
-    {
-        "element": "MLPB",
-        "index": 239
-    },
-    {
-        "element": "PEJ",
-        "index": 240
-    },
-    {
-        "element": "NRGU",
-        "index": 241
-    },
-    {
-        "element": "XTL",
-        "index": 242
-    },
-    {
-        "element": "BIZD",
-        "index": 243
-    },
-    {
-        "element": "ARKG",
-        "index": 244
-    },
-    {
-        "element": "NETL",
-        "index": 245
-    },
-    {
-        "element": "RCD",
-        "index": 246
-    },
-    {
-        "element": "SIMS",
-        "index": 247
-    },
-    {
-        "element": "IETC",
-        "index": 248
-    },
-    {
-        "element": "RYH",
-        "index": 249
-    },
-    {
-        "element": "RYF",
-        "index": 250
-    },
-    {
-        "element": "NRGD",
-        "index": 251
-    },
-    {
-        "element": "VDC",
-        "index": 252
-    },
-    {
-        "element": "XES",
-        "index": 253
-    },
-    {
-        "element": "MORT",
-        "index": 254
-    },
-    {
-        "element": "FREL",
-        "index": 255
-    },
-    {
-        "element": "FENY",
-        "index": 256
-    },
-    {
-        "element": "TDIV",
-        "index": 257
-    },
-    {
-        "element": "FXG",
-        "index": 258
-    },
-    {
-        "element": "PFI",
-        "index": 259
-    },
-    {
-        "element": "BUYN",
-        "index": 260
-    },
-    {
-        "element": "FXL",
-        "index": 261
-    },
-    {
-        "element": "PSR",
-        "index": 262
-    },
-    {
-        "element": "PSCU",
-        "index": 263
-    },
-    {
-        "element": "SBIO",
-        "index": 264
-    },
-    {
-        "element": "PRN",
-        "index": 265
-    },
-    {
-        "element": "FSTA",
-        "index": 266
-    },
-    {
-        "element": "DFEN",
-        "index": 267
-    },
-    {
-        "element": "IYR",
-        "index": 268
-    },
-    {
-        "element": "VOX",
-        "index": 269
-    },
-    {
-        "element": "FXN",
-        "index": 270
-    },
-    {
-        "element": "GUSH",
-        "index": 271
-    },
-    {
-        "element": "CNCR",
-        "index": 272
-    },
-    {
-        "element": "MLPI",
-        "index": 273
-    },
-    {
-        "element": "URE",
-        "index": 274
-    },
-    {
-        "element": "CURE",
-        "index": 275
-    },
-    {
-        "element": "LACK",
-        "index": 276
-    },
-    {
-        "element": "UTSL",
-        "index": 277
-    },
-    {
-        "element": "VMOT",
-        "index": 278
-    },
-    {
-        "element": "IGV",
-        "index": 279
-    },
-    {
-        "element": "WDRW",
-        "index": 280
-    },
-    {
-        "element": "TECL",
-        "index": 281
-    }
+	{
+		value: "XLK",
+		label: "XLK"
+	},
+	{
+		value: "BMLP",
+		label: "BMLP"
+	},
+	{
+		value: "IHI",
+		label: "IHI"
+	},
+	{
+		value: "SZK",
+		label: "SZK"
+	},
+	{
+		value: "JHMC",
+		label: "JHMC"
+	},
+	{
+		value: "FHLC",
+		label: "FHLC"
+	},
+	{
+		value: "PUI",
+		label: "PUI"
+	},
+	{
+		value: "KBWB",
+		label: "KBWB"
+	},
+	{
+		value: "FTXG",
+		label: "FTXG"
+	},
+	{
+		value: "XLV",
+		label: "XLV"
+	},
+	{
+		value: "XBI",
+		label: "XBI"
+	},
+	{
+		value: "RORE",
+		label: "RORE"
+	},
+	{
+		value: "PSCM",
+		label: "PSCM"
+	},
+	{
+		value: "PASS",
+		label: "PASS"
+	},
+	{
+		value: "IEO",
+		label: "IEO"
+	},
+	{
+		value: "IYZ",
+		label: "IYZ"
+	},
+	{
+		value: "XLY",
+		label: "XLY"
+	},
+	{
+		value: "PSCF",
+		label: "PSCF"
+	},
+	{
+		value: "MRRL",
+		label: "MRRL"
+	},
+	{
+		value: "PXE",
+		label: "PXE"
+	},
+	{
+		value: "BNKU",
+		label: "BNKU"
+	},
+	{
+		value: "XLC",
+		label: "XLC"
+	},
+	{
+		value: "XHB",
+		label: "XHB"
+	},
+	{
+		value: "PPH",
+		label: "PPH"
+	},
+	{
+		value: "XRT",
+		label: "XRT"
+	},
+	{
+		value: "NUGT",
+		label: "NUGT"
+	},
+	{
+		value: "FDIS",
+		label: "FDIS"
+	},
+	{
+		value: "XWEB",
+		label: "XWEB"
+	},
+	{
+		value: "FDN",
+		label: "FDN"
+	},
+	{
+		value: "RTM",
+		label: "RTM"
+	},
+	{
+		value: "SEF",
+		label: "SEF"
+	},
+	{
+		value: "USD",
+		label: "USD"
+	},
+	{
+		value: "QABA",
+		label: "QABA"
+	},
+	{
+		value: "DRN",
+		label: "DRN"
+	},
+	{
+		value: "KBE",
+		label: "KBE"
+	},
+	{
+		value: "TAWK",
+		label: "TAWK"
+	},
+	{
+		value: "IBB",
+		label: "IBB"
+	},
+	{
+		value: "UGE",
+		label: "UGE"
+	},
+	{
+		value: "PSCE",
+		label: "PSCE"
+	},
+	{
+		value: "SCC",
+		label: "SCC"
+	},
+	{
+		value: "WANT",
+		label: "WANT"
+	},
+	{
+		value: "RXL",
+		label: "RXL"
+	},
+	{
+		value: "EVX",
+		label: "EVX"
+	},
+	{
+		value: "KRE",
+		label: "KRE"
+	},
+	{
+		value: "DRV",
+		label: "DRV"
+	},
+	{
+		value: "BNKD",
+		label: "BNKD"
+	},
+	{
+		value: "BTEC",
+		label: "BTEC"
+	},
+	{
+		value: "ROKT",
+		label: "ROKT"
+	},
+	{
+		value: "BBC",
+		label: "BBC"
+	},
+	{
+		value: "SOXS",
+		label: "SOXS"
+	},
+	{
+		value: "GASX",
+		label: "GASX"
+	},
+	{
+		value: "FXZ",
+		label: "FXZ"
+	},
+	{
+		value: "CNRG",
+		label: "CNRG"
+	},
+	{
+		value: "PTH",
+		label: "PTH"
+	},
+	{
+		value: "XHE",
+		label: "XHE"
+	},
+	{
+		value: "XLP",
+		label: "XLP"
+	},
+	{
+		value: "HDGE",
+		label: "HDGE"
+	},
+	{
+		value: "FXD",
+		label: "FXD"
+	},
+	{
+		value: "FTEC",
+		label: "FTEC"
+	},
+	{
+		value: "REZ",
+		label: "REZ"
+	},
+	{
+		value: "XITK",
+		label: "XITK"
+	},
+	{
+		value: "TECS",
+		label: "TECS"
+	},
+	{
+		value: "IHF",
+		label: "IHF"
+	},
+	{
+		value: "DUSL",
+		label: "DUSL"
+	},
+	{
+		value: "XLF",
+		label: "XLF"
+	},
+	{
+		value: "ZIG",
+		label: "ZIG"
+	},
+	{
+		value: "IYG",
+		label: "IYG"
+	},
+	{
+		value: "PBE",
+		label: "PBE"
+	},
+	{
+		value: "DDG",
+		label: "DDG"
+	},
+	{
+		value: "ZBIO",
+		label: "ZBIO"
+	},
+	{
+		value: "SCHH",
+		label: "SCHH"
+	},
+	{
+		value: "FINU",
+		label: "FINU"
+	},
+	{
+		value: "SOXX",
+		label: "SOXX"
+	},
+	{
+		value: "XLB",
+		label: "XLB"
+	},
+	{
+		value: "FRI",
+		label: "FRI"
+	},
+	{
+		value: "IECS",
+		label: "IECS"
+	},
+	{
+		value: "XPH",
+		label: "XPH"
+	},
+	{
+		value: "IYC",
+		label: "IYC"
+	},
+	{
+		value: "SIJ",
+		label: "SIJ"
+	},
+	{
+		value: "SKYY",
+		label: "SKYY"
+	},
+	{
+		value: "IYE",
+		label: "IYE"
+	},
+	{
+		value: "PKB",
+		label: "PKB"
+	},
+	{
+		value: "RETL",
+		label: "RETL"
+	},
+	{
+		value: "RYU",
+		label: "RYU"
+	},
+	{
+		value: "FTXL",
+		label: "FTXL"
+	},
+	{
+		value: "PPA",
+		label: "PPA"
+	},
+	{
+		value: "PYZ",
+		label: "PYZ"
+	},
+	{
+		value: "FXU",
+		label: "FXU"
+	},
+	{
+		value: "AMZA",
+		label: "AMZA"
+	},
+	{
+		value: "RWR",
+		label: "RWR"
+	},
+	{
+		value: "FMAT",
+		label: "FMAT"
+	},
+	{
+		value: "XLI",
+		label: "XLI"
+	},
+	{
+		value: "REK",
+		label: "REK"
+	},
+	{
+		value: "ITB",
+		label: "ITB"
+	},
+	{
+		value: "BBH",
+		label: "BBH"
+	},
+	{
+		value: "RYE",
+		label: "RYE"
+	},
+	{
+		value: "BBP",
+		label: "BBP"
+	},
+	{
+		value: "IEDI",
+		label: "IEDI"
+	},
+	{
+		value: "IAI",
+		label: "IAI"
+	},
+	{
+		value: "PSCT",
+		label: "PSCT"
+	},
+	{
+		value: "TDV",
+		label: "TDV"
+	},
+	{
+		value: "XLE",
+		label: "XLE"
+	},
+	{
+		value: "JHMA",
+		label: "JHMA"
+	},
+	{
+		value: "LABU",
+		label: "LABU"
+	},
+	{
+		value: "PPTY",
+		label: "PPTY"
+	},
+	{
+		value: "JHME",
+		label: "JHME"
+	},
+	{
+		value: "XSD",
+		label: "XSD"
+	},
+	{
+		value: "VPC",
+		label: "VPC"
+	},
+	{
+		value: "REML",
+		label: "REML"
+	},
+	{
+		value: "KBWP",
+		label: "KBWP"
+	},
+	{
+		value: "DIG",
+		label: "DIG"
+	},
+	{
+		value: "UYM",
+		label: "UYM"
+	},
+	{
+		value: "EWRE",
+		label: "EWRE"
+	},
+	{
+		value: "DPST",
+		label: "DPST"
+	},
+	{
+		value: "ROOF",
+		label: "ROOF"
+	},
+	{
+		value: "MORL",
+		label: "MORL"
+	},
+	{
+		value: "FTXR",
+		label: "FTXR"
+	},
+	{
+		value: "FUTY",
+		label: "FUTY"
+	},
+	{
+		value: "XOP",
+		label: "XOP"
+	},
+	{
+		value: "PSL",
+		label: "PSL"
+	},
+	{
+		value: "PXJ",
+		label: "PXJ"
+	},
+	{
+		value: "PSI",
+		label: "PSI"
+	},
+	{
+		value: "FTXO",
+		label: "FTXO"
+	},
+	{
+		value: "IGN",
+		label: "IGN"
+	},
+	{
+		value: "RTH",
+		label: "RTH"
+	},
+	{
+		value: "IHE",
+		label: "IHE"
+	},
+	{
+		value: "FXH",
+		label: "FXH"
+	},
+	{
+		value: "BBRE",
+		label: "BBRE"
+	},
+	{
+		value: "PSCI",
+		label: "PSCI"
+	},
+	{
+		value: "ROM",
+		label: "ROM"
+	},
+	{
+		value: "VCR",
+		label: "VCR"
+	},
+	{
+		value: "NAIL",
+		label: "NAIL"
+	},
+	{
+		value: "FIVG",
+		label: "FIVG"
+	},
+	{
+		value: "MLPQ",
+		label: "MLPQ"
+	},
+	{
+		value: "ONLN",
+		label: "ONLN"
+	},
+	{
+		value: "QQQ",
+		label: "QQQ"
+	},
+	{
+		value: "NRGO",
+		label: "NRGO"
+	},
+	{
+		value: "AMLP",
+		label: "AMLP"
+	},
+	{
+		value: "XLU",
+		label: "XLU"
+	},
+	{
+		value: "FBT",
+		label: "FBT"
+	},
+	{
+		value: "JHMS",
+		label: "JHMS"
+	},
+	{
+		value: "SKF",
+		label: "SKF"
+	},
+	{
+		value: "PJP",
+		label: "PJP"
+	},
+	{
+		value: "VNQ",
+		label: "VNQ"
+	},
+	{
+		value: "VGT",
+		label: "VGT"
+	},
+	{
+		value: "INDS",
+		label: "INDS"
+	},
+	{
+		value: "CWEB",
+		label: "CWEB"
+	},
+	{
+		value: "SMN",
+		label: "SMN"
+	},
+	{
+		value: "WCLD",
+		label: "WCLD"
+	},
+	{
+		value: "XTN",
+		label: "XTN"
+	},
+	{
+		value: "ERY",
+		label: "ERY"
+	},
+	{
+		value: "UTES",
+		label: "UTES"
+	},
+	{
+		value: "HOMZ",
+		label: "HOMZ"
+	},
+	{
+		value: "RHS",
+		label: "RHS"
+	},
+	{
+		value: "FIDU",
+		label: "FIDU"
+	},
+	{
+		value: "RDOG",
+		label: "RDOG"
+	},
+	{
+		value: "UXI",
+		label: "UXI"
+	},
+	{
+		value: "SRS",
+		label: "SRS"
+	},
+	{
+		value: "IYF",
+		label: "IYF"
+	},
+	{
+		value: "TPOR",
+		label: "TPOR"
+	},
+	{
+		value: "PTF",
+		label: "PTF"
+	},
+	{
+		value: "VDE",
+		label: "VDE"
+	},
+	{
+		value: "IGE",
+		label: "IGE"
+	},
+	{
+		value: "JHMH",
+		label: "JHMH"
+	},
+	{
+		value: "DUG",
+		label: "DUG"
+	},
+	{
+		value: "PBW",
+		label: "PBW"
+	},
+	{
+		value: "CLIX",
+		label: "CLIX"
+	},
+	{
+		value: "JNUG",
+		label: "JNUG"
+	},
+	{
+		value: "NURE",
+		label: "NURE"
+	},
+	{
+		value: "MLPA",
+		label: "MLPA"
+	},
+	{
+		value: "XNTK",
+		label: "XNTK"
+	},
+	{
+		value: "IYM",
+		label: "IYM"
+	},
+	{
+		value: "FIW",
+		label: "FIW"
+	},
+	{
+		value: "PXQ",
+		label: "PXQ"
+	},
+	{
+		value: "QTEC",
+		label: "QTEC"
+	},
+	{
+		value: "OIH",
+		label: "OIH"
+	},
+	{
+		value: "KIE",
+		label: "KIE"
+	},
+	{
+		value: "FINZ",
+		label: "FINZ"
+	},
+	{
+		value: "IYT",
+		label: "IYT"
+	},
+	{
+		value: "XSW",
+		label: "XSW"
+	},
+	{
+		value: "LABD",
+		label: "LABD"
+	},
+	{
+		value: "XHS",
+		label: "XHS"
+	},
+	{
+		value: "JHMU",
+		label: "JHMU"
+	},
+	{
+		value: "IAT",
+		label: "IAT"
+	},
+	{
+		value: "PEZ",
+		label: "PEZ"
+	},
+	{
+		value: "IFRA",
+		label: "IFRA"
+	},
+	{
+		value: "UPW",
+		label: "UPW"
+	},
+	{
+		value: "IEFN",
+		label: "IEFN"
+	},
+	{
+		value: "FXR",
+		label: "FXR"
+	},
+	{
+		value: "RGI",
+		label: "RGI"
+	},
+	{
+		value: "ZMLP",
+		label: "ZMLP"
+	},
+	{
+		value: "VHT",
+		label: "VHT"
+	},
+	{
+		value: "XAR",
+		label: "XAR"
+	},
+	{
+		value: "IGM",
+		label: "IGM"
+	},
+	{
+		value: "RYT",
+		label: "RYT"
+	},
+	{
+		value: "IYW",
+		label: "IYW"
+	},
+	{
+		value: "IYK",
+		label: "IYK"
+	},
+	{
+		value: "IEHS",
+		label: "IEHS"
+	},
+	{
+		value: "UCC",
+		label: "UCC"
+	},
+	{
+		value: "VAW",
+		label: "VAW"
+	},
+	{
+		value: "XME",
+		label: "XME"
+	},
+	{
+		value: "IEZ",
+		label: "IEZ"
+	},
+	{
+		value: "PHO",
+		label: "PHO"
+	},
+	{
+		value: "ITA",
+		label: "ITA"
+	},
+	{
+		value: "GASL",
+		label: "GASL"
+	},
+	{
+		value: "SMH",
+		label: "SMH"
+	},
+	{
+		value: "VPU",
+		label: "VPU"
+	},
+	{
+		value: "PSCD",
+		label: "PSCD"
+	},
+	{
+		value: "PSCH",
+		label: "PSCH"
+	},
+	{
+		value: "PSJ",
+		label: "PSJ"
+	},
+	{
+		value: "SDP",
+		label: "SDP"
+	},
+	{
+		value: "NEED",
+		label: "NEED"
+	},
+	{
+		value: "PNQI",
+		label: "PNQI"
+	},
+	{
+		value: "SOXL",
+		label: "SOXL"
+	},
+	{
+		value: "SSG",
+		label: "SSG"
+	},
+	{
+		value: "KBWR",
+		label: "KBWR"
+	},
+	{
+		value: "SRVR",
+		label: "SRVR"
+	},
+	{
+		value: "XLRE",
+		label: "XLRE"
+	},
+	{
+		value: "FCG",
+		label: "FCG"
+	},
+	{
+		value: "VIS",
+		label: "VIS"
+	},
+	{
+		value: "JHMT",
+		label: "JHMT"
+	},
+	{
+		value: "IAK",
+		label: "IAK"
+	},
+	{
+		value: "KBWY",
+		label: "KBWY"
+	},
+	{
+		value: "MLPX",
+		label: "MLPX"
+	},
+	{
+		value: "ICF",
+		label: "ICF"
+	},
+	{
+		value: "PXI",
+		label: "PXI"
+	},
+	{
+		value: "PAVE",
+		label: "PAVE"
+	},
+	{
+		value: "REW",
+		label: "REW"
+	},
+	{
+		value: "HAIL",
+		label: "HAIL"
+	},
+	{
+		value: "DRIP",
+		label: "DRIP"
+	},
+	{
+		value: "SLX",
+		label: "SLX"
+	},
+	{
+		value: "PILL",
+		label: "PILL"
+	},
+	{
+		value: "PBS",
+		label: "PBS"
+	},
+	{
+		value: "AIRR",
+		label: "AIRR"
+	},
+	{
+		value: "IDU",
+		label: "IDU"
+	},
+	{
+		value: "FITE",
+		label: "FITE"
+	},
+	{
+		value: "IYH",
+		label: "IYH"
+	},
+	{
+		value: "REM",
+		label: "REM"
+	},
+	{
+		value: "ERX",
+		label: "ERX"
+	},
+	{
+		value: "MLPB",
+		label: "MLPB"
+	},
+	{
+		value: "PEJ",
+		label: "PEJ"
+	},
+	{
+		value: "NRGU",
+		label: "NRGU"
+	},
+	{
+		value: "XTL",
+		label: "XTL"
+	},
+	{
+		value: "BIZD",
+		label: "BIZD"
+	},
+	{
+		value: "ARKG",
+		label: "ARKG"
+	},
+	{
+		value: "NETL",
+		label: "NETL"
+	},
+	{
+		value: "RCD",
+		label: "RCD"
+	},
+	{
+		value: "SIMS",
+		label: "SIMS"
+	},
+	{
+		value: "IETC",
+		label: "IETC"
+	},
+	{
+		value: "RYH",
+		label: "RYH"
+	},
+	{
+		value: "RYF",
+		label: "RYF"
+	},
+	{
+		value: "NRGD",
+		label: "NRGD"
+	},
+	{
+		value: "VDC",
+		label: "VDC"
+	},
+	{
+		value: "XES",
+		label: "XES"
+	},
+	{
+		value: "MORT",
+		label: "MORT"
+	},
+	{
+		value: "FREL",
+		label: "FREL"
+	},
+	{
+		value: "FENY",
+		label: "FENY"
+	},
+	{
+		value: "TDIV",
+		label: "TDIV"
+	},
+	{
+		value: "FXG",
+		label: "FXG"
+	},
+	{
+		value: "PFI",
+		label: "PFI"
+	},
+	{
+		value: "BUYN",
+		label: "BUYN"
+	},
+	{
+		value: "FXL",
+		label: "FXL"
+	},
+	{
+		value: "PSR",
+		label: "PSR"
+	},
+	{
+		value: "PSCU",
+		label: "PSCU"
+	},
+	{
+		value: "SBIO",
+		label: "SBIO"
+	},
+	{
+		value: "PRN",
+		label: "PRN"
+	},
+	{
+		value: "FSTA",
+		label: "FSTA"
+	},
+	{
+		value: "DFEN",
+		label: "DFEN"
+	},
+	{
+		value: "IYR",
+		label: "IYR"
+	},
+	{
+		value: "VOX",
+		label: "VOX"
+	},
+	{
+		value: "FXN",
+		label: "FXN"
+	},
+	{
+		value: "GUSH",
+		label: "GUSH"
+	},
+	{
+		value: "CNCR",
+		label: "CNCR"
+	},
+	{
+		value: "MLPI",
+		label: "MLPI"
+	},
+	{
+		value: "URE",
+		label: "URE"
+	},
+	{
+		value: "CURE",
+		label: "CURE"
+	},
+	{
+		value: "LACK",
+		label: "LACK"
+	},
+	{
+		value: "UTSL",
+		label: "UTSL"
+	},
+	{
+		value: "VMOT",
+		label: "VMOT"
+	},
+	{
+		value: "IGV",
+		label: "IGV"
+	},
+	{
+		value: "WDRW",
+		label: "WDRW"
+	},
+	{
+		value: "TECL",
+		label: "TECL"
+	}
 ];

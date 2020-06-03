@@ -22,7 +22,7 @@ class Live_Arbitrage extends React.Component{
     componentDidMount() {
         this.fetchETFLiveData(true);
     }
-   
+
     componentDidUpdate(prevProps,prevState) {
         if (this.props.ETF !== prevProps.ETF) {
             this.fetchETFLiveData(true);
@@ -93,7 +93,7 @@ class Live_Arbitrage extends React.Component{
 
 const TableStyling = {
     fontSize: '13px'
-  };
+};
 
 const LiveTable = (props) => {
     //console.log(props.data);
@@ -134,20 +134,20 @@ const LiveTable = (props) => {
 
     return (
         <div className="Table">
-          <Table striped bordered hover variant="dark"  style={TableStyling}>
-          <thead className="TableHead">
-            <tr>
-                <td>Time</td>
-                <td>Arbitrage</td>
-                <td>Spread</td>
-                <td>Price</td>
-                <td>Volume</td>
-            </tr>
-          </thead>
-          <tbody>
-            {getRowsData()}
-          </tbody>
-          </Table>
+            <Table striped bordered hover variant="dark"  style={TableStyling}>
+                <thead className="TableHead">
+                    <tr>
+                        <td>Time</td>
+                        <td>Arbitrage</td>
+                        <td>Spread</td>
+                        <td>Price</td>
+                        <td>Volume</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {getRowsData()}
+                </tbody>
+            </Table>
         </div>          
     );
 }

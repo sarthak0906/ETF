@@ -5,22 +5,22 @@ import asyncio
 
 # CONNECTION STATEMENT FOR PRODUCTION AND PIYUSH :
 # connect with replica set
-connectionLocal = MongoClient('localhost', 27017, replicaSet='rs0')
+# connectionLocal = MongoClient('localhost', 27017, replicaSet='rs0')
 # connect without replica set for now
 # connectionLocal = MongoClient('localhost', 27017)
 
 # CONNECTION STATEMENT FOR REST OF DEV TEAM (from Non-local environment)
 # (Connects only to Primary. Will fail if Primary is down):
-# connectionLocal = MongoClient('18.213.229.80', 27017)
+connectionLocal = MongoClient('18.213.229.80', 27017)
 
 db = connectionLocal.ETF_db
 
 # CONNECTION STATEMENT FOR PRODUCTION AND PIYUSH :
-motor_client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, replicaSet='rs0')
+# motor_client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, replicaSet='rs0')
 
 # CONNECTION STATEMENT FOR REST OF DEV TEAM (from Non-local environment)
 # (Connects only to Primary. Will fail if Primary is down):
-#motor_client = motor.motor_asyncio.AsyncIOMotorClient('18.213.229.80', 27017)
+motor_client = motor.motor_asyncio.AsyncIOMotorClient('18.213.229.80', 27017)
 
 motor_db = motor_client.ETF_db
 

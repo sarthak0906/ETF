@@ -4,7 +4,7 @@ import motor.motor_asyncio
 import asyncio
 
 try:
-    with open("MongoDBAccInfo.txt") as f:
+    with open("/home/ubuntu/ETFAnalysis/MongoDBAccInfo.txt") as f:
         credentials = [x.strip().split(':', 1) for x in f]
     username = credentials[0][0]
     password = credentials[0][1]

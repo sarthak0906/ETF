@@ -29,7 +29,7 @@ class PullandCleanData:
         self.detailsdata = pd.DataFrame()
         self.holdingsdata = pd.DataFrame()
         try:
-            with open("MongoDBAccInfo.txt") as f:
+            with open("/home/ubuntu/ETFAnalysis/MongoDBAccInfo.txt") as f:
                 credentials = [x.strip().split(':', 1) for x in f]
             username = credentials[0][0]
             password = credentials[0][1]

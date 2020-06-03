@@ -196,7 +196,7 @@ def fetchPNLForETFForALlDays(ETFName):
 
 
 ############################################
-# Live Arbitrage
+# Live Arbitrage Single Page
 ############################################
 
 from MongoDB.PerMinDataOperations import PerMinDataOperations
@@ -227,9 +227,14 @@ def SendLiveArbitrageDataAllTickers():
         return str(e)
 
 
+############################################
+# Live Arbitrage Single Page
+############################################
+import time
+
 @app.route('/ETfLiveArbitrage/Single/<etfname>')
 def SendLiveArbitrageDataSingleTicker(etfname):
-    req = request.__dict__['environ']['REQUEST_URI']
+    start_time = time.time()
     try:
         etf_full_day_price_cursor = PerMinDataOperations().FetchFullDayPricesForETF(etfname)
         etf_full_day_price_data = []
@@ -237,7 +242,8 @@ def SendLiveArbitrageDataSingleTicker(etfname):
         full_day_prices_df = pd.DataFrame.from_records(etf_full_day_price_data)
         full_day_prices_df.rename(columns={'sym': 'Symbol', 'vw': 'Price', 'e': 'Timestamp'}, inplace=True)
         full_day_prices_df.drop(columns=['Symbol'], inplace=True)
-        # print(full_day_prices_df)
+        print("Price Dataframe")
+        print(full_day_prices_df)
 
         live_data = PerMinDataOperations().FetchPerMinLiveData(etfname=etfname)
         data1 = []
@@ -252,13 +258,59 @@ def SendLiveArbitrageDataSingleTicker(etfname):
                       'Arbitrage': item['ArbitrageData'][0]['Arbitrage'], 'Spread': item['ArbitrageData'][0]['Spread']})
          for item in full_day_data]
         full_day_data_df = pd.DataFrame.from_records(data)
+        print(full_day_data_df)
 
         mergedDF = full_day_data_df.merge(full_day_prices_df, on='Timestamp', how='left')
+        print("Merged Dataaframe")
         print(mergedDF)
         # live_data_df = mergedDF.loc[mergedDF['Timestamp'].idxmax()]
         # live_data_dict = live_data_df.to_dict()
 
         # return "Live: {}, Full_Day: {}".format(live_data_df.to_dict(), full_day_data_df.to_dict())
+        print("--- %s seconds ---" % (time.time() - start_time))
+        return jsonify(Live=live_data_df.to_dict(), Full_Day=mergedDF.to_dict())
+
+    except Exception as e:
+        print("Issue in Flask app while fetching ETF Description Data")
+        print(e)
+        return str(e)
+
+@app.route('/ETfLiveArbitrage/Single/UpdateTable/<etfname>')
+def UpdateLiveArbitrageDataTablesAndPrices(etfname):
+    start_time = time.time()
+    try:
+        etf_full_day_price_cursor = PerMinDataOperations().FetchFullDayPricesForETF(etfname)
+        etf_full_day_price_data = []
+        [etf_full_day_price_data.append(item) for item in etf_full_day_price_cursor]
+        full_day_prices_df = pd.DataFrame.from_records(etf_full_day_price_data)
+        full_day_prices_df.rename(columns={'sym': 'Symbol', 'vw': 'Price', 'e': 'Timestamp'}, inplace=True)
+        full_day_prices_df.drop(columns=['Symbol'], inplace=True)
+        print("Price Dataframe")
+        print(full_day_prices_df)
+
+        live_data = PerMinDataOperations().FetchPerMinLiveData(etfname=etfname)
+        data1 = []
+        [data1.append({'Timestamp': item['Timestamp'], 'Symbol': item['ArbitrageData'][0]['Symbol'],
+                       'Arbitrage': item['ArbitrageData'][0]['Arbitrage'],
+                       'Spread': item['ArbitrageData'][0]['Spread']}) for item in live_data]
+        live_data_df = pd.DataFrame.from_records(data1)
+
+        full_day_data = PerMinDataOperations().FetchPerMinArbitrageFullDay(etfname=etfname)
+        data = []
+        [data.append({'Timestamp': item['Timestamp'], 'Symbol': item['ArbitrageData'][0]['Symbol'],
+                      'Arbitrage': item['ArbitrageData'][0]['Arbitrage'], 'Spread': item['ArbitrageData'][0]['Spread']})
+         for item in full_day_data]
+        full_day_data_df = pd.DataFrame.from_records(data)
+        print(full_day_data_df)
+
+        mergedDF = full_day_data_df.merge(full_day_prices_df, on='Timestamp', how='left')
+        print("Merged Dataaframe")
+        print(mergedDF)
+        # live_data_df = mergedDF.loc[mergedDF['Timestamp'].idxmax()]
+        # live_data_dict = live_data_df.to_dict()
+
+        # return "Live: {}, Full_Day: {}".format(live_data_df.to_dict(), full_day_data_df.to_dict())
+        print("--- %s seconds ---" % (time.time() - start_time))
         return jsonify(Live=live_data_df.to_dict(), Full_Day=mergedDF.to_dict())
 
     except Exception as e:

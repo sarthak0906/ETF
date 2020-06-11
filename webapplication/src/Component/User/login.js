@@ -41,7 +41,6 @@ export const signIn = (
       localStorage.setItem("username", email);
       localStorage.setItem("TimeStamp", result.idToken.payload["custom:timestamp"] || 0);
       console.log(result.idToken.payload.sub);
-      
       history.push("/Live-Arbitrage");  // or whatever route you want a signed in user to be redirected to
     },
     onFailure(err) {

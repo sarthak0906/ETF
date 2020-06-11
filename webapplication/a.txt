@@ -1,0 +1,1130 @@
+[
+	{
+		"value": "XLK",
+		"label": "XLK"
+	},
+	{
+		"value": "BMLP",
+		"label": "BMLP"
+	},
+	{
+		"value": "IHI",
+		"label": "IHI"
+	},
+	{
+		"value": "SZK",
+		"label": "SZK"
+	},
+	{
+		"value": "JHMC",
+		"label": "JHMC"
+	},
+	{
+		"value": "FHLC",
+		"label": "FHLC"
+	},
+	{
+		"value": "PUI",
+		"label": "PUI"
+	},
+	{
+		"value": "KBWB",
+		"label": "KBWB"
+	},
+	{
+		"value": "FTXG",
+		"label": "FTXG"
+	},
+	{
+		"value": "XLV",
+		"label": "XLV"
+	},
+	{
+		"value": "XBI",
+		"label": "XBI"
+	},
+	{
+		"value": "RORE",
+		"label": "RORE"
+	},
+	{
+		"value": "PSCM",
+		"label": "PSCM"
+	},
+	{
+		"value": "PASS",
+		"label": "PASS"
+	},
+	{
+		"value": "IEO",
+		"label": "IEO"
+	},
+	{
+		"value": "IYZ",
+		"label": "IYZ"
+	},
+	{
+		"value": "XLY",
+		"label": "XLY"
+	},
+	{
+		"value": "PSCF",
+		"label": "PSCF"
+	},
+	{
+		"value": "MRRL",
+		"label": "MRRL"
+	},
+	{
+		"value": "PXE",
+		"label": "PXE"
+	},
+	{
+		"value": "BNKU",
+		"label": "BNKU"
+	},
+	{
+		"value": "XLC",
+		"label": "XLC"
+	},
+	{
+		"value": "XHB",
+		"label": "XHB"
+	},
+	{
+		"value": "PPH",
+		"label": "PPH"
+	},
+	{
+		"value": "XRT",
+		"label": "XRT"
+	},
+	{
+		"value": "NUGT",
+		"label": "NUGT"
+	},
+	{
+		"value": "FDIS",
+		"label": "FDIS"
+	},
+	{
+		"value": "XWEB",
+		"label": "XWEB"
+	},
+	{
+		"value": "FDN",
+		"label": "FDN"
+	},
+	{
+		"value": "RTM",
+		"label": "RTM"
+	},
+	{
+		"value": "SEF",
+		"label": "SEF"
+	},
+	{
+		"value": "USD",
+		"label": "USD"
+	},
+	{
+		"value": "QABA",
+		"label": "QABA"
+	},
+	{
+		"value": "DRN",
+		"label": "DRN"
+	},
+	{
+		"value": "KBE",
+		"label": "KBE"
+	},
+	{
+		"value": "TAWK",
+		"label": "TAWK"
+	},
+	{
+		"value": "IBB",
+		"label": "IBB"
+	},
+	{
+		"value": "UGE",
+		"label": "UGE"
+	},
+	{
+		"value": "PSCE",
+		"label": "PSCE"
+	},
+	{
+		"value": "SCC",
+		"label": "SCC"
+	},
+	{
+		"value": "WANT",
+		"label": "WANT"
+	},
+	{
+		"value": "RXL",
+		"label": "RXL"
+	},
+	{
+		"value": "EVX",
+		"label": "EVX"
+	},
+	{
+		"value": "KRE",
+		"label": "KRE"
+	},
+	{
+		"value": "DRV",
+		"label": "DRV"
+	},
+	{
+		"value": "BNKD",
+		"label": "BNKD"
+	},
+	{
+		"value": "BTEC",
+		"label": "BTEC"
+	},
+	{
+		"value": "ROKT",
+		"label": "ROKT"
+	},
+	{
+		"value": "BBC",
+		"label": "BBC"
+	},
+	{
+		"value": "SOXS",
+		"label": "SOXS"
+	},
+	{
+		"value": "GASX",
+		"label": "GASX"
+	},
+	{
+		"value": "FXZ",
+		"label": "FXZ"
+	},
+	{
+		"value": "CNRG",
+		"label": "CNRG"
+	},
+	{
+		"value": "PTH",
+		"label": "PTH"
+	},
+	{
+		"value": "XHE",
+		"label": "XHE"
+	},
+	{
+		"value": "XLP",
+		"label": "XLP"
+	},
+	{
+		"value": "HDGE",
+		"label": "HDGE"
+	},
+	{
+		"value": "FXD",
+		"label": "FXD"
+	},
+	{
+		"value": "FTEC",
+		"label": "FTEC"
+	},
+	{
+		"value": "REZ",
+		"label": "REZ"
+	},
+	{
+		"value": "XITK",
+		"label": "XITK"
+	},
+	{
+		"value": "TECS",
+		"label": "TECS"
+	},
+	{
+		"value": "IHF",
+		"label": "IHF"
+	},
+	{
+		"value": "DUSL",
+		"label": "DUSL"
+	},
+	{
+		"value": "XLF",
+		"label": "XLF"
+	},
+	{
+		"value": "ZIG",
+		"label": "ZIG"
+	},
+	{
+		"value": "IYG",
+		"label": "IYG"
+	},
+	{
+		"value": "PBE",
+		"label": "PBE"
+	},
+	{
+		"value": "DDG",
+		"label": "DDG"
+	},
+	{
+		"value": "ZBIO",
+		"label": "ZBIO"
+	},
+	{
+		"value": "SCHH",
+		"label": "SCHH"
+	},
+	{
+		"value": "FINU",
+		"label": "FINU"
+	},
+	{
+		"value": "SOXX",
+		"label": "SOXX"
+	},
+	{
+		"value": "XLB",
+		"label": "XLB"
+	},
+	{
+		"value": "FRI",
+		"label": "FRI"
+	},
+	{
+		"value": "IECS",
+		"label": "IECS"
+	},
+	{
+		"value": "XPH",
+		"label": "XPH"
+	},
+	{
+		"value": "IYC",
+		"label": "IYC"
+	},
+	{
+		"value": "SIJ",
+		"label": "SIJ"
+	},
+	{
+		"value": "SKYY",
+		"label": "SKYY"
+	},
+	{
+		"value": "IYE",
+		"label": "IYE"
+	},
+	{
+		"value": "PKB",
+		"label": "PKB"
+	},
+	{
+		"value": "RETL",
+		"label": "RETL"
+	},
+	{
+		"value": "RYU",
+		"label": "RYU"
+	},
+	{
+		"value": "FTXL",
+		"label": "FTXL"
+	},
+	{
+		"value": "PPA",
+		"label": "PPA"
+	},
+	{
+		"value": "PYZ",
+		"label": "PYZ"
+	},
+	{
+		"value": "FXU",
+		"label": "FXU"
+	},
+	{
+		"value": "AMZA",
+		"label": "AMZA"
+	},
+	{
+		"value": "RWR",
+		"label": "RWR"
+	},
+	{
+		"value": "FMAT",
+		"label": "FMAT"
+	},
+	{
+		"value": "XLI",
+		"label": "XLI"
+	},
+	{
+		"value": "REK",
+		"label": "REK"
+	},
+	{
+		"value": "ITB",
+		"label": "ITB"
+	},
+	{
+		"value": "BBH",
+		"label": "BBH"
+	},
+	{
+		"value": "RYE",
+		"label": "RYE"
+	},
+	{
+		"value": "BBP",
+		"label": "BBP"
+	},
+	{
+		"value": "IEDI",
+		"label": "IEDI"
+	},
+	{
+		"value": "IAI",
+		"label": "IAI"
+	},
+	{
+		"value": "PSCT",
+		"label": "PSCT"
+	},
+	{
+		"value": "TDV",
+		"label": "TDV"
+	},
+	{
+		"value": "XLE",
+		"label": "XLE"
+	},
+	{
+		"value": "JHMA",
+		"label": "JHMA"
+	},
+	{
+		"value": "LABU",
+		"label": "LABU"
+	},
+	{
+		"value": "PPTY",
+		"label": "PPTY"
+	},
+	{
+		"value": "JHME",
+		"label": "JHME"
+	},
+	{
+		"value": "XSD",
+		"label": "XSD"
+	},
+	{
+		"value": "VPC",
+		"label": "VPC"
+	},
+	{
+		"value": "REML",
+		"label": "REML"
+	},
+	{
+		"value": "KBWP",
+		"label": "KBWP"
+	},
+	{
+		"value": "DIG",
+		"label": "DIG"
+	},
+	{
+		"value": "UYM",
+		"label": "UYM"
+	},
+	{
+		"value": "EWRE",
+		"label": "EWRE"
+	},
+	{
+		"value": "DPST",
+		"label": "DPST"
+	},
+	{
+		"value": "ROOF",
+		"label": "ROOF"
+	},
+	{
+		"value": "MORL",
+		"label": "MORL"
+	},
+	{
+		"value": "FTXR",
+		"label": "FTXR"
+	},
+	{
+		"value": "FUTY",
+		"label": "FUTY"
+	},
+	{
+		"value": "XOP",
+		"label": "XOP"
+	},
+	{
+		"value": "PSL",
+		"label": "PSL"
+	},
+	{
+		"value": "PXJ",
+		"label": "PXJ"
+	},
+	{
+		"value": "PSI",
+		"label": "PSI"
+	},
+	{
+		"value": "FTXO",
+		"label": "FTXO"
+	},
+	{
+		"value": "IGN",
+		"label": "IGN"
+	},
+	{
+		"value": "RTH",
+		"label": "RTH"
+	},
+	{
+		"value": "IHE",
+		"label": "IHE"
+	},
+	{
+		"value": "FXH",
+		"label": "FXH"
+	},
+	{
+		"value": "BBRE",
+		"label": "BBRE"
+	},
+	{
+		"value": "PSCI",
+		"label": "PSCI"
+	},
+	{
+		"value": "ROM",
+		"label": "ROM"
+	},
+	{
+		"value": "VCR",
+		"label": "VCR"
+	},
+	{
+		"value": "NAIL",
+		"label": "NAIL"
+	},
+	{
+		"value": "FIVG",
+		"label": "FIVG"
+	},
+	{
+		"value": "MLPQ",
+		"label": "MLPQ"
+	},
+	{
+		"value": "ONLN",
+		"label": "ONLN"
+	},
+	{
+		"value": "QQQ",
+		"label": "QQQ"
+	},
+	{
+		"value": "NRGO",
+		"label": "NRGO"
+	},
+	{
+		"value": "AMLP",
+		"label": "AMLP"
+	},
+	{
+		"value": "XLU",
+		"label": "XLU"
+	},
+	{
+		"value": "FBT",
+		"label": "FBT"
+	},
+	{
+		"value": "JHMS",
+		"label": "JHMS"
+	},
+	{
+		"value": "SKF",
+		"label": "SKF"
+	},
+	{
+		"value": "PJP",
+		"label": "PJP"
+	},
+	{
+		"value": "VNQ",
+		"label": "VNQ"
+	},
+	{
+		"value": "VGT",
+		"label": "VGT"
+	},
+	{
+		"value": "INDS",
+		"label": "INDS"
+	},
+	{
+		"value": "CWEB",
+		"label": "CWEB"
+	},
+	{
+		"value": "SMN",
+		"label": "SMN"
+	},
+	{
+		"value": "WCLD",
+		"label": "WCLD"
+	},
+	{
+		"value": "XTN",
+		"label": "XTN"
+	},
+	{
+		"value": "ERY",
+		"label": "ERY"
+	},
+	{
+		"value": "UTES",
+		"label": "UTES"
+	},
+	{
+		"value": "HOMZ",
+		"label": "HOMZ"
+	},
+	{
+		"value": "RHS",
+		"label": "RHS"
+	},
+	{
+		"value": "FIDU",
+		"label": "FIDU"
+	},
+	{
+		"value": "RDOG",
+		"label": "RDOG"
+	},
+	{
+		"value": "UXI",
+		"label": "UXI"
+	},
+	{
+		"value": "SRS",
+		"label": "SRS"
+	},
+	{
+		"value": "IYF",
+		"label": "IYF"
+	},
+	{
+		"value": "TPOR",
+		"label": "TPOR"
+	},
+	{
+		"value": "PTF",
+		"label": "PTF"
+	},
+	{
+		"value": "VDE",
+		"label": "VDE"
+	},
+	{
+		"value": "IGE",
+		"label": "IGE"
+	},
+	{
+		"value": "JHMH",
+		"label": "JHMH"
+	},
+	{
+		"value": "DUG",
+		"label": "DUG"
+	},
+	{
+		"value": "PBW",
+		"label": "PBW"
+	},
+	{
+		"value": "CLIX",
+		"label": "CLIX"
+	},
+	{
+		"value": "JNUG",
+		"label": "JNUG"
+	},
+	{
+		"value": "NURE",
+		"label": "NURE"
+	},
+	{
+		"value": "MLPA",
+		"label": "MLPA"
+	},
+	{
+		"value": "XNTK",
+		"label": "XNTK"
+	},
+	{
+		"value": "IYM",
+		"label": "IYM"
+	},
+	{
+		"value": "FIW",
+		"label": "FIW"
+	},
+	{
+		"value": "PXQ",
+		"label": "PXQ"
+	},
+	{
+		"value": "QTEC",
+		"label": "QTEC"
+	},
+	{
+		"value": "OIH",
+		"label": "OIH"
+	},
+	{
+		"value": "KIE",
+		"label": "KIE"
+	},
+	{
+		"value": "FINZ",
+		"label": "FINZ"
+	},
+	{
+		"value": "IYT",
+		"label": "IYT"
+	},
+	{
+		"value": "XSW",
+		"label": "XSW"
+	},
+	{
+		"value": "LABD",
+		"label": "LABD"
+	},
+	{
+		"value": "XHS",
+		"label": "XHS"
+	},
+	{
+		"value": "JHMU",
+		"label": "JHMU"
+	},
+	{
+		"value": "IAT",
+		"label": "IAT"
+	},
+	{
+		"value": "PEZ",
+		"label": "PEZ"
+	},
+	{
+		"value": "IFRA",
+		"label": "IFRA"
+	},
+	{
+		"value": "UPW",
+		"label": "UPW"
+	},
+	{
+		"value": "IEFN",
+		"label": "IEFN"
+	},
+	{
+		"value": "FXR",
+		"label": "FXR"
+	},
+	{
+		"value": "RGI",
+		"label": "RGI"
+	},
+	{
+		"value": "ZMLP",
+		"label": "ZMLP"
+	},
+	{
+		"value": "VHT",
+		"label": "VHT"
+	},
+	{
+		"value": "XAR",
+		"label": "XAR"
+	},
+	{
+		"value": "IGM",
+		"label": "IGM"
+	},
+	{
+		"value": "RYT",
+		"label": "RYT"
+	},
+	{
+		"value": "IYW",
+		"label": "IYW"
+	},
+	{
+		"value": "IYK",
+		"label": "IYK"
+	},
+	{
+		"value": "IEHS",
+		"label": "IEHS"
+	},
+	{
+		"value": "UCC",
+		"label": "UCC"
+	},
+	{
+		"value": "VAW",
+		"label": "VAW"
+	},
+	{
+		"value": "XME",
+		"label": "XME"
+	},
+	{
+		"value": "IEZ",
+		"label": "IEZ"
+	},
+	{
+		"value": "PHO",
+		"label": "PHO"
+	},
+	{
+		"value": "ITA",
+		"label": "ITA"
+	},
+	{
+		"value": "GASL",
+		"label": "GASL"
+	},
+	{
+		"value": "SMH",
+		"label": "SMH"
+	},
+	{
+		"value": "VPU",
+		"label": "VPU"
+	},
+	{
+		"value": "PSCD",
+		"label": "PSCD"
+	},
+	{
+		"value": "PSCH",
+		"label": "PSCH"
+	},
+	{
+		"value": "PSJ",
+		"label": "PSJ"
+	},
+	{
+		"value": "SDP",
+		"label": "SDP"
+	},
+	{
+		"value": "NEED",
+		"label": "NEED"
+	},
+	{
+		"value": "PNQI",
+		"label": "PNQI"
+	},
+	{
+		"value": "SOXL",
+		"label": "SOXL"
+	},
+	{
+		"value": "SSG",
+		"label": "SSG"
+	},
+	{
+		"value": "KBWR",
+		"label": "KBWR"
+	},
+	{
+		"value": "SRVR",
+		"label": "SRVR"
+	},
+	{
+		"value": "XLRE",
+		"label": "XLRE"
+	},
+	{
+		"value": "FCG",
+		"label": "FCG"
+	},
+	{
+		"value": "VIS",
+		"label": "VIS"
+	},
+	{
+		"value": "JHMT",
+		"label": "JHMT"
+	},
+	{
+		"value": "IAK",
+		"label": "IAK"
+	},
+	{
+		"value": "KBWY",
+		"label": "KBWY"
+	},
+	{
+		"value": "MLPX",
+		"label": "MLPX"
+	},
+	{
+		"value": "ICF",
+		"label": "ICF"
+	},
+	{
+		"value": "PXI",
+		"label": "PXI"
+	},
+	{
+		"value": "PAVE",
+		"label": "PAVE"
+	},
+	{
+		"value": "REW",
+		"label": "REW"
+	},
+	{
+		"value": "HAIL",
+		"label": "HAIL"
+	},
+	{
+		"value": "DRIP",
+		"label": "DRIP"
+	},
+	{
+		"value": "SLX",
+		"label": "SLX"
+	},
+	{
+		"value": "PILL",
+		"label": "PILL"
+	},
+	{
+		"value": "PBS",
+		"label": "PBS"
+	},
+	{
+		"value": "AIRR",
+		"label": "AIRR"
+	},
+	{
+		"value": "IDU",
+		"label": "IDU"
+	},
+	{
+		"value": "FITE",
+		"label": "FITE"
+	},
+	{
+		"value": "IYH",
+		"label": "IYH"
+	},
+	{
+		"value": "REM",
+		"label": "REM"
+	},
+	{
+		"value": "ERX",
+		"label": "ERX"
+	},
+	{
+		"value": "MLPB",
+		"label": "MLPB"
+	},
+	{
+		"value": "PEJ",
+		"label": "PEJ"
+	},
+	{
+		"value": "NRGU",
+		"label": "NRGU"
+	},
+	{
+		"value": "XTL",
+		"label": "XTL"
+	},
+	{
+		"value": "BIZD",
+		"label": "BIZD"
+	},
+	{
+		"value": "ARKG",
+		"label": "ARKG"
+	},
+	{
+		"value": "NETL",
+		"label": "NETL"
+	},
+	{
+		"value": "RCD",
+		"label": "RCD"
+	},
+	{
+		"value": "SIMS",
+		"label": "SIMS"
+	},
+	{
+		"value": "IETC",
+		"label": "IETC"
+	},
+	{
+		"value": "RYH",
+		"label": "RYH"
+	},
+	{
+		"value": "RYF",
+		"label": "RYF"
+	},
+	{
+		"value": "NRGD",
+		"label": "NRGD"
+	},
+	{
+		"value": "VDC",
+		"label": "VDC"
+	},
+	{
+		"value": "XES",
+		"label": "XES"
+	},
+	{
+		"value": "MORT",
+		"label": "MORT"
+	},
+	{
+		"value": "FREL",
+		"label": "FREL"
+	},
+	{
+		"value": "FENY",
+		"label": "FENY"
+	},
+	{
+		"value": "TDIV",
+		"label": "TDIV"
+	},
+	{
+		"value": "FXG",
+		"label": "FXG"
+	},
+	{
+		"value": "PFI",
+		"label": "PFI"
+	},
+	{
+		"value": "BUYN",
+		"label": "BUYN"
+	},
+	{
+		"value": "FXL",
+		"label": "FXL"
+	},
+	{
+		"value": "PSR",
+		"label": "PSR"
+	},
+	{
+		"value": "PSCU",
+		"label": "PSCU"
+	},
+	{
+		"value": "SBIO",
+		"label": "SBIO"
+	},
+	{
+		"value": "PRN",
+		"label": "PRN"
+	},
+	{
+		"value": "FSTA",
+		"label": "FSTA"
+	},
+	{
+		"value": "DFEN",
+		"label": "DFEN"
+	},
+	{
+		"value": "IYR",
+		"label": "IYR"
+	},
+	{
+		"value": "VOX",
+		"label": "VOX"
+	},
+	{
+		"value": "FXN",
+		"label": "FXN"
+	},
+	{
+		"value": "GUSH",
+		"label": "GUSH"
+	},
+	{
+		"value": "CNCR",
+		"label": "CNCR"
+	},
+	{
+		"value": "MLPI",
+		"label": "MLPI"
+	},
+	{
+		"value": "URE",
+		"label": "URE"
+	},
+	{
+		"value": "CURE",
+		"label": "CURE"
+	},
+	{
+		"value": "LACK",
+		"label": "LACK"
+	},
+	{
+		"value": "UTSL",
+		"label": "UTSL"
+	},
+	{
+		"value": "VMOT",
+		"label": "VMOT"
+	},
+	{
+		"value": "IGV",
+		"label": "IGV"
+	},
+	{
+		"value": "WDRW",
+		"label": "WDRW"
+	},
+	{
+		"value": "TECL",
+		"label": "TECL"
+	}
+]

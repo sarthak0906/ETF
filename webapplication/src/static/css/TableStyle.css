@@ -12,15 +12,3 @@
 .Table {
 
 }
-
-.rt-tr-group, .-header{
-  color: white;
-}
-
-.rt-tr-group:nth-child(odd){
-  background-color: #333333;
-}
-
-.rt-tr-group:nth-child(even){
-  background-color: #444444;
-}

@@ -129,12 +129,12 @@ class HistoricalArbitrage extends React.Component{
 	fetchDataForADateAndETF(url){
 		axios.get(`http://localhost:5000/PastArbitrageData/${this.props.ETF}/${this.props.startDate}`).then(res =>{
 			this.setState({
-			 	etfArbitrageTableData : <AppTable data={(res.data.etfhistoricaldata)}/>,
-			 	PNLStatementForTheDay : <AppTable data={(res.data.PNLStatementForTheDay)}/>,
+			 	etfArbitrageTableData : <AppTable data={JSON.parse(res.data.etfhistoricaldata)}/>,
+			 	PNLStatementForTheDay : <AppTable data={JSON.parse(res.data.PNLStatementForTheDay)}/>,
 			 	etfPriceData : {'data':tsvParse(res.data.etfPrices, this.parseData(this.state.parseDate))},
 			 	scatterPlotData: <ScatterPlot data={JSON.parse(res.data.scatterPlotData)}/>,
-			 	etfmoversDictCount: (res.data.etfmoversDictCount),
-			 	highestChangeDictCount: (res.data.highestChangeDictCount)
+			 	etfmoversDictCount: JSON.parse(res.data.etfmoversDictCount),
+			 	highestChangeDictCount: JSON.parse(res.data.highestChangeDictCount)
 			});
 			console.log(this.state.etfPriceData);
 		});

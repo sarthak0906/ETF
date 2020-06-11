@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Route, BrowserRouter as Router } from 'react-router-dom'
+import { Route, Redirect , BrowserRouter as Router } from 'react-router-dom'
 
 
 import Former from './Component/Form.js';
@@ -30,7 +30,7 @@ class App extends Component {
   componentDidMount() {
 		this.setState({
 			ETF:'XLK',
-	   		startDate:'20200511'
+      startDate:'20200511'
 		});
   }
 
@@ -56,7 +56,6 @@ class App extends Component {
     this.setState({ETF: etfName});
   }
 
-
   render(){
   	return (
     <Router history={history} >
@@ -67,12 +66,12 @@ class App extends Component {
           </div>
         </div>
       </div>
-      <Route path="/ETF-Comparison" render={Comparison} />
-      <Route path="/ETF-Description" render={() => <Description startDate={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitNewETF} />} />
-      <Route path="/HistoricalArbitrage" render={() => <HistoricalArbitrage startDate ={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitFn} />} />
-      <Route path="/Live-Arbitrage-Single" render={() => <Live_Arbitrage_Single ETF={this.state.ETF} />} />
-      <Route path="/Live-Arbitrage" render={() => <Live_Arbitrage ETF={this.state.ETF} />} />
-      <Route path="/Machine-Learning" render={ML} />
+      <ProtectedRoute path="/ETF-Comparison" render={Comparison} />
+      <ProtectedRoute path="/ETF-Description" render={() => <Description startDate={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitNewETF} />} />
+      <ProtectedRoute path="/HistoricalArbitrage" render={() => <HistoricalArbitrage startDate ={this.state.startDate} ETF={this.state.ETF} submitFn={this.SubmitFn} />} />
+      <ProtectedRoute path="/Live-Arbitrage-Single" render={() => <Live_Arbitrage_Single ETF={this.state.ETF} />} />
+      <ProtectedRoute path="/Live-Arbitrage" render={() => <Live_Arbitrage ETF={this.state.ETF} />} />
+      <ProtectedRoute path="/Machine-Learning" render={ML} />
       <Route path="/SignUp" render={() => <SignUpFormPage />} />
       <Route path="/Login" render={SignInFormPage} />
       <Route path="/EmailVerification" render={() => <EmailVerification />} />
@@ -81,5 +80,12 @@ class App extends Component {
   }
 
 }
+
+const ProtectedRoute = ({ render: Component, ...rest }) => (
+  <Route {...rest} render={(props) => (
+    localStorage.getItem("username") === null ? 
+      <Component {...props} /> : <Redirect to={{ pathname: '/Login', state: { from: props.location }}} />
+  )} />
+);
 
 ReactDOM.render(<App />,document.getElementById('root'));

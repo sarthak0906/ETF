@@ -42,7 +42,7 @@ from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 def getETFWithSameIssuer(IssuerName):
     etfswithsameIssuer = fetchETFsWithSameIssuer(connection, Issuer=IssuerName)
     if len(etfswithsameIssuer) == 0:
-            etfswithsameIssuer['None'] = {'ETFName': 'None','TotalAssetsUnderMgmt': "No Other ETF was found with same Issuer"}
+        etfswithsameIssuer['None'] = {'ETFName': 'None','TotalAssetsUnderMgmt': "No Other ETF was found with same Issuer"}
     return json.dumps(etfswithsameIssuer)
 
 @app.route('/ETfDescription/getETFsWithSameETFdbCategory/<ETFdbCategory>')
@@ -57,7 +57,8 @@ def fetchOHLCDailyData(ETFName,StartDate):
     StartDate=StartDate.split(' ')[0]
     OHLCData=fetchOHLCHistoricalData(etfname=ETFName,StartDate=StartDate)
     OHLCData=OHLCData.to_csv(sep='\t', index=False)
-    return OHLCData
+    OHLCData = pd.DataFrame(OHLCData).to_dict(orient='records')
+    return json.dumps(OHLCData)
 
 from CalculateETFArbitrage.LoadEtfHoldings import LoadHoldingsdata
 
